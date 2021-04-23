@@ -2,8 +2,7 @@
 title: "Theoretical model"
 output:
   html_document: default
-  pdf_document:
-    keep_tex: true
+  pdf_document : default
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -246,7 +245,8 @@ Growth <- data.frame(Species=rep(c(1,2), each=nind*ntime),
 Xloglight <- X
 
 #constant to avoid NaNs while logging
-Xloglight[,2] <- log(Xloglight[,2]+4)
+const_log <- 4
+Xloglight[,2] <- log(Xloglight[,2]+const_log)
     
 # Process model : log(G) = beta1+beta2*log(Light)+...+beta10*X10
 Growth$Growth <- exp(rowSums(Xloglight * t(par_ind[,Growth$Ind])))
@@ -265,9 +265,9 @@ Following are some plots to visualise the data, and a plot helping to visualise 
 ```{r Growth plots, echo=FALSE}
 # Plot the data
 plot(Growth$logLight, log(Growth$Growth))
-plot(exp(Growth$logLight), Growth$Growth)
+plot(exp(Growth$logLight)-const_log, Growth$Growth)
 plot(Growth$logLight, log(Growth$Growth_sp))
-plot(exp(Growth$logLight), Growth$Growth_sp)
+plot(exp(Growth$logLight)-const_log, Growth$Growth_sp)
     
 hist(Growth$Growth)
 hist(log(Growth$Growth))
@@ -282,7 +282,7 @@ Growth_illustration$Y <- t(Coord)[,2]
 A <- ggplot2::ggplot(Vars_t0, ggplot2::aes(x, y)) +
   ggplot2::geom_point(ggplot2::aes(color = Var1)) +
   ggplot2::scale_color_viridis_c(
-    "Environmental variable",
+    "Environmental variable X1",
     guide = ggplot2::guide_colourbar(
       title.position = "top",
       label.position="bottom")) +
@@ -295,7 +295,7 @@ A <- ggplot2::ggplot(Vars_t0, ggplot2::aes(x, y)) +
                         shape=as.factor(Species)),
                       size=2.5,
                       alpha=0.8) +
-  ggplot2::scale_color_viridis_c("Growth", option = "plasma")+
+  ggplot2::scale_color_viridis_c("Response Y", option = "plasma")+
   ggplot2::guides(
     shape=ggplot2::guide_legend(
       title = "Species",
@@ -504,20 +504,20 @@ To do so, we create a sequence of explanatory variable values and compute the re
     Marg_sp$Species <- as.factor(Marg_sp$Species)
     
     #Use exponential to draw a logarithmical curve
-    Marg_sp$Light <- exp(Marg_sp$logLight)
+    Marg_sp$Light <- exp(Marg_sp$logLight) - const_log
     Marg_sp$Growth_sp <- exp(Marg_sp$logGrowth_sp)
     Marg_sp$Q025_sp <- exp(Marg_sp$logQ025_sp)
     Marg_sp$Q975_sp <- exp(Marg_sp$logQ975_sp)
     
-    Growth$Light <- exp(Growth$logLight)
+    Growth$Light <- exp(Growth$logLight) - const_log
     
 B <- ggplot2::ggplot(data=Growth[which(Growth$Time==1),], ggplot2::aes(Light, Growth_sp)) +
   ggplot2::geom_point(ggplot2::aes(colour=Species)) +
   ggplot2::geom_line(data=Marg_sp, size=1, ggplot2::aes(colour=Species)) +
   ggplot2::geom_ribbon(data=Marg_sp, alpha=0.2, ggplot2::aes(Light, ymin=Q025_sp, ymax=Q975_sp, colour=Species, fill=Species))+
   ggplot2::coord_fixed(ratio=3)+
-  ggplot2::xlab("Observed environmnental variable (X1, e.g. light)")+
-  ggplot2::ylab("Response variables (Y, e.g. growth)")+
+  ggplot2::xlab("Environmnental variable X1")+
+  ggplot2::ylab("Response Y")+
   ggplot2::guides(fill=ggplot2::guide_legend(title.position = "top",
                            label.position = "bottom"))+
   ggplot2::theme(
@@ -593,14 +593,14 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "P
     Marg$Species <- as.factor(Marg$Species)
     
     #Use exponential to draw a logarithmical curve
-    Marg$Light <- exp(Marg$logLight)
+    Marg$Light <- exp(Marg$logLight)-const_log
     Marg$Growth <- exp(Marg$logGrowth)
     Marg$Q025 <- exp(Marg$logQ025)
     Marg$Q975 <- exp(Marg$logQ975)
     Marg$Q025_sp <- exp(Marg$logQ025sp)
     Marg$Q975_sp <- exp(Marg$logQ975sp)
     
-    Growth$Light <- exp(Growth$logLight)
+    Growth$Light <- exp(Growth$logLight) - const_log
     
 g <- ggplot2::ggplot(data=Growth[which(Growth$Time==1),], ggplot2::aes(Light, Growth)) +
   ggplot2::geom_point(ggplot2::aes(colour=Species)) +
