@@ -123,14 +123,15 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw
 
 Data <- Raw_data
 ```
+The studied dataset finally encompasses `r length(unique(Data$Tree))` trees.
 
-This figure shows that the date of measure has a big influence on the values of growth but also on the relationship between growth and diameter : the slope seems to be smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases. 
+The last figure shows that the date of measure has a big influence on the values of growth but also on the relationship between growth and diameter : the slope seems to be smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases. 
 
 Therefore, we compute a competition index to integrate this effect in the growth model.
 The competition index is computed for each tree which is not on the edge of a plot.
 It is the sum of the basal areas of the direct neighbours divided by the area of the rectangle that comprises all the direct neighbours. It is then logged.
 
-$C_{i, t} = \frac{\sum BA_{neighbours(i, t)}}{ A}$, $A$ is constant.
+$C_{i, t} = \frac{\sum BA_{neighbours(i, t)}}{A}$, $A$ is constant.
 
 
 ```{r Coordinates}
@@ -365,6 +366,7 @@ kableExtra::kbl(
   ) %>%
   kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)
 ```
+
 We obtained a good model convergence, and found that the two most important contributors to variance (apart from the residuals) were the date and individual identity. The effect of the genotype is quite small, and the effect of site is even smaller.
 The temporal random effects declined with the date, showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). Therefore, the competition index C did not fully capture the effect of competition on growth.
 
@@ -390,6 +392,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Var
 The highest part of variance is explained by the census date. This is due to the negative effect of competition for light on growth, which increases with the growth of the trees. This means that our competition index does not completely capture competition.
 
 The next random effect that explains most variance (apart from residuals) is the individual effect. This shows that there is individual variability even if the trees are clones and therefore that individual variability can be due to exogenous causes. This individual effect can be due to the micro-environment where it is positioned, but also to some individual history, here seedling manipulation and plantation.
+As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions (le Maire et al. 2019), this dataset is a strongly conservative test case for our hypothesis.
 
 The genotype explained 6.1% of the variance, which is surprising as some striking differences were denoted between clones beforehand. Therefore the impact of individual identity on growth is stronger than the effect of genotype. We did not find any relevant explanation for the mean random effect of each genotype.
 
