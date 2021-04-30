@@ -54,6 +54,7 @@ This forest is considered as one of the rare undisturbed tropical forests in the
 The Barro Colorado Island site is located in central America, in Panama, covered by a lowland tropical moist forest. The zone became an island after a valley was flooded in order to build the Panama Canal, in 1913. It is nowadays considered as the most intensively studied tropical forest in the world.
 The studied site is a 50 ha plot (500 $\times$ 1000 m). It has an elevation of 120 m and is quite flat (most slopes are gentler than 10°). Complete censuses of all trees with DBH $\ge$  1 cm were performed every 5 years since 1980.
 In the raw data, there are 328 tree species and 423617 trees and when only taking into account trees with DBH $\ge$ 10 cm, there are 255 species and 37224 trees.
+The data is available here : https://datadryad.org/stash/dataset/doi:10.15146/5xcp-0d46.
 
 
 # Data preparation
@@ -608,6 +609,10 @@ For Paracou, the proportion of individuals belonging to as species which had a s
 Important parameters contrasting between those forests are the topography, which is hillier in Uppangala, the number of species and of individuals per species, which are higher in Paracou, and the date of the last known disturbance, which is much more recent in Paracou than in BCI and Uppangala. Moreover, the same analysis of the undisturbed plots of Paracou give about the same proportion of individuals (exposed lower).
 
 
+Finally, the magnitude of spatial autocorrelation varied across the three sites, with Paracou presenting the biggest proportion and Uppangala the lowest, which can be related to each site specificities. The plots of the Paracou site were subjected to disturbance treatments that created numerous large gaps (Molino & Sabatier 2001). This resulted in a high heterogeneity and spatial structuration of the environment. When restricting our analysis to undisturbed control plots, the proportion of detected spatial autocorrelation in conspecific growth drops from 77.1% to about 50% individuals, supporting the hypothesis that the more important spatial autocorrelation in Paracou is due to the stronger spatial structuration of the micro-environment associated with disturbance treatments. Conversely, the disturbance regime in BCI is known to produce frequent small gaps (Hubbell 1999), while the mature forest in Uppangala has been reported as barely disturbed (Pélissier et al. 2011). We acknowledge that the hilly topography of Uppangala could make our estimates of distances among individuals based on pairs of tree coordinates provided by field inventory less accurate than in the other two flatter sites.
+
+
+
 # Is variance within conspecifics inferior to variance within heterospecifics ?
 
 In order to compare intra vs interspecific variance, we compute the semivariance of growth of individuals that are less than 100 m apart. We compare the semivariances obtained with conspecifics and heterospecifics with a Mann-Whitney test.
@@ -715,3 +720,6 @@ The proportion of individuals represented in the species which have a significan
 In order to be able to compare all three datasets together, we removed all stems that had a DBH inferior to 10 cm in BCI, where all stems with DBH $\ge$ 1 cm are measured.
 Using the complete dataset, we concluded that the spatial structure in individual growth was even more significant.
 
+
+## Other discussion of the results
+We here used data on tree growth, which is one component of individual fitness and an imperfect proxy of tree competitive ability, and our analyses could be further tested with other traits in the future. 
