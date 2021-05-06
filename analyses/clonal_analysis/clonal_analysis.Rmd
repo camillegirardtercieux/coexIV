@@ -26,21 +26,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 In this analysis, following the conclusions of the theoretical experiment, we aim at testing if intraspecific variability in observed individual growth can emerge from the environment. Therefore, we use a clonal experimental setup.
-The Eucflux dataset is a clonal trial on Eucalyptus varieties. One of its main goals is to determine the productivity of each clone.
+The EUCFLUX dataset is a clonal trial on Eucalyptus varieties. One of its main goals is to determine the productivity of each clone.
 One hypothesis on intraspecific variability in growth is that it mainly derives from environmental factors, and not only from genetic, intrinsic factors. Therefore, we can use the Eucflux dataset in order to ask if we can we detect some intraspecific variability of growth within clones.
 As we suppose growth to be mainly the result of environmental variables, we expect to detect intraspecific variability of growth within clones (or single genotypes), although we also expect the genotype to influence the growth response.
 
 The EUCFLUX setup is located in Brasilia, in the state of Sao Paulo.
-It has 16 genotypes (14 clones and two seed-origin genotypes) of 5 different species or hybrides, which grow on 10 sites and were monitored over 6 years. The detail of the setup is detailed in le Maire et al., 2019.
-We used the DBH measured during 5 complete censuses in order to compute annual growth in mm/year.
+It has 16 genotypes (14 clones and two seed-origin genotypes) of 5 different species or hybrids, which grow on 10 sites and were monitored over 6 years. The detail of the setup is detailed in le Maire et al., 2019.
+We used the DBH measured during 5 complete censuses in order to compute annual growth in mm/year : we kept only the dates of measurements for which the code is "1" for complete DBH measure in Le Maire et al. 2019.
 
 The raw data of the experiment was manually rearranged into six files with LibreOffice Calc, each file corresponding to a complete census.
-The seed-origin individuals are removed from the data since they contain genetic individual variability.
-We keep only the dates of measurements for which the code is "1" for complete DBH measure in Le Maire et al. 2019.
+The seed-origin individuals were removed from the data since they contain genetic individual variability.
+
 We compute annualised growth in mm/y as the difference between two consecutive censuses divided by the time between the two censuses and we remove all negative growth values.
 We compute the neperian logarithm of diameter and of growth (with a constant for growth in order to avoid undefined values).
 
-```{r Charge the data, echo=TRUE}
+```{r Charge the data, echo=FALSE}
 Full_Data <- list()
 for (k in 1:6) {
   l = c(3, 4, 6, 8, 12, 14)[k]
@@ -115,8 +115,8 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Dat
 
 g <- ggplot2::ggplot(Raw_data, ggplot2::aes(x=D_2, y=Growth_yearly, col=Date))+
   ggplot2::geom_point(alpha=0.3)+
-  ggplot2::xlab("Diameter(cm)")+
-  ggplot2::ylab("Growth(mm/y)")+
+  ggplot2::xlab("Diameter (cm)")+
+  ggplot2::ylab("Growth (mm/y)")+
   ggplot2::scale_colour_viridis_d()
 ggplot2::ggsave(filename = "Raw_data.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw_data.png")) 
@@ -133,8 +133,9 @@ It is the sum of the basal areas of the direct neighbours divided by the area of
 
 $C_{i, t} = \frac{\sum BA_{neighbours(i, t)}}{A}$, $A$ is constant.
 
+Here is the design of a plot :
 
-```{r Coordinates}
+```{r Coordinates, echo=FALSE}
 # We must retrieve the coordinates of each tree in order to show the design of plots
 
 Coordinates <- data.frame(Tree_number = c(c(1:10), c(20:11), c(21:30), c(40:31), c(41:50),
@@ -158,7 +159,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Plo
 
 ```
 
-```{r Competition index, eval=FALSE, echo=TRUE}
+```{r Competition index, echo=FALSE}
 #Competition index = sum of basal area of direct neighbours / area of the rectangle
 # Trees are 2 m apart in vertically and 3 m apart horizontally, so the area of the
 # rectangle is  of 4*6 m = 24m^2
@@ -278,7 +279,7 @@ save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData")
 After convergence of the model, we examined the variance of each random effect, and this enabled us to perform a variance partition.
 
 
-```{r Model results}
+```{r Model results, echo=FALSE}
 load(here::here("outputs", "clonal_analysis", "brms_mod.RData"))
 
 #Check convergence of random effects et some features of the random effects
@@ -331,7 +332,6 @@ g <- ggplot2::ggplot(data=Ranef_Site_summary, ggplot2::aes(x = Site , y = Estima
   ggplot2::ylab("Random effect")
 ggplot2::ggsave(filename = "Ranef_site.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_site.png")) 
-
 
 Sum_EUCFLUX <- summary(brms_mod)
 ```
