@@ -83,7 +83,6 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "P
 
 ```
 
-There are `r length(unique(Paracou$Sp))` species, `r length(unique(Paracou$idTree))` trees and `r nrow(Paracou)` observations in this dataset.
 
 2) Compute growth between two censuses and rename all indeterminate species with the same name "Indet_sp"
 
@@ -93,6 +92,7 @@ rm(Paracou)
 save(Paracou_no_mean, file = here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
+There are `r length(unique(Paracou_no_mean$Sp))` species, `r length(unique(Paracou_no_mean$idTree))` trees and `r nrow(Paracou)` observations in this dataset.
 
 ```{r Rename species Paracou, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
