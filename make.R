@@ -63,5 +63,13 @@ rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.
 #Only PDF
 rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.Rmd"), output_format = "pdf_document")
 
-#Only html
+ #Only html
 rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.Rmd"), output_format = "html_document")
+
+#########################################
+### New version online ###
+#########################################
+
+file.copy(here::here("analyses", "theoretical_model", "theoretical_model.html"), here::here("docs", "theoretical_model.html"), overwrite = TRUE)
+file.copy(here::here("analyses", "clonal_analysis", "clonal_analysis.html"), here::here("docs", "clonal_analysis.html"), overwrite = TRUE)
+file.copy(here::here("analyses", "tropical_analysis", "tropical_analysis.html"), here::here("docs", "tropical_analysis.html"), overwrite = TRUE)

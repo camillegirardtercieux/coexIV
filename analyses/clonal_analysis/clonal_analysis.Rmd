@@ -3,6 +3,8 @@ title: "Analysis of a clonal dataset"
 output:
   html_document: default
   pdf_document: default
+bibliography: "`r here::here('References.bib')`"
+csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -31,8 +33,8 @@ One hypothesis on intraspecific variability in growth is that it mainly derives 
 As we suppose growth to be mainly the result of environmental variables, we expect to detect intraspecific variability of growth within clones (or single genotypes), although we also expect the genotype to influence the growth response.
 
 The EUCFLUX setup is located in Brasilia, in the state of Sao Paulo.
-It has 16 genotypes (14 clones and two seed-origin genotypes) of 5 different species or hybrids, which grow on 10 sites and were monitored over 6 years. The detail of the setup is detailed in le Maire et al., 2019.
-We used the DBH measured during 5 complete censuses in order to compute annual growth in mm/year : we kept only the dates of measurements for which the code is "1" for complete DBH measure in Le Maire et al. 2019.
+It has 16 genotypes (14 clones and two seed-origin genotypes) of 5 different species or hybrids, which grow on 10 sites and were monitored over 6 years. The detail of the setup is detailed in @le_maire_light_2019.
+We used the DBH measured during 5 complete censuses in order to compute annual growth in mm/year : we kept only the dates of measurements for which the code is "1" for complete DBH measure [@le_maire_light_2019].
 
 The raw data of the experiment was manually rearranged into six files with LibreOffice Calc, each file corresponding to a complete census.
 The seed-origin individuals were removed from the data since they contain genetic individual variability.
@@ -40,7 +42,7 @@ The seed-origin individuals were removed from the data since they contain geneti
 We compute annualised growth in mm/y as the difference between two consecutive censuses divided by the time between the two censuses and we remove all negative growth values.
 We compute the neperian logarithm of diameter and of growth (with a constant for growth in order to avoid undefined values).
 
-```{r Charge the data, echo=FALSE}
+```{r Charge the data, include=FALSE}
 Full_Data <- list()
 for (k in 1:6) {
   l = c(3, 4, 6, 8, 12, 14)[k]
@@ -90,18 +92,24 @@ Raw_data<-Raw_data %>%
   dplyr::mutate(Gen=as.factor(Gen), Site=as.factor(Site), Tree=as.factor(Tree), Date=as.factor(Date))
 
 grDevices::png(here::here("outputs", "clonal_analysis", "figures", "Data_growth_raw.png"))
-hist(Raw_data$Growth_yearly)
+hist(Raw_data$Growth_yearly,
+     xlab = "Growth (mm/y)",
+     main = "Histogram of growth before filtering negative data",
+      cex.axis = 1.5,
+     cex.main = 1.5,
+     cex.lab = 1.5)
 dev.off()
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_raw.png")) 
-summary(Raw_data$Growth_yearly)
 
 Raw_data <- Raw_data[which(Raw_data$Growth_yearly>=0),]
-grDevices::png(here::here("outputs", "clonal_analysis", "figures", "Data_growth_filtered.png"))
-hist(Raw_data$Growth_yearly)
-dev.off()
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_filtered.png")) 
-summary(Raw_data$Growth_yearly)
 
+grDevices::png(here::here("outputs", "clonal_analysis", "figures", "Data_growth_filtered.png"))
+hist(Raw_data$Growth_yearly,
+     xlab = "Growth (mm/y)",
+     main = "Histogram of growth after filtering negative data",
+     cex.axis = 1.5,
+     cex.main = 1.5,
+     cex.lab = 1.5)
+dev.off()
 
 #logging G and D in order to have normal data
 #constant to avoid logging null values
@@ -109,9 +117,13 @@ Raw_data$logG <- log(Raw_data$Growth_yearly+1)
 Raw_data$logD <- log(Raw_data$D_1)
 
 grDevices::png(here::here("outputs", "clonal_analysis", "figures", "Data_log_growth.png"))
-hist(Raw_data$logG, xlab="ln(Growth) in ln(mm/y)", main="Histogram of the data used in the following analysis")
+hist(Raw_data$logG,
+     xlab="ln(Growth) in ln(mm/y)",
+     main="Histogram of the data used in the following analysis",
+     cex.axis = 1.5,
+     cex.main = 1.5,
+     cex.lab = 1.5)
 dev.off()
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_log_growth.png")) 
 
 g <- ggplot2::ggplot(Raw_data, ggplot2::aes(x=D_2, y=Growth_yearly, col=Date))+
   ggplot2::geom_point(alpha=0.3)+
@@ -119,13 +131,23 @@ g <- ggplot2::ggplot(Raw_data, ggplot2::aes(x=D_2, y=Growth_yearly, col=Date))+
   ggplot2::ylab("Growth (mm/y)")+
   ggplot2::scale_colour_viridis_d()
 ggplot2::ggsave(filename = "Raw_data.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw_data.png")) 
 
 Data <- Raw_data
 ```
+
+```{r Plots_growth_light, echo=FALSE, fig.show="hold", out.width="33%"}
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_raw.png"))
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_filtered.png"))
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_log_growth.png"))
+```
+
 The studied dataset finally encompasses `r length(unique(Data$Tree))` trees.
 
-The last figure shows that the date of measure has a big influence on the values of growth but also on the relationship between growth and diameter : the slope seems to be smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases. 
+```{r echo=FALSE}
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw_data.png")) 
+```
+
+This figure shows that the date of measure has a big influence on the values of growth but also on the relationship between growth and diameter : the slope seems to be smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases. 
 
 Therefore, we compute a competition index to integrate this effect in the growth model.
 The competition index is computed for each tree which is not on the edge of a plot.
@@ -133,7 +155,7 @@ It is the sum of the basal areas of the direct neighbours divided by the area of
 
 $C_{i, t} = \frac{\sum BA_{neighbours(i, t)}}{A}$, $A$ is constant.
 
-Here is the design of a plot :
+Here is the layout of a plot :
 
 ```{r Coordinates, echo=FALSE}
 # We must retrieve the coordinates of each tree in order to show the design of plots
@@ -159,7 +181,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Plo
 
 ```
 
-```{r Competition index, echo=FALSE}
+```{r Competition index, eval=FALSE, include=FALSE}
 #Competition index = sum of basal area of direct neighbours / area of the rectangle
 # Trees are 2 m apart in vertically and 3 m apart horizontally, so the area of the
 # rectangle is  of 4*6 m = 24m^2
@@ -220,7 +242,9 @@ load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 In order to partition the variance of individual growth data, we built a hierarchical Bayesian model and used Stan and the packages rstan and brms to implement it in R.
 We used the following parameters : n.adapt = 1000 ; n.burn = 1000 ; n.iter = 5000 ; n.thin = 5.
 
-Our model incorporated a fixed effect on the intercept ($\beta_0$), on the slop of diameter D ($\beta_1$),and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (site, $b_s$), and genotype ($b_g$).
+Our model incorporated a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$),and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (site, $b_s$), and genotype ($b_g$).
+
+Variables are scaled to help the convergence of the model.
 
 $ln(G_{i,t}+1) = (\beta_0 + b_i + b_s + b_g + b_t) + \beta_1 \times ln(D_{i, t}) + \beta_2 \times ln(C_{i, t}) + \epsilon_{i, t}$
 
@@ -266,48 +290,82 @@ brms_mod <-brms::brm(formula = logG ~ 1 + logD + logC + (1|Tree) + (1|Site) + (1
                data = Data_compet, 
                #family = gaussian(), #already default, prevents from sampling... 
                prior= prior_brms,
-               iter = 2000 , warmup = 1000, thin = 1,
+               iter = 10000 , warmup = 5000, thin = 5,
                chains = 2, cores=2,
                control=list(adapt_delta=0.99, max_treedepth=15))
 
-brms::mcmc_plot(brms_mod, type="trace")
-brms::mcmc_plot(brms_mod, type="dens")
-summary(brms_mod)
 save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData"))
 ```
 
 After convergence of the model, we examined the variance of each random effect, and this enabled us to perform a variance partition.
 
-
 ```{r Model results, echo=FALSE}
 load(here::here("outputs", "clonal_analysis", "brms_mod.RData"))
 
+g <-brms::mcmc_plot(brms_mod, type="trace")+
+  ggplot2::labs(title="Trace of the posteriors")
+
+ggplot2::ggsave(filename = "Trace_model.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_model.png"))
+
+g <- brms::mcmc_plot(brms_mod, type="dens")+
+  ggplot2::labs(title="Density of the posteriors")
+
+ggplot2::ggsave(filename = "Density_posteriors.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Density_posteriors.png"))
+
 #Check convergence of random effects et some features of the random effects
+
+#Temporal random effects
 Ranef_date <- as.data.frame(brms::ranef(brms_mod, summary = F)$Date)
 Ranef_date$Chain <- c(rep(1, 1000), rep(2, 1000))
-bayesplot::mcmc_trace(Ranef_date)
-Ranef_date$Date <- rownames(Ranef_date)
 
+g <- bayesplot::mcmc_trace(Ranef_date)+
+  ggplot2::labs(title="Temporal random effects")
+
+ggplot2::ggsave(filename = "Trace_temporal_random_effects.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_temporal_random_effects.png"))
+
+#Genotype random effects
 Ranef_gen <- as.data.frame(brms::ranef(brms_mod, summary = F)$Gen)
 Ranef_gen$Chain <- c(rep(1, 1000), rep(2, 1000))
-bayesplot::mcmc_trace(Ranef_gen)
 
+g <- bayesplot::mcmc_trace(Ranef_gen)+
+  ggplot2::labs(title="Genotype random effects")
+
+ggplot2::ggsave(filename = "Trace_genotype_random_effects.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_genotype_random_effects.png"))
+
+#Spatial random effects
 Ranef_site <- as.data.frame(brms::ranef(brms_mod, summary = F)$Site)
 Ranef_site$Chain <- c(rep(1, 1000), rep(2, 1000))
-bayesplot::mcmc_trace(Ranef_site)
+
+g <- bayesplot::mcmc_trace(Ranef_site)+
+  ggplot2::labs(title="Site random effects")
+
+ggplot2::ggsave(filename = "Trace_site_random_effects.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_site_random_effects.png"))
+
+#Look at random effects values
 
 Ranef_date_summary <- as.data.frame(brms::ranef(brms_mod)$Date)
 Ranef_date_summary$Date_nb <- c(1:nrow(Ranef_date_summary))
 colnames(Ranef_date_summary) <- gsub(".", "_", colnames(Ranef_date_summary), fixed = T)  
-
-#Look at random effects values
 g <- ggplot2::ggplot(data=Ranef_date_summary, ggplot2::aes(x = Date_nb , y = Estimate_Intercept ))+
   ggplot2::geom_point()+
   ggplot2::geom_pointrange(ggplot2::aes(ymin=Q2_5_Intercept, ymax=Q97_5_Intercept))+
-  ggplot2::xlab("Date")+
-  ggplot2::ylab("Random effect")
+  ggplot2::labs(title="Temporal random effects", x="Date", y="Random effect")+
+  ggplot2::theme(
+     legend.title = ggplot2::element_text(size = 30),
+     text = ggplot2::element_text(size=30))
+
 ggplot2::ggsave(filename = "Ranef_date.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_date.png")) 
+
 
 Ranef_Gen_summary <- as.data.frame(brms::ranef(brms_mod)$Gen)
 Ranef_Gen_summary$Gen <- as.numeric(rownames(Ranef_Gen_summary))
@@ -316,25 +374,39 @@ colnames(Ranef_Gen_summary) <- gsub(".", "_", colnames(Ranef_Gen_summary), fixed
 g <- ggplot2::ggplot(data=Ranef_Gen_summary, ggplot2::aes(x = Gen , y = Estimate_Intercept ))+
   ggplot2::geom_point()+
   ggplot2::geom_pointrange(ggplot2::aes(ymin=Q2_5_Intercept, ymax=Q97_5_Intercept))+
-  ggplot2::xlab("Genotype")+
-  ggplot2::ylab("Random effect")
+  ggplot2::labs(title="Genotype random effects", x="Genotype", y="Random effect")+
+  ggplot2::theme(
+     legend.title = ggplot2::element_text(size = 30),
+     text = ggplot2::element_text(size=30))
+
 ggplot2::ggsave(filename = "Ranef_genotype.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_genotype.png")) 
+
 
 Ranef_Site_summary <- as.data.frame(brms::ranef(brms_mod)$Site)
 Ranef_Site_summary$Site <- as.numeric(rownames(Ranef_Site_summary))
 colnames(Ranef_Site_summary) <- gsub(".", "_", colnames(Ranef_Site_summary), fixed = T)  
-
 g <- ggplot2::ggplot(data=Ranef_Site_summary, ggplot2::aes(x = Site , y = Estimate_Intercept ))+
   ggplot2::geom_point()+
   ggplot2::geom_pointrange(ggplot2::aes(ymin=Q2_5_Intercept, ymax=Q97_5_Intercept))+
-  ggplot2::xlab("Site")+
-  ggplot2::ylab("Random effect")
+  ggplot2::labs(title="Site random effects", x="Site", y="Random effect")+
+  ggplot2::theme(
+     legend.title = ggplot2::element_text(size = 30),
+     text = ggplot2::element_text(size=30))
+
 ggplot2::ggsave(filename = "Ranef_site.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_site.png")) 
+
 
 Sum_EUCFLUX <- summary(brms_mod)
 ```
+
+
+
+```{r Plots_ranef, echo=FALSE, fig.show="hold", out.width="33%"}
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_date.png")) 
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_genotype.png"))
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_site.png")) 
+```
+
 
 
 ```{r Results table, echo=FALSE}
@@ -364,11 +436,15 @@ kableExtra::kbl(
   col.names = c(" ","Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Competition ($\\beta_2$)","Individual variance ($V_i$)", "Site variance ($V_s$)", "Genetic variance ($V_g$)", "Temporal variance ($V_t$)", "Residuals variance ($V$)"),
   escape=F
   ) %>%
-  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
+  kableExtra::column_spec(1:9, width = "1.5cm")
 ```
 
 We obtained a good model convergence, and found that the two most important contributors to variance (apart from the residuals) were the date and individual identity. The effect of the genotype is quite small, and the effect of site is even smaller.
 The temporal random effects declined with the date, showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). Therefore, the competition index C did not fully capture the effect of competition on growth.
+
+In order to visualise what part of variation is represented by which effect, we compute the proportion of unexplained variance represented by each random effect and the residual variance.
+
 
 ```{r Piechart, echo=FALSE}
 Res_var_partition <- data.frame(
@@ -385,14 +461,15 @@ g <- ggplot2::ggplot(Res_var_partition, ggplot2::aes(x="", y=amount, fill=catego
           axis.text = ggplot2::element_blank(),
           axis.ticks = ggplot2::element_blank()) +
   ggplot2::scale_fill_viridis_d()
-ggplot2::ggsave(filename = "Variance_parition.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Variance_parition.png")) 
+ggplot2::ggsave(filename = "Variance_partition.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Variance_partition.png")) 
 ```
+
 
 The highest part of variance is explained by the census date. This is due to the negative effect of competition for light on growth, which increases with the growth of the trees. This means that our competition index does not completely capture competition.
 
 The next random effect that explains most variance (apart from residuals) is the individual effect. This shows that there is individual variability even if the trees are clones and therefore that individual variability can be due to exogenous causes. This individual effect can be due to the micro-environment where it is positioned, but also to some individual history, here seedling manipulation and plantation.
-As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions (le Maire et al. 2019), this dataset is a strongly conservative test case for our hypothesis.
+As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions [@le_maire_light_2019], this dataset is a strongly conservative test case for our hypothesis.
 
 The genotype explained 6.1% of the variance, which is surprising as some striking differences were denoted between clones beforehand. Therefore the impact of individual identity on growth is stronger than the effect of genotype. We did not find any relevant explanation for the mean random effect of each genotype.
 
@@ -402,3 +479,7 @@ Difficulties of estimation for the intercept and the date random effect must be 
 
 Overall, there is intraspecific variability within a clone.
 This shows that the environmental factors (in a broad sense : not genetic) have an impact on growth and that intraspecific variability can indeed emerge within a clone.
+
+# References
+
+

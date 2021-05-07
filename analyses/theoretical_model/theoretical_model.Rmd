@@ -2,7 +2,9 @@
 title: "Theoretical model"
 output:
   html_document: default
-  pdf_document : default
+  pdf_document: default
+bibliography: "`r here::here('References.bib')`"
+csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -449,7 +451,7 @@ MCMC_brms_sp_2_IV <- brms::as.mcmc(brms_mod_sp_2_IV)
 
 We visualise the convergence and the results of the models thanks to trace and density plots and the summary of the models.
 
-```{r brms plots, include=FALSE}
+```{r brms plots, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_1, type="trace")
 brms::mcmc_plot(brms_mod_sp_1, type="dens")
 summary(brms_mod_sp_1)
@@ -808,3 +810,5 @@ As the semivariance between individuals of both species is higher than the semiv
 Considering growth as a proxy of fitness, and linking fitness to competition, we argue that in a Lotka-Volterra model, this would translate into $\alpha_{i,i} > \alpha_{i,j}$, the main condition for stable coexistence.
 
 Therefore, stable coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
+
+# References

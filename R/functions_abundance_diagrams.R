@@ -18,7 +18,10 @@ abundance_diagram <- function(data, site){
     ggplot2::geom_point()+
     ggplot2::xlab("Species number")+
     ggplot2::ylab("Cumulative proportion of individuals")+
-    ggplot2::labs(title=paste("All species", site, sep='\n'))
+    ggplot2::labs(title=paste("All species", site, sep='\n'))+
+    ggplot2::theme(legend.title = ggplot2::element_text(size = 20),
+                   legend.text = ggplot2::element_text(size = 20),
+                   text = ggplot2::element_text(size=20))
   
   ggplot2::ggsave(filename = glue::glue("{site}_abundance.png"), path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
   
@@ -32,7 +35,10 @@ abundance_diagram <- function(data, site){
       ggplot2::ylim(0,1)+
       ggplot2::xlab("Species number")+
       ggplot2::ylab("Cumulative proportion of individuals")+
-      ggplot2::labs(title=paste("Only determined species", site, sep='\n'))
+      ggplot2::labs(title=paste("Only determined species", site, sep='\n'))+
+      ggplot2::theme(legend.title = ggplot2::element_text(size = 20),
+                     legend.text = ggplot2::element_text(size = 20),
+                     text = ggplot2::element_text(size=20))
     
     ggplot2::ggsave(filename = "Paracou_abundance_determined.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
     
