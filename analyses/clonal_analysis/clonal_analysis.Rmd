@@ -1,7 +1,7 @@
 ---
 title: "Analysis of a clonal dataset"
 output:
-  html_document: default
+  bookdown::html_document2: default
   pdf_document: default
 bibliography: "`r here::here('References.bib')`"
 csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
@@ -42,7 +42,7 @@ The seed-origin individuals were removed from the data since they contain geneti
 We compute annualised growth in mm/y as the difference between two consecutive censuses divided by the time between the two censuses and we remove all negative growth values.
 We compute the neperian logarithm of diameter and of growth (with a constant for growth in order to avoid undefined values).
 
-```{r Charge the data, include=FALSE}
+```{r ChargeTheData, include=FALSE}
 Full_Data <- list()
 for (k in 1:6) {
   l = c(3, 4, 6, 8, 12, 14)[k]
@@ -135,7 +135,7 @@ ggplot2::ggsave(filename = "Raw_data.png", plot = g, path=here::here("outputs", 
 Data <- Raw_data
 ```
 
-```{r Plots_growth_light, echo=FALSE, fig.show="hold", out.width="33%"}
+```{r PlotsGrowthLight, echo=FALSE, fig.show="hold", out.width="33%", fig.cap="The original data, the data without negative growth values and the loged growth."}
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_raw.png"))
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_filtered.png"))
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_log_growth.png"))
@@ -143,7 +143,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Dat
 
 The studied dataset finally encompasses `r length(unique(Data$Tree))` trees.
 
-```{r echo=FALSE}
+```{r PlotColoursDate, echo=FALSE, fig.cap="Plot of the growth versus the diameter. Each colour represents a different census."}
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw_data.png")) 
 ```
 
@@ -157,7 +157,7 @@ $C_{i, t} = \frac{\sum BA_{neighbours(i, t)}}{A}$, $A$ is constant.
 
 Here is the layout of a plot :
 
-```{r Coordinates, echo=FALSE}
+```{r Coordinates, echo=FALSE, fig.cap="Design of a plot. Each point is a tree and the associated number is the tag of the tree."}
 # We must retrieve the coordinates of each tree in order to show the design of plots
 
 Coordinates <- data.frame(Tree_number = c(c(1:10), c(20:11), c(21:30), c(40:31), c(41:50),
@@ -173,7 +173,6 @@ g <- ggplot2::ggplot(data = Coordinates, ggplot2::aes(x=X_m, y=Y_m))+
   ggplot2::geom_point()+
   ggplot2::coord_fixed(ratio = 1)+
   ggplot2::geom_text(ggplot2::aes(label=Tree_number, hjust=0, vjust=0))+
-  ggplot2::labs(title="Design of a plot")+
   ggplot2::xlab("X (m)")+
   ggplot2::ylab("Y (m)")
 ggplot2::ggsave(filename = "Plot_design.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
@@ -181,7 +180,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Plo
 
 ```
 
-```{r Competition index, eval=FALSE, include=FALSE}
+```{r CompetitionIndex, eval=FALSE, include=FALSE}
 #Competition index = sum of basal area of direct neighbours / area of the rectangle
 # Trees are 2 m apart in vertically and 3 m apart horizontally, so the area of the
 # rectangle is  of 4*6 m = 24m^2
@@ -235,7 +234,7 @@ save(Data_compet, file = here::here("outputs", "clonal_analysis", "Data_compet.R
 
 ```
 
-```{r include=FALSE}
+```{r LoadCompetitionData, include=FALSE}
 load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 ```
 
@@ -246,7 +245,7 @@ Our model incorporated a fixed effect on the intercept ($\beta_0$), on the slope
 
 Variables are scaled to help the convergence of the model.
 
-$ln(G_{i,t}+1) = (\beta_0 + b_i + b_s + b_g + b_t) + \beta_1 \times ln(D_{i, t}) + \beta_2 \times ln(C_{i, t}) + \epsilon_{i, t}$
+$ln(G_{it}+1) = (\beta_0 + b_i + b_s + b_g + b_t) + \beta_1 \times ln(D_{it}) + \beta_2 \times ln(C_{it}) + \epsilon_{it}$
 
 Priors
 
@@ -264,7 +263,7 @@ $b_g \sim \mathcal{N}(mean=0, var=V_g), iid$
 
 $b_t \sim \mathcal{N}(mean=0, var=V_t), iid$
 
-$\epsilon_{i, t} \sim  \mathcal{N}(mean=0, var=V), iid$
+$\epsilon_{it} \sim  \mathcal{N}(mean=0, var=V), iid$
 
 Hyperpriors
 
@@ -299,22 +298,31 @@ save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData")
 
 After convergence of the model, we examined the variance of each random effect, and this enabled us to perform a variance partition.
 
-```{r Model results, echo=FALSE}
+```{r LoadBRMS, include=FALSE}
 load(here::here("outputs", "clonal_analysis", "brms_mod.RData"))
+```
 
-g <-brms::mcmc_plot(brms_mod, type="trace")+
-  ggplot2::labs(title="Trace of the posteriors")
+
+```{r TracePosteriors, echo=FALSE, fig.cap="Trace of the posteriors"}
+
+g <-brms::mcmc_plot(brms_mod, type="trace")
 
 ggplot2::ggsave(filename = "Trace_model.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_model.png"))
+```
 
-g <- brms::mcmc_plot(brms_mod, type="dens")+
-  ggplot2::labs(title="Density of the posteriors")
+
+```{r DensityPosteriors, echo=FALSE, fig.cap="Density of the posteriors"}
+g <- brms::mcmc_plot(brms_mod, type="dens")
 
 ggplot2::ggsave(filename = "Density_posteriors.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Density_posteriors.png"))
+```
+
+
+```{r TemporalRandomEffects, echo=FALSE, fig.cap="Trace of the temporal random effects"}
 
 #Check convergence of random effects et some features of the random effects
 
@@ -322,35 +330,42 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Den
 Ranef_date <- as.data.frame(brms::ranef(brms_mod, summary = F)$Date)
 Ranef_date$Chain <- c(rep(1, 1000), rep(2, 1000))
 
-g <- bayesplot::mcmc_trace(Ranef_date)+
-  ggplot2::labs(title="Temporal random effects")
+g <- bayesplot::mcmc_trace(Ranef_date)
 
 ggplot2::ggsave(filename = "Trace_temporal_random_effects.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_temporal_random_effects.png"))
+```
+
+
+```{r GenotypeRandomEffects, echo=FALSE, fig.cap="Trace of the genotype random effects"}
 
 #Genotype random effects
 Ranef_gen <- as.data.frame(brms::ranef(brms_mod, summary = F)$Gen)
 Ranef_gen$Chain <- c(rep(1, 1000), rep(2, 1000))
 
-g <- bayesplot::mcmc_trace(Ranef_gen)+
-  ggplot2::labs(title="Genotype random effects")
+g <- bayesplot::mcmc_trace(Ranef_gen)
 
 ggplot2::ggsave(filename = "Trace_genotype_random_effects.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_genotype_random_effects.png"))
+```
 
+
+```{r SpatialRandomEffects, echo=FALSE, fig.cap="Trace of the site random effects."}
 #Spatial random effects
 Ranef_site <- as.data.frame(brms::ranef(brms_mod, summary = F)$Site)
 Ranef_site$Chain <- c(rep(1, 1000), rep(2, 1000))
 
-g <- bayesplot::mcmc_trace(Ranef_site)+
-  ggplot2::labs(title="Site random effects")
+g <- bayesplot::mcmc_trace(Ranef_site)
 
 ggplot2::ggsave(filename = "Trace_site_random_effects.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_site_random_effects.png"))
+```
 
+
+```{r RanefValues, echo=FALSE}
 #Look at random effects values
 
 Ranef_date_summary <- as.data.frame(brms::ranef(brms_mod)$Date)
@@ -400,8 +415,7 @@ Sum_EUCFLUX <- summary(brms_mod)
 ```
 
 
-
-```{r Plots_ranef, echo=FALSE, fig.show="hold", out.width="33%"}
+```{r PlotsRanef, echo=FALSE, fig.show="hold", out.width="33%", fig.cap="Values of the random effects."}
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_date.png")) 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_genotype.png"))
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_site.png")) 
@@ -409,7 +423,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ran
 
 
 
-```{r Results table, echo=FALSE}
+```{r ResultsTable, echo=FALSE}
 Res_var_partition <- data.frame(
   c("Estimate", "Estimation error"),
   c(format(Sum_EUCFLUX[["fixed"]][1,1], digits=2, scientific = T),
@@ -434,7 +448,8 @@ kableExtra::kbl(
   Res_var_partition,
   booktabs = T,
   col.names = c(" ","Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Competition ($\\beta_2$)","Individual variance ($V_i$)", "Site variance ($V_s$)", "Genetic variance ($V_g$)", "Temporal variance ($V_t$)", "Residuals variance ($V$)"),
-  escape=F
+  escape=F,
+  caption = "Mean posteriors of the model and their estimation errors."
   ) %>%
   kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
   kableExtra::column_spec(1:9, width = "1.5cm")
@@ -446,7 +461,7 @@ The temporal random effects declined with the date, showing that the effect of t
 In order to visualise what part of variation is represented by which effect, we compute the proportion of unexplained variance represented by each random effect and the residual variance.
 
 
-```{r Piechart, echo=FALSE}
+```{r Piechart, echo=FALSE, fig.cap="Proportion of each variance component of the unexplained variance."}
 Res_var_partition <- data.frame(
   amount = round(as.numeric(as.vector(t(Res_var_partition[1,5:ncol(Res_var_partition)])))/sum(as.numeric(as.vector(t(Res_var_partition[1,5:ncol(Res_var_partition)]))))*100, digits=2),
   category=c("Individual", "Site", "Genotype", "Temporal effect", "Residuals"))
@@ -455,7 +470,7 @@ g <- ggplot2::ggplot(Res_var_partition, ggplot2::aes(x="", y=amount, fill=catego
   ggplot2::geom_bar(stat="identity", width=1) +
   ggplot2::coord_polar("y", start=0) +
   ggplot2::geom_text(ggplot2::aes(label = paste0(amount, "%")), position = ggplot2::position_stack(vjust=0.5)) +
-  ggplot2::labs(title = "proportions of variance", x = NULL, y = NULL, fill = "Random effects") +
+  ggplot2::labs(title = NULL, x = NULL, y = NULL, fill = "Variance components") +
   ggplot2::theme_classic() +
   ggplot2::theme(axis.line = ggplot2::element_blank(),
           axis.text = ggplot2::element_blank(),

@@ -1,7 +1,7 @@
 ---
 title: "Analysis of 3 tropical forests datasets"
 output:
-  html_document: default
+  bookdown::html_document2: default
   pdf_document: default
 bibliography: "`r here::here('References.bib')`"
 csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
@@ -67,7 +67,7 @@ The data is available in [@condit_complete_2019].
 
 Here is the head of the dataset :
 
-```{r Charge Paracou, echo=FALSE, message=FALSE, warning=FALSE}
+```{r ChargeParacou, echo=FALSE, message=FALSE, warning=FALSE}
 Paracou <- coexIV::read_data_paracou()
 
 kableExtra::kbl(head(Paracou)[1:(round(ncol(Paracou)/4))], booktabs = T)
@@ -78,7 +78,7 @@ kableExtra::kbl(head(Paracou)[(3*(round(ncol(Paracou)/4))+1):(4*(round(ncol(Para
 
 Here is a plot of the trees :
 
-```{r Plot Paracou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
+```{r PlotParacou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
 g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")
 ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
@@ -88,32 +88,32 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "P
 
 2) Compute growth between two censuses and rename all indeterminate species with the same name "Indet_sp"
 
-```{r Growth Paracou, eval=FALSE, include=FALSE}
+```{r GrowthParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::compute_growth_paracou(Paracou)
 rm(Paracou)
 save(Paracou_no_mean, file = here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-```{r include=FALSE}
+```{r LoadParacou, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
 There are `r length(unique(Paracou_no_mean$Sp))` species, `r length(unique(Paracou_no_mean$idTree))` trees and `r nrow(Paracou)` observations in this dataset.
 
-```{r Rename species Paracou, include=FALSE}
+```{r RenameSpeciesParacou, include=FALSE}
 Paracou_no_mean <- coexIV::rename_indet_paracou(Paracou_no_mean) %>% coexIV::create_identspecies()
 ```
 
 Here are the new columns created :
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+```{r NewColumnsParacou, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
 kableExtra::kbl(head(Paracou_no_mean[,(ncol(Paracou_no_mean)-13): (ncol(Paracou_no_mean)-6)]), booktabs = T)
 kableExtra::kbl(head(Paracou_no_mean[,(ncol(Paracou_no_mean)-5): ncol(Paracou_no_mean)]), booktabs = T)
 ```
 
 3) Remove the lines where growth < -2 mm/an or > 100 mm/an and remove the years before the perturbations were performed and the biodiversity plots were added (1985-1991)
 
-```{r Remove values Paracou, include=FALSE}
+```{r RemoveValuesParacou, include=FALSE}
 
 Paracou_no_mean <- Paracou_no_mean[Paracou_no_mean$G_tp1_corr>(-2)&Paracou_no_mean$G_tp1_corr<100,]
 Paracou_no_mean <- Paracou_no_mean[which(!(Paracou_no_mean$CensusYear %in% c(1985:1991))),]
@@ -127,7 +127,7 @@ There are `r length(unique(Paracou_no_mean$Sp))` species and `r length(unique(Pa
 Individual mean growth is computed as the diameter difference between the first and the last census divided by the number of years between these two censuses. It is thus annualised.
 
 
-```{r Mean growth Paracou, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+```{r MeanGrowthParacou, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
 
 Data_Paracou <- coexIV::compute_mean_growth_paracou(Paracou_no_mean)
 
@@ -138,7 +138,7 @@ kableExtra::kbl(head(Data_Paracou[,(ncol(Data_Paracou)-3):ncol(Data_Paracou)]), 
 ## Uppangala
 1) Charge original data and add species names
 
-```{r Charge Uppangala, echo=FALSE}
+```{r ChargeUppangala, echo=FALSE}
 load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
 
 kableExtra::kbl(head(upsp.dataset)[,1:(ncol(upsp.dataset)/2)], booktabs = T)
@@ -148,7 +148,7 @@ kableExtra::kbl(head(upsp.dataset)[,((ncol(upsp.dataset)/2)+1):ncol(upsp.dataset
 
 Here is the plot of the trees :
 
-```{r Plot Uppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
+```{r PlotUppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
 g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
 #Save as png and include in order to make the pdf lighter
 ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
@@ -160,12 +160,12 @@ There are `r length(unique(upsp.dataset$SpCode))` species, `r length(unique(upsp
 
 We remove the census dates which were not common for all plots.
 
-```{r Remove years Uppangala}
+```{r RemoveYearsUppangala}
 Uppangala_no_mean <- upsp.dataset[which(upsp.dataset$date>1339),]
 ```
 
 
-```{r Names Uppangala, include=FALSE}
+```{r NamesUppangala, include=FALSE}
 Species_list_Uppangala <- read.table(here::here("data", "Uppangala", "Species_list_Uppangala.txt"), sep = "\t", header = TRUE)
 
 Uppangala_no_mean$Sp <- Species_list_Uppangala$LatinName[match(Uppangala_no_mean$SpCode, Species_list_Uppangala$SpCode)]
@@ -174,12 +174,12 @@ Uppangala_no_mean$Sp <- Species_list_Uppangala$LatinName[match(Uppangala_no_mean
 
 2) Compute annual growth
 
-```{r Growth Uppangala, include=FALSE}
+```{r GrowthUppangala, include=FALSE}
 Uppangala_no_mean <- coexIV::compute_growth_uppangala(Uppangala_no_mean)
 ```
 
 3) Remove lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
-```{r Remove values Uppangala, include=FALSE}
+```{r RemoveValuesUppangala, include=FALSE}
 Uppangala_no_mean <- Uppangala_no_mean[Uppangala_no_mean$G_tp1>(-2)&Uppangala_no_mean$G_tp1<100,]
 ```
 
@@ -189,7 +189,7 @@ Thus there are `r length(unique(Uppangala_no_mean$SpCode))` species, `r length(u
 
 Here are the computed columns :
 
-```{r Mean growth Uppangala, echo=FALSE}
+```{r MeanGrowthUppangala, echo=FALSE}
 Data_Uppangala <- coexIV::compute_mean_growth_uppangala(Uppangala_no_mean)
 
 kableExtra::kbl(head(Data_Uppangala[,(ncol(Data_Uppangala)-7): ncol(Data_Uppangala)]), booktabs = T)
@@ -199,7 +199,7 @@ kableExtra::kbl(head(Data_Uppangala[,(ncol(Data_Uppangala)-7): ncol(Data_Uppanga
 
 1) Load the data and add species names
 
-```{r Charge BCI}
+```{r ChargeBCI, include=FALSE}
 BCI <- coexIV::read_data_bci()
 
 load(here::here("data", "BCI", "bci.spptable.rdata"))
@@ -211,14 +211,14 @@ There are `r length(unique(BCI$sp))` species, `r length(unique(BCI$treeID))` tre
 
 2) Remove lines with NA as DBH and trees with DBH < 10 cm for consistence with the other datasets.
 
-```{r Remove values BCI}
+```{r RemoveValuesBCI, include=FALSE}
 BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
 BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
 ```
 
 Here is the plot of the trees :
 
-```{r Plot BCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree."}
+```{r PlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree."}
 g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
 #Save as png and include in order to make the pdf lighter
 ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
@@ -227,7 +227,7 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "B
 
 3) Compute annual growth
 
-```{r Growth BCI, include=FALSE}
+```{r GrowthBCI, include=FALSE}
 
 BCI_no_mean <- compute_growth_BCI(BCI)
 rm(BCI)
@@ -237,7 +237,7 @@ gc()
 
 5) Remove lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
 
-```{r Remove values BCI (bis), include=FALSE}
+```{r RemoveValuesBCI2, include=FALSE}
 
 BCI_no_mean <- BCI_no_mean[BCI_no_mean$G_tp1>(-2)&BCI_no_mean$G_tp1<100,]
 ```
@@ -246,14 +246,14 @@ There are now `r length(unique(BCI_no_mean$sp))` species and `r length(unique(BC
 
 4) Compute mean growth
 
-```{r Mean growth BCI, include=FALSE}
+```{r MeanGrowthBCI, include=FALSE}
 Data_BCI <- compute_mean_growth_BCI(BCI_no_mean)
 #save(Data_BCI, file = here::here("outputs", "tropical_analysis", "Data_BCI.RData"))
 ```
 
 Finally, homogenise the three datasets.
 
-```{r Homogenise datasets, include=FALSE}
+```{r HomogeniseDatasets, include=FALSE}
 
 Paracou_no_mean <- Paracou_no_mean%>%
   dplyr::mutate(Growth = G_tp1_corr, Diameter = D_t_corr)
@@ -283,7 +283,7 @@ Data_BCI$Plot <- 1
 
 These diagrams can help to visualise how diverse the tropical forest is, but also that there are few dominant species and many rare species (long threshold).
 
-```{r Abundance diagrams, echo=FALSE, out.width = "50%", fig.show="hold", fig.cap="Abundance diagrams of each site"}
+```{r AbundanceDiagrams, echo=FALSE, out.width = "50%", fig.show="hold", fig.cap="Abundance diagrams of each site"}
 
 coexIV::abundance_diagram(Data_Paracou, site = "Paracou")
 coexIV::abundance_diagram(Data_Uppangala, site = "Uppangala")
@@ -334,7 +334,7 @@ The model includes two fixed effects ($\beta_0$ and $\beta_1$), a random species
 
 ## Paracou
 
-```{r Model Paracou, eval=FALSE, include=FALSE}
+```{r ModelParacou, eval=FALSE, include=FALSE}
 Data_stan_Paracou <- Paracou_no_mean[which((as.character(Paracou_no_mean$Sp))!="Indet_sp"),]
 Data_stan_Paracou <-  coexIV::create_identspecies(Data_stan_Paracou)
 
@@ -367,25 +367,25 @@ save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_Parac
 
 ```
 
-```{r include=FALSE}
+```{r LoadBRMSParacou, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "brms_mod_Paracou.RData"))
 ```
 
-```{r MCMC trace Paracou, echo=FALSE, fig.cap = "Trace of the posterior estimates for Paracou"}
+```{r MCMCTraceParacou, echo=FALSE, fig.cap = "Trace of the posterior estimates for Paracou"}
 g <- brms::mcmc_plot(brms_mod, type="trace")
 ggplot2::ggsave(filename="MCMC_trace_Paracou.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_Paracou.png"))
 
 ```
 
-```{r MCMC density Paracou, echo=FALSE, fig.cap = "Density of the posterior estimates for Paracou"}
+```{r MCMCDensityParacou, echo=FALSE, fig.cap = "Density of the posterior estimates for Paracou"}
 g <- brms::mcmc_plot(brms_mod, type="dens")
 ggplot2::ggsave(filename="MCMC_density_Paracou.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_density_Paracou.png"))
 
 ```
 
-```{r echo=FALSE}
+```{r SummaryModelParacou, echo=FALSE}
 Sum_paracou <- summary(brms_mod)
 print(Sum_paracou)
 ```
@@ -396,7 +396,7 @@ Here the intraspecific variability is about the same as interspecific variabilit
 
 We apply the same model on the Uppangala dataset.
 
-```{r Model Uppangala, eval=FALSE, include=FALSE}
+```{r ModelUppangala, eval=FALSE, include=FALSE}
 Uppangala_no_mean <-  coexIV::create_identspecies(Uppangala_no_mean)
 Data_stan_Uppangala <- coexIV::prep_stan(Uppangala_no_mean)
 
@@ -425,24 +425,24 @@ brms_mod <- brms::brm(formula = logG ~ 1 + logD + logD2 + (1|IdentSpecies) + (1|
 
 ```
 
-```{r include=FALSE}
+```{r LoadModelUppangala, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "brms_mod_Uppangala.RData"))
 ```
 
-```{r MCMC trace Uppangala, echo=FALSE, fig.cap = "Trace of the posterior estimates for Paracou"}
+```{r MCMCTraceUppangala, echo=FALSE, fig.cap = "Trace of the posterior estimates for Paracou"}
 
 g <- brms::mcmc_plot(brms_mod, type="trace")
 ggplot2::ggsave(filename="MCMC_trace_Uppangala.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_Uppangala.png"))
 ```
 
-```{r MCMC density Uppangala, echo=FALSE, fig.cap = "Density of the posterior estimates for Uppangala"}
+```{r MCMCDensityUppangala, echo=FALSE, fig.cap = "Density of the posterior estimates for Uppangala"}
 g <- brms::mcmc_plot(brms_mod, type="dens")
 ggplot2::ggsave(filename="MCMC_density_Uppangala.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_density_Uppangala.png"))
 ```
 
-```{r echo=FALSE}
+```{r SummaryModelUppangala, echo=FALSE}
 Sum_uppangala <- summary(brms_mod)
 print(Sum_uppangala)
 ```
@@ -454,7 +454,7 @@ We can also conclude that intraspecific variability is high, but even that it is
 
 We apply the same model to the BCI dataset.
 
-```{r Model BCI, eval=FALSE, include=FALSE}
+```{r ModelBCI, eval=FALSE, include=FALSE}
 BCI_no_mean <-  coexIV::create_identspecies(BCI_no_mean)
 
 Data_stan_BCI <- coexIV::prep_stan(BCI_no_mean)
@@ -484,7 +484,7 @@ save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_BCI_p
 
 ```
 
-```{r include=FALSE}
+```{r LoadModelBCI, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData"))
 ```
 
@@ -496,13 +496,13 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "M
 
 ```
 
-```{r MCMC density BCI, echo=FALSE, fig.cap = "Density of the posterior estimates for BCI"}
+```{r MCMCDensityBCI, echo=FALSE, fig.cap = "Density of the posterior estimates for BCI"}
 g <- brms::mcmc_plot(brms_mod, type="dens")
 ggplot2::ggsave(filename="MCMC_density_BCI.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_density_BCI.png"))
 ```
 
-```{r echo=FALSE}
+```{r SummaryModelBCI, echo=FALSE}
 Sum_BCI <- summary(brms_mod)
 print(Sum_BCI)
 ```
@@ -512,7 +512,7 @@ Note that here the mean estimated fixed effect of diameter on growth is slightly
 
 The following table enables to compare the results of the models for the three datasets.
 
-```{r Summary models, echo=FALSE}
+```{r SummaryModels, echo=FALSE}
 Res_mods <- 
   data.frame(
     Amount = rep(c("Estimate", "Estimation error"), 3),
@@ -572,7 +572,7 @@ kableExtra::kbl(
 
 We compute the proportion of unexplained variance of growth that is contained in the individual effects :
 
-```{r Compute variance proportions, echo=FALSE}
+```{r ComputeVarianceProportions, echo=FALSE}
 Var_tot_Paracou <- Sum_paracou$random$IdentSpecies[1] + Sum_paracou$random$IdentTree[1] + Sum_paracou$spec_pars[1]
 
 Var_tot_Uppangala <- Sum_uppangala$random$IdentSpecies[1] + Sum_uppangala$random$IdentTree[1] + Sum_uppangala$spec_pars[1]
@@ -674,7 +674,7 @@ ggplot2::ggsave(filename = "Variance_partition_BCI.png", plot = Plot_prop_var_BC
 
 ```
 
-```{r Plots variance proportion, echo=FALSE, fig.show="hold", out.width="33%", fig.cap="Proportions of each variance components for the three datasets. The variance of individual effects is in blue, the variance of species effect is in purple and the variance of residuals is yellow"}
+```{r PlotsVarianceProportion, echo=FALSE, fig.show="hold", out.width="33%", fig.cap="Proportions of each variance components for the three datasets. The variance of individual effects is in blue, the variance of species effect is in purple and the variance of residuals is yellow"}
 
 knitr::include_graphics(
   c(
@@ -696,7 +696,7 @@ Moran's test function function was re-written from the ape package's Moran.I fun
 
 As this analysis takes time, we only present the graphical result from a previously obtained result, but feel free to re-run it from the .Rmd file.
 
-```{r Morans tests, eval=FALSE, include=FALSE}
+```{r MoransTests, eval=FALSE, include=FALSE}
 Moran_I_Paracou <- coexIV::moran_analysis(Data_Paracou)
 Moran_I_Uppangala <- coexIV::moran_analysis(Data_Uppangala)
 Data_BCI$Plot <- rep(1, nrow(Data_BCI))
@@ -707,13 +707,13 @@ save(Moran_I_Uppangala, file=here::here("outputs", "tropical_analysis", "Moran_I
 save(Moran_I_BCI, file=here::here("outputs", "tropical_analysis", "Moran_I_BCI.RData"))
 ```
 
-```{r include=FALSE}
+```{r LoadMoran, include=FALSE}
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou.RData"))
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Uppangala.RData"))
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_BCI.RData"))
 ```
 
-```{r eval=FALSE, include=FALSE}
+```{r CountMoranInfOne, eval=FALSE, include=FALSE}
 #Check for significant negative spatial autocorrelation
 which(Moran_I_Paracou$Moran.I<0&Moran_I_Paracou$signif==1)
 which(Moran_I_Uppangala$Moran.I<0&Moran_I_Uppangala$signif==1)
@@ -723,7 +723,7 @@ which(Moran_I_BCI$Moran.I<0&Moran_I_BCI$signif==1)
 
 We compute the proportion of species with significant positive spatial autocorrelation with a 0.05 alpha risk and the proportion of species with non significant spatial autocorrelation. The proportions are computed relative to the species on which the test was computed.
 
-```{r Morans results, echo=FALSE}
+```{r MoransResults, echo=FALSE}
 Results_moran <- coexIV::results_moran(data1=Moran_I_Paracou, data2=Moran_I_Uppangala, data3 = Moran_I_BCI)
 
 kableExtra::kbl(Results_moran, booktabs = T, caption = "Proportions of species and individuals with a significant Moran's I test  result")%>%
@@ -739,7 +739,7 @@ We can observe that the proportion of species with significant spatial autocorre
 
 We test if species abundance significantly explains the significance of Moran's test :
 
-```{r Models significance Moran, echo=FALSE, message=FALSE, warning=FALSE}
+```{r ModelsSignificanceMoran, echo=FALSE, message=FALSE, warning=FALSE}
 ## Test to see if the number of individuals explains the significance ##
 model <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Paracou))
 summary(model)
@@ -774,7 +774,7 @@ Interspecific variance is estimated with the semivariance computed as the square
 
 Here again, the analysis is long to run and we display results from a pre-generated result.
 
-```{r Compute distances, eval=FALSE, include=FALSE}
+```{r ComputeDistances, eval=FALSE, include=FALSE}
 nfiles=7
 
 for (plot in sort(unique(Data_Paracou$Plot))) {
@@ -799,7 +799,7 @@ for (file in 0:(nfiles-1)){
 
 ```
 
-```{r Variance comparison, eval=FALSE, include=FALSE}
+```{r VarianceComparison, eval=FALSE, include=FALSE}
 
 Paracou_comp_var_inter_intra <- coexIV::variance_comp(data=Data_Paracou, nfiles=nfiles, "Paracou")
 save(Paracou_comp_var_inter_intra, file=here::here("outputs", "tropical_analysis", "Paracou_comp_var_inter_intra.RData"))
@@ -811,14 +811,14 @@ BCI_comp_var_inter_intra <- variance_comp(data=Data_BCI, nfiles=nfiles, "BCI")
 save(BCI_comp_var_inter_intra, file=here::here("outputs", "tropical_analysis", "BCI_comp_var_inter_intra.RData"))
 ```
 
-```{r include=FALSE}
+```{r LoadVarianceComparison, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "Paracou_comp_var_inter_intra.RData"))
 load(here::here("outputs", "tropical_analysis", "Uppangala_comp_var_inter_intra.RData"))
 load(here::here("outputs", "tropical_analysis", "BCI_comp_var_inter_intra.RData"))
 ```
 
 
-```{r Results variance comparison, echo=FALSE}
+```{r ResultsVarianceComparison, echo=FALSE}
 Results_var_comp <- coexIV::results_var_comp(data1=Paracou_comp_var_inter_intra, data2=Uppangala_comp_var_inter_intra, data3=BCI_comp_var_inter_intra, site1="Paracou", site2="Uppangala", site3="BCI")
 
 Results_var_comp %>%
@@ -844,19 +844,19 @@ In all forests, a large majority of individuals belong to species in which intra
 One of our main hypotheses is that many environmental variables are spatially structured. Consequently, as growth is largely influenced by environmental variables like light, it should also be spatially structured. Our analysis using Moran's I test showed that growth was indeed spatially structured.
 The Paracou dataset offers the opportunity to test this hypothesis further. Indeed, some plots were disturbed in the early eighties, creating artificial gaps, whereas others were not disturbed. As the creation of gaps results in a strong spatial structure of the available light under the canopy, growth should be less structured in plots that were not disturbed. That is what we test here.
 
-```{r Paracou undisturbed, include=FALSE}
+```{r ParacouUndisturbed, include=FALSE}
 Data_Paracou_undisturbed <- Data_Paracou[which(Data_Paracou$Plot%in%c(1, 6, 11)),]
 ```
 
 This leads to a dataset containing `r length(unique(Data_Paracou_undisturbed$idTree))` trees of `r length(unique(Data_Paracou_undisturbed$Sp))` species.
 
-```{r eval=FALSE, include=FALSE}
+```{r MoranParacouUndisturbed, eval=FALSE, include=FALSE}
 Moran_I_Paracou_undisturbed <- coexIV::moran_analysis(Data_Paracou_undisturbed)
 save(Moran_I_Paracou_undisturbed, file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou_undisturbed.RData"))
 ```
 
 
-```{r echo=FALSE}
+```{r ResultsMoranParacouUndisturbed, echo=FALSE}
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou_undisturbed.RData"))
 
 #Table of results !
