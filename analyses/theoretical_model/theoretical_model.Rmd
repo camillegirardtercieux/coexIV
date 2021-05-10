@@ -452,22 +452,75 @@ MCMC_brms_sp_2_IV <- brms::as.mcmc(brms_mod_sp_2_IV)
 
 We visualise the convergence and the results of the models thanks to trace and density plots and the summary of the models.
 
-```{r brmsPlots, echo=FALSE}
+```{r TraceSp1, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_1, type="trace")
+
+ggplot2::ggsave(filename = "Trace_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_Sp1.png"))
+```
+
+
+```{r DensSp1, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_1, type="dens")
-summary(brms_mod_sp_1)
 
+ggplot2::ggsave(filename = "Density_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Density_model_Sp1.png"))
+```
+
+
+```{r TraceSp2, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_2, type="trace")
+
+ggplot2::ggsave(filename = "Trace_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_Sp2.png"))
+```
+
+
+```{r DensSp2, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_2, type="dens")
-summary(brms_mod_sp_2)
 
+ggplot2::ggsave(filename = "Dens_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Dens_model_Sp2.png"))
+```
+
+
+```{r TraceIVSp1, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_1_IV, type="trace")
-brms::mcmc_plot(brms_mod_sp_1_IV, type="dens")
-summary(brms_mod_sp_1_IV)
 
+ggplot2::ggsave(filename = "Trace_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_IV_Sp1.png"))
+```
+
+
+```{r DensIVSp1, echo=FALSE}
+brms::mcmc_plot(brms_mod_sp_1_IV, type="dens")
+
+ggplot2::ggsave(filename = "Dens_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Dens_model_IV_Sp1.png"))
+```
+
+
+```{r TraceIVSp2, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_2_IV, type="trace")
+
+ggplot2::ggsave(filename = "Trace_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_IV_Sp2.png"))
+```
+
+
+```{r DensIVSp2, echo=FALSE}
 brms::mcmc_plot(brms_mod_sp_2_IV, type="dens")
-summary(brms_mod_sp_2_IV)
+
+ggplot2::ggsave(filename = "Dens_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Dens_model_IV_Sp2.png"))
 ```
 
 
@@ -498,7 +551,8 @@ kableExtra::kbl(
     ),
   booktabs = T,
   col.names = c(" ", "$\\beta_0$", "$\\beta_1$", "$V_b$", "$V$"),
-  escape = F
+  escape = F,
+  caption = "Mean posteriors and their estimation error"
   ) %>%
   kableExtra::pack_rows("Species 1", start_row = 1, end_row = 2) %>% 
   kableExtra::pack_rows("Species 2", start_row = 3, end_row = 4)%>%

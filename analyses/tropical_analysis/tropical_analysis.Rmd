@@ -218,7 +218,7 @@ BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance w
 
 Here is the plot of the trees :
 
-```{r PlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree."}
+```{r PlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
 g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
 #Save as png and include in order to make the pdf lighter
 ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
@@ -488,7 +488,7 @@ save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_BCI_p
 load(here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData"))
 ```
 
-```{r MCMC trace BCI, echo=FALSE, fig.cap = "Trace of the posterior estimates for BCI"}
+```{r MCMCTraceBCI, echo=FALSE, fig.cap = "Trace of the posterior estimates for BCI"}
 
 g <- brms::mcmc_plot(brms_mod, type="trace")
 ggplot2::ggsave(filename="MCMC_trace_BCI.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
