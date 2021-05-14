@@ -76,7 +76,6 @@ kableExtra::kbl(head(Paracou)[(2*(round(ncol(Paracou)/4))+1):(3*(round(ncol(Para
 kableExtra::kbl(head(Paracou)[(3*(round(ncol(Paracou)/4))+1):(4*(round(ncol(Paracou))/4))], booktabs = T)
 ```
 
-Here is a plot of the trees :
 
 ```{r PlotParacou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
 g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")
@@ -86,7 +85,7 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "P
 ```
 
 
-2) Compute growth between two censuses and rename all indeterminate species with the same name "Indet_sp"
+2) Compute annualised growth between two censuses and rename all indeterminate species with the same name "Indet_sp". Growth is computed as the difference of DBH (Diameter at Breast Height) between two consecutive censuses, divided by the time period between those two censuses.
 
 ```{r GrowthParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::compute_growth_paracou(Paracou)
@@ -111,7 +110,7 @@ kableExtra::kbl(head(Paracou_no_mean[,(ncol(Paracou_no_mean)-13): (ncol(Paracou_
 kableExtra::kbl(head(Paracou_no_mean[,(ncol(Paracou_no_mean)-5): ncol(Paracou_no_mean)]), booktabs = T)
 ```
 
-3) Remove the lines where growth < -2 mm/an or > 100 mm/an and remove the years before the perturbations were performed and the biodiversity plots were added (1985-1991)
+3) Remove the observations where growth < -2 mm/an or > 100 mm/an and remove the years before the perturbations were performed and the biodiversity plots were added (1985-1991).
 
 ```{r RemoveValuesParacou, include=FALSE}
 
@@ -122,10 +121,7 @@ Paracou_no_mean <- Paracou_no_mean[which(!(Paracou_no_mean$CensusYear %in% c(198
 
 There are `r length(unique(Paracou_no_mean$Sp))` species and `r length(unique(Paracou_no_mean$idTree))` and `r nrow(Paracou_no_mean)` trees at this step.
 
-4) Compute mean growth
-
-Individual mean growth is computed as the diameter difference between the first and the last census divided by the number of years between these two censuses. It is thus annualised.
-
+4) Compute mean annual growth. Mean growth is computed as the difference of DBH between the first and the last time a tree was measured, divided by the period between those two measures.
 
 ```{r MeanGrowthParacou, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
 
@@ -136,7 +132,8 @@ kableExtra::kbl(head(Data_Paracou[,(ncol(Data_Paracou)-3):ncol(Data_Paracou)]), 
 ```
 
 ## Uppangala
-1) Charge original data and add species names
+
+1) Charge the original data.
 
 ```{r ChargeUppangala, echo=FALSE}
 load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
@@ -146,7 +143,6 @@ kableExtra::kbl(head(upsp.dataset)[,((ncol(upsp.dataset)/2)+1):ncol(upsp.dataset
 
 ```
 
-Here is the plot of the trees :
 
 ```{r PlotUppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
 g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
@@ -172,22 +168,23 @@ Uppangala_no_mean$Sp <- Species_list_Uppangala$LatinName[match(Uppangala_no_mean
 ```
 
 
-2) Compute annual growth
+2) Compute annualised growth.
 
 ```{r GrowthUppangala, include=FALSE}
 Uppangala_no_mean <- coexIV::compute_growth_uppangala(Uppangala_no_mean)
 ```
 
 3) Remove lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
+
 ```{r RemoveValuesUppangala, include=FALSE}
 Uppangala_no_mean <- Uppangala_no_mean[Uppangala_no_mean$G_tp1>(-2)&Uppangala_no_mean$G_tp1<100,]
 ```
 
 Thus there are `r length(unique(Uppangala_no_mean$SpCode))` species, `r length(unique(Uppangala_no_mean$TreeID))` trees  and `r nrow(Uppangala_no_mean)` observations after annual growth computation.
 
-4) Compute mean growth
+4) Compute mean annual growth.
 
-Here are the computed columns :
+Here are the new columns :
 
 ```{r MeanGrowthUppangala, echo=FALSE}
 Data_Uppangala <- coexIV::compute_mean_growth_uppangala(Uppangala_no_mean)
@@ -197,7 +194,7 @@ kableExtra::kbl(head(Data_Uppangala[,(ncol(Data_Uppangala)-7): ncol(Data_Uppanga
 
 ## BCI
 
-1) Load the data and add species names
+1) Load the original data.
 
 ```{r ChargeBCI, include=FALSE}
 BCI <- coexIV::read_data_bci()
@@ -209,14 +206,13 @@ BCI$Sp <- bci.spptable$Latin[match(BCI$sp, bci.spptable$sp)]
 
 There are `r length(unique(BCI$sp))` species, `r length(unique(BCI$treeID))` trees and `r nrow(BCI)` observations in this dataset.
 
-2) Remove lines with NA as DBH and trees with DBH < 10 cm for consistence with the other datasets.
+2) Remove lines with missing DBH measures and trees with DBH < 10 cm for consistence with the other datasets.
 
 ```{r RemoveValuesBCI, include=FALSE}
 BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
 BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
 ```
 
-Here is the plot of the trees :
 
 ```{r PlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
 g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
@@ -225,7 +221,7 @@ ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
 ```
 
-3) Compute annual growth
+3) Compute annualised growth.
 
 ```{r GrowthBCI, include=FALSE}
 
@@ -235,7 +231,7 @@ gc()
 
 ```
 
-5) Remove lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
+4) Remove lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
 
 ```{r RemoveValuesBCI2, include=FALSE}
 
@@ -244,7 +240,7 @@ BCI_no_mean <- BCI_no_mean[BCI_no_mean$G_tp1>(-2)&BCI_no_mean$G_tp1<100,]
 
 There are now `r length(unique(BCI_no_mean$sp))` species and `r length(unique(BCI_no_mean$treeID))` trees and `r nrow(BCI_no_mean)` observations.
 
-4) Compute mean growth
+5) Compute mean annual growth.
 
 ```{r MeanGrowthBCI, include=FALSE}
 Data_BCI <- compute_mean_growth_BCI(BCI_no_mean)
@@ -302,8 +298,8 @@ knitr::include_graphics(
 
 # Estimation of IV
 
-We need to estimate the importance of intraspecific variability compared to interspecific variability.
-To do so, we chose Stan to run a Bayesian hierarchical model, with a species random effect and an individual random effect on the intercept. In order to approach more classic growth models, we also added an intercept and a diameter fixed effect.
+We estimate the importance of intraspecific variability compared to interspecific variability.
+To do so, we use Stan to run a Bayesian hierarchical model, with a species random effect and an individual random effect on the intercept. In order to approach more classic growth models, and estimate an intraspecific variability within diameter classes, we also added an intercept and a diameter fixed effect.
 We use the brms package to implement the model.
 We scale the data to improve convergence time.
 
@@ -687,7 +683,7 @@ knitr::include_graphics(
 ```
 
 
-Overall, a large part of variability is imputable to individual effects, showing a high intraspecific variability in growth in tropical forests, independently from the diameter effect.
+Overall, a large part of variability is imputable to individual effects, showing a high intraspecific variability in growth in tropical forests, independently from the diameter.
 
 # Moran's I analysis
 
@@ -768,9 +764,9 @@ Finally, the magnitude of spatial autocorrelation varied across the three sites,
 
 # Is variance within conspecifics inferior to variance within heterospecifics ?
 
-In order to compare intra vs interspecific variance, we compute the semivariance of growth of individuals that are less than 100 m apart. We compare the semivariances obtained with conspecifics and heterospecifics with a Mann-Whitney test.
-Intraspecific variance is estimated with the semivariance computed as the squared difference of the mean growth of all pairs individuals of the focal species which are less than 100 m apart.
-Interspecific variance is estimated with the semivariance computed as the squared difference of the mean growth of all pairs individuals of the containing the focal species and another species which are less than 100 m apart.
+In order to compare intra- and interspecific variance, we compute the semivariance of growth of individuals that are less than 100 m apart. We compare the semivariances obtained with conspecifics and heterospecifics with a Mann-Whitney test.
+Semivariance is estimated as the mean of the squared difference of the mean growth of all pairs individuals of the focal species which are less than 100 m apart.
+Interspecific variance is estimated with the semivariance computed as the mean of the squared difference of the mean growth of all pairs individuals of the containing the focal species and another species which are less than 100 m apart.
 
 Here again, the analysis is long to run and we display results from a pre-generated result.
 
@@ -801,25 +797,25 @@ for (file in 0:(nfiles-1)){
 
 ```{r VarianceComparison, eval=FALSE, include=FALSE}
 
-Paracou_comp_var_inter_intra <- coexIV::variance_comp(data=Data_Paracou, nfiles=nfiles, "Paracou")
-save(Paracou_comp_var_inter_intra, file=here::here("outputs", "tropical_analysis", "Paracou_comp_var_inter_intra.RData"))
+Var_comp_Paracou <- coexIV::variance_comp(data=Data_Paracou, nfiles=nfiles, "Paracou")
+save(Var_comp_Paracou, file=here::here("outputs", "tropical_analysis", "Var_comp_Paracou.RData"))
 
-Uppangala_comp_var_inter_intra <- coexIV::variance_comp(data=Data_Uppangala, nfiles=nfiles, "Uppangala")
-save(Uppangala_comp_var_inter_intra, file=here::here("outputs", "tropical_analysis", "Uppangala_comp_var_inter_intra.RData"))
+Var_comp_Uppangala <- coexIV::variance_comp(data=Data_Uppangala, nfiles=nfiles, "Uppangala")
+save(Var_comp_Uppangala, file=here::here("outputs", "tropical_analysis", "Var_comp_Uppangala.RData"))
 
-BCI_comp_var_inter_intra <- variance_comp(data=Data_BCI, nfiles=nfiles, "BCI")
-save(BCI_comp_var_inter_intra, file=here::here("outputs", "tropical_analysis", "BCI_comp_var_inter_intra.RData"))
+Var_comp_BCI <- coexIV::variance_comp(data=Data_BCI, nfiles=nfiles, "BCI")
+save(Var_comp_BCI, file=here::here("outputs", "tropical_analysis", "Var_comp_BCI.RData"))
 ```
 
 ```{r LoadVarianceComparison, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "Paracou_comp_var_inter_intra.RData"))
-load(here::here("outputs", "tropical_analysis", "Uppangala_comp_var_inter_intra.RData"))
-load(here::here("outputs", "tropical_analysis", "BCI_comp_var_inter_intra.RData"))
+load(here::here("outputs", "tropical_analysis", "Var_comp_Paracou.RData"))
+load(here::here("outputs", "tropical_analysis", "Var_comp_Uppangala.RData"))
+load(here::here("outputs", "tropical_analysis", "Var_comp_BCI.RData"))
 ```
 
 
 ```{r ResultsVarianceComparison, echo=FALSE}
-Results_var_comp <- coexIV::results_var_comp(data1=Paracou_comp_var_inter_intra, data2=Uppangala_comp_var_inter_intra, data3=BCI_comp_var_inter_intra, site1="Paracou", site2="Uppangala", site3="BCI")
+Results_var_comp <- coexIV::results_var_comp(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
 
 Results_var_comp %>%
   dplyr::mutate_all(kableExtra::linebreak) %>%
@@ -833,9 +829,28 @@ Results_var_comp %>%
 
 ```
 
+Computing interspecific variance with a sampling of maximum ten indidividuals per species, we obtain a theoretical interspecific variance, not taking the actual proportions of species into account.
+
+```{r ResultsVarianceComparisonSample, echo=FALSE}
+Results_var_comp_sample <- coexIV::results_var_comp_sample(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
+
+Results_var_comp_sample %>%
+  dplyr::mutate_all(kableExtra::linebreak) %>%
+  kableExtra::kbl(booktabs = TRUE, caption="Proportions of species and individuals with a significant semivariance comparison test result, using samples to estimate interspecific variance.") %>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"),
+                full_width = F) %>%
+  kableExtra::pack_rows("Paracou", start_row = 1, end_row = 2) %>% 
+  kableExtra::pack_rows("Uppangala", start_row = 3, end_row = 4)%>%
+  kableExtra::pack_rows("BCI", start_row = 5, end_row = 6)%>%
+  kableExtra::column_spec(2:4, width="3cm")
+
+```
+
 We can see that in all forests, in about half of the species, local intraspecific growth semivariance is significantly smaller than local semivariance of heterospecifics growth.
 
 In all forests, a large majority of individuals belong to species in which intraspecific growth semivariance is significantly smaller than interspecifc growth semivariance.
+
+Sampling individuals within species to estimate interspecific variance did not change the main results.
 
 # Other tests and verifications
 

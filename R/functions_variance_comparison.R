@@ -57,12 +57,13 @@ variance_comp <- function(data, nfiles, dataset_name) {
     n_consp <- 0
     n_het <- 0
     n_het_sample <- 0
-    Vec_squared_diff_consp <- c(0)
-    Vec_squared_diff_het <- c(0)
-    Vec_squared_diff_het_sample <- c(0)
+    Vec_squared_diff_consp <- c()
+    Vec_squared_diff_het <- c()
+    Vec_squared_diff_het_sample <- c()
     Sum_squared_diff_consp <- 0
-    Sum_squared_diff_het_sample <- c(0)
+    Sum_squared_diff_het_sample <- c()
     Sum_squared_diff_het <- 0
+    Vec_couple_identity_het <- c()
     
     Df_comp_var_inter_intra$Species[k] <- sp
     Df_comp_var_inter_intra$Nb_ind[k] <- Abundance_species$Freq[k]
@@ -86,15 +87,26 @@ variance_comp <- function(data, nfiles, dataset_name) {
         data_plot <- data[which(data$Plot==plot),]
         
         for (l in 0:(nfiles-1)) { #charge separately each sub-dataset with distances
-          Dists <- read.table(here::here("outputs", glue::glue("Dists_{dataset_name}"), glue::glue("file{l}_{plot}_{substr(dataset_name, 1, 1)}.txt"))) #beware, indices were computed with C++ and therefore start with 0
+          Dists <- read.table(here::here("outputs", "tropical_analysis", glue::glue("Dists_{dataset_name}"), glue::glue("file{l}_{plot}_{substr(dataset_name, 1, 1)}.txt"))) #beware, indices were computed with C++ and therefore start with 0
           colnames(Dists) <- c("i", "j", "dist")
           Dists <- Dists %>%
             dplyr::mutate(Sp_1=data_plot[i+1,]$Sp,
                           Sp_2=data_plot[j+1,]$Sp,
                           Growth_1=data_plot[i+1,]$Mean_G_Tree,
                           Growth_2=data_plot[j+1,]$Mean_G_Tree,
-                          Squared_diff=(Growth_1-Growth_2)^2,
-                          Couple = paste0(as.character(sort(c(Sp_1, Sp_2))[1]), "_", as.character(sort(c(Sp_1, Sp_2))[2])))
+                          Squared_diff=(Growth_1-Growth_2)^2)
+          
+          #identifier of the species couple
+          Dists <- transform(
+            Dists,
+            Couple = as.factor(
+              paste0(
+                pmin(as.character(Sp_1), as.character(Sp_2)),
+                pmax(as.character(Sp_1), as.character(Sp_2))
+                )
+              )
+            )
+          
           #remove NA
           Dists <- Dists[which(is.na(Dists$Squared_diff)==F),]
           gc()
@@ -108,21 +120,13 @@ variance_comp <- function(data, nfiles, dataset_name) {
           Sum_squared_diff_het <- Sum_squared_diff_het + sum(Dists_het$Squared_diff)
           n_het <- n_het + nrow(Dists_het)
           Vec_squared_diff_het <- c(Vec_squared_diff_het, Dists_het$Squared_diff)#this vector will be used to perform the test
+          Vec_couple_identity_het <- c(Vec_couple_identity_het, Dists_het$Couple)#this will be used to perform the test with sampling 10 individuals within each species
           
           #compute sum of squared diff for conspecific couples
           Dists_consp <- Dists[which(Dists$Sp_1==sp & Dists$Sp_2==sp),]
           Sum_squared_diff_consp <- Sum_squared_diff_consp + sum(Dists_consp$Squared_diff)
           n_consp <- n_consp + nrow(Dists_consp)
           Vec_squared_diff_consp <- c(Vec_squared_diff_consp, Dists_consp$Squared_diff)#this vector will be used to perform the test
-          
-          #compute sum of squared diff for heterospecific couples, but with at most 10 individuals per species
-          Dists_het_sample <- Dists_het%>%
-            dplyr::group_by(Couple)%>%
-            dplyr::mutate(n_couple = dplyr::n())%>%
-            dplyr::slice_sample(n=10)
-          Sum_squared_diff_het_sample <- Sum_squared_diff_het_sample + sum(Dists_het_sample$Squared_diff)
-          n_het_sample <- n_het_sample + nrow(Dists_het_sample)
-          Vec_squared_diff_het_sample <- c(Vec_squared_diff_het_sample, Dists_het_sample$Squared_diff)
           
           rm(Dists)
           gc()
@@ -139,6 +143,15 @@ variance_comp <- function(data, nfiles, dataset_name) {
       Df_comp_var_inter_intra$Var_inter[k] <- semivar_het
       Df_comp_var_inter_intra$Nb_pairs_het[k] <- n_het
       
+      #Sample 10 couples per heterospecific species
+      Sample_het <- data.frame(Squared_diff = Vec_squared_diff_het,
+                               Couple = Vec_couple_identity_het)%>%
+        dplyr::group_by(Couple)%>%
+        dplyr::mutate(n_couple = dplyr::n())%>%
+        dplyr::slice_sample(n=10)
+      Vec_squared_diff_het_sample <- Sample_het$Squared_diff
+      n_het_sample <- nrow(Sample_het)
+      Sum_squared_diff_het_sample <- sum(Sample_het$Squared_diff)
       semivar_het_sample <- (1/(2*n_het_sample))*Sum_squared_diff_het_sample
       Df_comp_var_inter_intra$Var_inter_sample[k] <- semivar_het_sample
       Df_comp_var_inter_intra$Nb_pairs_het_sample[k] <- n_het_sample
@@ -298,9 +311,9 @@ results_var_comp <- function(data1, data2, data3, site1, site2, site3){
   results <-  data.frame(
     Proportion = rep(c("Proportion of species", "Proportion of individuals"), 3),
     Intra_inf_inter = c(
-      format((length(which(data1$Var_intra_inf==1&data1$Signif==1))/nrow(data1))*100, digits=3),
+      format((length(which(data1$Var_intra_inf_sample==1&data1$Signif_sample==1))/nrow(data1))*100, digits=3),
       format(props_ind_data1[1]*100, digits=3),
-      format((length(which(data2$Var_intra_inf==1&data2$Signif==1))/nrow(data2))*100, digits=3),
+      format((length(which(data2$Var_intra_inf_sample==1&data2$Signif_sample==1))/nrow(data2))*100, digits=3),
       format(props_ind_data2[1]*100, digits=3),
       format((length(which(data3$Var_intra_inf==1&data3$Signif==1))/nrow(data3))*100, digits=3),
       format(props_ind_data3[1]*100, digits=3)
@@ -320,6 +333,67 @@ results_var_comp <- function(data1, data2, data3, site1, site2, site3){
       format(props_ind_data2[3]*100, digits=3),
       format((length(which(data3$Var_intra_inf==0&data3$Signif==1))/nrow(data3))*100, digits=3),
       format(props_ind_data3[3]*100, digits=3)
+    )
+  )
+  
+  colnames(results) <- c(
+    " ",
+    "Intraspecific variability < interspecific variability (i)",
+    "Intraspecific variability ~ interspecific variability (ii)",
+    "Intraspecific variability > interspecific variability (iii)"
+  )
+  
+  return(results)
+}
+
+#' compute a table with the proportion of individuals and species with var inter < var intra for each dataset, with sampling
+#'
+#' @param data2 
+#' @param data3 
+#' @param site1 
+#' @param site2 
+#' @param site3 
+#' @param data1 
+#'
+#' @return a dataframe
+results_var_comp_sample <- function(data1, data2, data3, site1, site2, site3){
+  #Taking only species for which we performed the test into account
+  data1 <- data1%>%
+    dplyr::filter(is.na(Signif)==FALSE)
+  data2 <- data2%>%
+    dplyr::filter(is.na(Signif)==FALSE)
+  data3 <- data3%>%
+    dplyr::filter(is.na(Signif)==FALSE)
+  
+  props_ind_data1 <- props_ind_comp_var(data1)
+  props_ind_data2 <- props_ind_comp_var(data2)
+  props_ind_data3 <- props_ind_comp_var(data3)
+  
+  results <-  data.frame(
+    Proportion = rep(c("Proportion of species", "Proportion of individuals"), 3),
+    Intra_inf_inter = c(
+      format((length(which(data1$Var_intra_inf_sample==1&data1$Signif_sample==1))/nrow(data1))*100, digits=3),
+      format(props_ind_data1[5]*100, digits=3),
+      format((length(which(data2$Var_intra_inf_sample==1&data2$Signif_sample==1))/nrow(data2))*100, digits=3),
+      format(props_ind_data2[5]*100, digits=3),
+      format((length(which(data3$Var_intra_inf_sample==1&data3$Signif_sample==1))/nrow(data3))*100, digits=3),
+      format(props_ind_data3[5]*100, digits=3)
+    ),
+    Unsignif = c(
+      format(((length(which(data1$Var_intra_inf_sample==0&data1$Signif_sample==0))+length(which(data1$Var_intra_inf_sample==1&data1$Signif_sample==0)))/nrow(data1))*100, digits=3),
+      format((props_ind_data1[6]+props_ind_data1[8])*100, digits=3),
+      format(((length(which(data2$Var_intra_inf_sample==0&data2$Signif_sample==0))+length(which(data2$Var_intra_inf_sample==1&data2$Signif_sample==0)))/nrow(data2))*100, digits=3),
+      format((props_ind_data2[6]+props_ind_data2[8])*100, digits=3),
+      format(((length(which(data3$Var_intra_inf_sample==0&data3$Signif_sample==0))+length(which(data3$Var_intra_inf_sample==1&data3$Signif_sample==0)))/nrow(data3))*100, digits=3),
+      format((props_ind_data3[6]+props_ind_data3[8])*100, digits=3)
+    ),
+    Intra_sup_inter =  c(
+      format((length(which(data1$Var_intra_inf_sample==0&data1$Signif_sample==1))/nrow(data1))*100, digits=3),
+      format(props_ind_data1[7]*100, digits=3),
+      format((length(which(data2$Var_intra_inf_sample==0&data2$Signif_sample==1))/nrow(data2))*100, digits=3),
+      format(props_ind_data2[7]*100, digits=3),
+      format((length(which(data3$Var_intra_inf_sample==0&data3$Signif_sample==1))/nrow(data3))*100, digits=3),
+      format(props_ind_data3[7]*100, digits=3)
     )
   )
   

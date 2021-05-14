@@ -16,7 +16,7 @@ devtools::install_deps()
 
 devtools::load_all()
 
-#----- load C++ functions (maybe possible to do it with load_all() ?)
+#----- load C++ functions
 Rcpp::sourceCpp(file="C/Distance.cpp")
 Rcpp::sourceCpp(file="C/Distlist.cpp")
 
