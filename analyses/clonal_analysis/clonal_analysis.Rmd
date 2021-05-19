@@ -1,8 +1,9 @@
 ---
-title: "Analysis of a clonal dataset"
+title: "Analysis of an Eucalyptus clonal plantation dataset"
 output:
-  bookdown::html_document2: default
-  pdf_document: default
+  bookdown::html_document2:
+    number_sections: false
+  bookdown::pdf_book: default
 bibliography: "`r here::here('References.bib')`"
 csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
 header-includes:
@@ -20,17 +21,20 @@ header-includes:
   - \usepackage[normalem]{ulem}
   - \usepackage{makecell}
   - \usepackage{xcolor}
+  - \usepackage{float}
 always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
 
-In this analysis, following the conclusions of the theoretical experiment, we aim at testing if intraspecific variability in observed individual growth can emerge from the environment. Therefore, we use a clonal experimental setup.
+In this analysis, following the conclusions of the theoretical experiment, we aim at testing if intraspecific variability (IV) in observed individual growth can emerge from the environment. Therefore, we use a clonal experimental setup.
 The EUCFLUX dataset is a clonal trial on Eucalyptus varieties. One of its main goals is to determine the productivity of each clone.
-One hypothesis on intraspecific variability in growth is that it mainly derives from environmental factors, and not only from genetic, intrinsic factors. Therefore, we can use the Eucflux dataset in order to ask if we can we detect some intraspecific variability of growth within clones.
-As we suppose growth to be mainly the result of environmental variables, we expect to detect intraspecific variability of growth within clones (or single genotypes), although we also expect the genotype to influence the growth response.
+One hypothesis on IV in growth is that it mainly derives from environmental factors, and not only from genetic, intrinsic factors. Therefore, we can use the Eucflux dataset in order to ask if we can we detect some IV of growth within clones.
+As we suppose growth to be mainly the result of environmental variables, we expect to detect IV of growth within clones (or single genotypes), although we also expect the genotype to influence the growth response.
+
+# The dataset
 
 The EUCFLUX setup is located in Brasilia, in the state of Sao Paulo.
 It has 16 genotypes (14 clones and two seed-origin genotypes) of 5 different species or hybrids, which grow on 10 sites and were monitored over 6 years. The detail of the setup is detailed in @le_maire_light_2019.
@@ -135,29 +139,17 @@ ggplot2::ggsave(filename = "Raw_data.png", plot = g, path=here::here("outputs", 
 Data <- Raw_data
 ```
 
-```{r PlotsGrowthLight, echo=FALSE, fig.show="hold", out.width="33%", fig.cap="The original data, the data without negative growth values and the loged growth."}
+The studied dataset finally encompasses `r length(unique(Data$Tree))` trees.
+
+```{r PlotsGrowthLight, fig.show="hold", out.width="33%", fig.cap="The original data, the data without negative growth values and the loged growth."}
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_raw.png"))
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_growth_filtered.png"))
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Data_log_growth.png"))
 ```
 
-The studied dataset finally encompasses `r length(unique(Data$Tree))` trees.
+Figure \@ref(fig:PlotsGrowthLight) shows the distribution of growth before and after removing negative values, and the latter with logged values.
 
-```{r PlotColoursDate, echo=FALSE, fig.cap="Plot of the growth versus the diameter. Each colour represents a different census."}
-knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw_data.png")) 
-```
-
-This figure shows that the date of measure has a big influence on the values of growth but also on the relationship between growth and diameter : the slope seems to be smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases. 
-
-Therefore, we compute a competition index to integrate this effect in the growth model.
-The competition index is computed for each tree which is not on the edge of a plot.
-It is the sum of the basal areas of the direct neighbours divided by the area of the rectangle that comprises all the direct neighbours. It is then logged.
-
-$C_{i, t} = \frac{\sum BA_{neighbours(i, t)}}{A}$, $A$ is constant.
-
-Here is the layout of a plot :
-
-```{r Coordinates, echo=FALSE, fig.cap="Design of a plot. Each point is a tree and the associated number is the tag of the tree."}
+```{r Coordinates, fig.cap="Design of a plot. Each point is a tree and the associated number is the tag of the tree."}
 # We must retrieve the coordinates of each tree in order to show the design of plots
 
 Coordinates <- data.frame(Tree_number = c(c(1:10), c(20:11), c(21:30), c(40:31), c(41:50),
@@ -179,6 +171,24 @@ ggplot2::ggsave(filename = "Plot_design.png", plot = g, path=here::here("outputs
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Plot_design.png")) 
 
 ```
+
+Figure \@ref(fig:Coordinates) shows the disposition of the trees in a single plot.
+
+# Competition index
+
+
+```{r PlotColoursDate, fig.cap="Plot of the growth versus the diameter. Each colour represents a different census."}
+knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw_data.png")) 
+```
+
+Figure \@ref(fig:PlotColoursDate) shows that the date of measure has a big influence on the values of growth but also on the relationship between growth and diameter : the slope seems to be smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases. 
+
+Therefore, we compute a competition index to integrate this effect in the growth model.
+The competition index is computed for each tree which is not on the edge of a plot.
+It is the sum of the basal areas of the direct neighbours divided by the area of the rectangle that comprises all the direct neighbours. It is then logged.
+
+$C_{i, t} = \frac{\sum BA_{neighbours(i, t)}}{A}$, $A$ is constant.
+
 
 ```{r CompetitionIndex, eval=FALSE, include=FALSE}
 #Competition index = sum of basal area of direct neighbours / area of the rectangle
@@ -238,7 +248,9 @@ save(Data_compet, file = here::here("outputs", "clonal_analysis", "Data_compet.R
 load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 ```
 
-In order to partition the variance of individual growth data, we built a hierarchical Bayesian model and used Stan and the packages rstan and brms to implement it in R.
+# Statistical growth model
+
+In order to partition the variance of individual growth data, we built a hierarchical Bayesian model and used Stan and the package brms [@burkner_brms_2017 ; @burkner_advanced_2018] in Rstudio to implement it in R.
 We used the following parameters : n.adapt = 1000 ; n.burn = 1000 ; n.iter = 5000 ; n.thin = 5.
 
 Our model incorporated a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$),and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (site, $b_s$), and genotype ($b_g$).
@@ -291,19 +303,22 @@ brms_mod <-brms::brm(formula = logG ~ 1 + logD + logC + (1|Tree) + (1|Site) + (1
                prior= prior_brms,
                iter = 10000 , warmup = 5000, thin = 5,
                chains = 2, cores=2,
-               control=list(adapt_delta=0.99, max_treedepth=15))
+               control=list(adapt_delta=0.99, max_treedepth=15),
+               backend = "cmdstanr")
 
 save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData"))
 ```
 
-After convergence of the model, we examined the variance of each random effect, and this enabled us to perform a variance partition.
+# Results of the model and variance partitioning
+
+After convergence of the model, we examined the variance of each random effect, and this enabled us to perform a variance partitioning.
 
 ```{r LoadBRMS, include=FALSE}
 load(here::here("outputs", "clonal_analysis", "brms_mod.RData"))
 ```
 
 
-```{r TracePosteriors, echo=FALSE, fig.cap="Trace of the posteriors"}
+```{r TracePosteriors, fig.cap="Trace of the posteriors"}
 
 g <-brms::mcmc_plot(brms_mod, type="trace")
 
@@ -313,7 +328,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 ```
 
 
-```{r DensityPosteriors, echo=FALSE, fig.cap="Density of the posteriors"}
+```{r DensityPosteriors, fig.cap="Density of the posteriors"}
 g <- brms::mcmc_plot(brms_mod, type="dens")
 
 ggplot2::ggsave(filename = "Density_posteriors.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
@@ -322,7 +337,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Den
 ```
 
 
-```{r TemporalRandomEffects, echo=FALSE, fig.cap="Trace of the temporal random effects"}
+```{r TemporalRandomEffects, fig.cap="Trace of the temporal random effects"}
 
 #Check convergence of random effects et some features of the random effects
 
@@ -338,7 +353,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 ```
 
 
-```{r GenotypeRandomEffects, echo=FALSE, fig.cap="Trace of the genotype random effects"}
+```{r GenotypeRandomEffects, fig.cap="Trace of the genotype random effects"}
 
 #Genotype random effects
 Ranef_gen <- as.data.frame(brms::ranef(brms_mod, summary = F)$Gen)
@@ -352,7 +367,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 ```
 
 
-```{r SpatialRandomEffects, echo=FALSE, fig.cap="Trace of the site random effects."}
+```{r SpatialRandomEffects, fig.cap="Trace of the site random effects."}
 #Spatial random effects
 Ranef_site <- as.data.frame(brms::ranef(brms_mod, summary = F)$Site)
 Ranef_site$Chain <- c(rep(1, 1000), rep(2, 1000))
@@ -365,7 +380,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 ```
 
 
-```{r RanefValues, echo=FALSE}
+```{r RanefValues}
 #Look at random effects values
 
 Ranef_date_summary <- as.data.frame(brms::ranef(brms_mod)$Date)
@@ -415,7 +430,7 @@ Sum_EUCFLUX <- summary(brms_mod)
 ```
 
 
-```{r PlotsRanef, echo=FALSE, fig.show="hold", out.width="33%", fig.cap="Values of the random effects."}
+```{r PlotsRanef, fig.show="hold", out.width="33%", fig.cap="Values of the random effects."}
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_date.png")) 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_genotype.png"))
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_site.png")) 
@@ -423,7 +438,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ran
 
 
 
-```{r ResultsTable, echo=FALSE}
+```{r ResultsTable}
 Res_var_partition <- data.frame(
   c("Estimate", "Estimation error"),
   c(format(Sum_EUCFLUX[["fixed"]][1,1], digits=2, scientific = T),
@@ -461,7 +476,7 @@ The temporal random effects declined with the date, showing that the effect of t
 In order to visualise what part of variation is represented by which effect, we compute the proportion of unexplained variance represented by each random effect and the residual variance.
 
 
-```{r Piechart, echo=FALSE, fig.cap="Proportion of each variance component of the unexplained variance."}
+```{r Piechart, fig.cap="Proportion of each variance component of the unexplained variance."}
 Res_var_partition <- data.frame(
   amount = round(as.numeric(as.vector(t(Res_var_partition[1,5:ncol(Res_var_partition)])))/sum(as.numeric(as.vector(t(Res_var_partition[1,5:ncol(Res_var_partition)]))))*100, digits=2),
   category=c("Individual", "Site", "Genotype", "Temporal effect", "Residuals"))
@@ -490,11 +505,15 @@ The genotype explained 6.1% of the variance, which is surprising as some strikin
 
 Finally, the site has the littlest impact with 2.5% of the variance explained, this means that the physical environment between sites is quite homogeneous, or that the physical environment does not play a big role in growth. We know that at least three sites stand out : two for having clayey soil (8 and 9), and one for having been struck by lightning (10), leading to high mortality. Looking at the mean random site effects, we can see that the site 10 indeed has a lower random effect, and that sites 8 and 9 have a positive random effect. However, site 8 does not really depart from other sites. We can detect some site effects, but it is not always clear.
 
-Difficulties of estimation for the intercept and the date random effect must be noted.
+High estimation error for the intercept and the date random effect must be noted.
 
-Overall, there is intraspecific variability within a clone.
-This shows that the environmental factors (in a broad sense : not genetic) have an impact on growth and that intraspecific variability can indeed emerge within a clone.
+# Conclusion
+
+Overall, there is IV within a clone.
+This shows that the environmental factors (in a broad sense : not genetic) have an impact on growth and that IV can indeed emerge within a clone.
+
+# Code implementation
+
+The whole analysis is done using the R language [@R] in the Rstudio environment [@RStudio]. The tables are made with the kableExtra package [@kableExtra], the figures with the package ggplot2 [@wickham_ggplot2_2009], and the code uses other packages of the Tidyverse [@wickham_welcome_2019] (dplyr [@dplyr], lubridate [@grolemund_dates_2011], magrittr [@magrittr]) and other R packages (here [@here], bayesplot [@bayesplot]). The pdf and html documents are produced thanks to the R packages rmarkdown [@Allaire2020-sr, @xie_r_2019, @xie_r_2020], knitr [@knitr, @xie_dynamic_2015, @stodden_knitr_2014] and bookdown [@xie_bookdown_2017].
 
 # References
-
-

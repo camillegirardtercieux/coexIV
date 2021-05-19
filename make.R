@@ -31,7 +31,7 @@ rmarkdown::render(here::here("analyses", "theoretical_model","theoretical_model.
 
 #Only PDF
 # If there are problems with the PDF, try to reinstall tinytex. If the error message concerns crops, install texlive-extra-utils
-rmarkdown::render(here::here("analyses", "theoretical_model","theoretical_model.Rmd"), output_format = "pdf_document")
+rmarkdown::render(here::here("analyses", "theoretical_model","theoretical_model.Rmd"), output_format = "bookdown::pdf_book")
 
 #Only html
 rmarkdown::render(here::here("analyses", "theoretical_model","theoretical_model.Rmd"), output_format = "bookdown::html_document2")
@@ -46,7 +46,7 @@ rmarkdown::render(here::here("analyses", "theoretical_model","theoretical_model.
 rmarkdown::render(here::here("analyses", "clonal_analysis","clonal_analysis.Rmd"), output_format = "all")
 
 #Only PDF
-rmarkdown::render(here::here("analyses", "clonal_analysis","clonal_analysis.Rmd"), output_format = "pdf_document")
+rmarkdown::render(here::here("analyses", "clonal_analysis","clonal_analysis.Rmd"), output_format = "bookdown::pdf_book")
 
 #Only html
 rmarkdown::render(here::here("analyses", "clonal_analysis","clonal_analysis.Rmd"), output_format = "bookdown::html_document2")
@@ -61,7 +61,7 @@ rmarkdown::render(here::here("analyses", "clonal_analysis","clonal_analysis.Rmd"
 rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.Rmd"), output_format = "all")
 
 #Only PDF
-rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.Rmd"), output_format = "pdf_document")
+rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.Rmd"), output_format = "bookdown::pdf_book")
 
  #Only html
 rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.Rmd"), output_format = "bookdown::html_document2")

@@ -1,8 +1,9 @@
 ---
-title: "Theoretical model"
+title: "Virtual experiment with two species"
 output:
-  bookdown::html_document2: default
-  pdf_document: default
+  bookdown::html_document2:
+    number_sections: false
+  bookdown::pdf_book: default
 bibliography: "`r here::here('References.bib')`"
 csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
 header-includes:
@@ -20,12 +21,15 @@ header-includes:
   - \usepackage[normalem]{ulem}
   - \usepackage{makecell}
   - \usepackage{xcolor}
+  - \usepackage{float}
 always_allow_html: true
 ---
 
-Intraspecific variability is often seen as an unstructured, intrinsic property of individuals, mostly genetic. Here, we rather investigate the effect of spatial variations of the environment on individuals. Our hypothesis is that the individuals can be clones, i.e. have no genetic differences, and still have different responses because the environment in which they strive varies. As the response of an individual is a result of all the environmental conditions it has encountered during its life, the individual level is a tool to describe the environment more acutely. This tool may incorporate some genetic differences, but is not able to discriminate the genetic effect from the effect of local environmental variation, or microsite effect. Moreover, the differences between individuals due to environmental variation does not imply a broader overlap of the species niches. Therefore, this type of intraspecific variability has no effect on species coexistence directly.
+Intraspecific variability (IV) is often seen as an unstructured, intrinsic property of individuals, mostly genetic. Here, we rather investigate the effect of spatial variations of the environment on individuals. Our hypothesis is that the individuals can be clones, i.e. have no genetic differences, and still have different responses because the environment in which they strive varies. As the response of an individual is a result of all the environmental conditions it has encountered during its life, the individual level is a tool to describe the environment more acutely. This tool may incorporate some genetic differences, but is not able to discriminate the genetic effect from the effect of local environmental variation, or microsite effect. Moreover, the differences between individuals due to environmental variation does not imply a broader overlap of the species niches. Therefore, this type of IV has no effect on species coexistence directly.
 
-We designed and conducted a virtual experiment that aims at illustrating that intraspecific variability, or “individual effects”, can result from unobserved variation in some environmental variables [@clark_resolving_2007], therefore accounting for multidimensional species differences which cannot be observed on a few niche axes.
+We designed and conducted a virtual experiment that aims at illustrating that IV, or “individual effects”, can result from unobserved variation in some environmental variables [@clark_resolving_2007], therefore accounting for multidimensional species differences which cannot be observed on a few niche axes.
+
+# Perfect knowledge model : generating growth values.
 
 To do so, we first consider a model that depicts the response of a process, e.g. growth, for individual clones of two different species to all the environmental variables that influence it. Henceforth denoted the “Perfect knowledge model”, it represents the perfect knowledge of the process as it occurs in the field and thus includes no residuals :
 
@@ -36,7 +40,7 @@ where $1 \leq i \leq 500$ are the individuals ; $1 \leq j \leq 2$ are the specie
 The first explanatory variable is switched to the natural logarithm to represent a log-log relationship as would be the relationship between tree growth and light.
 
 ```{r Options, include=FALSE}
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE)
+knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
 
 ```{r seed, include=FALSE}
@@ -81,13 +85,13 @@ Parameters of species 1 :  $\beta_0$ = `r param1[1]`, $\beta_1$ = `r param1[2]`,
 
 Parameters of species 2 :  $\beta_0$ = `r param2[1]`, $\beta_1$ = `r param2[2]`, $\beta_2$ to $\beta_{10}$ are chosen the same way as for species 1.
 
-The difference between the species is imposed by those parameters. Here, the species 1 is more performant on average thanks to its higher intercept ($\beta_0$) and reaction to the first environmental variable ($\beta_1$).
+The difference between the species is imposed by those parameters. Here, the species 1 is more competitive on average thanks to its higher intercept ($\beta_0$) and reaction to the first environmental variable ($\beta_1$).
 The first environmental variable ($X1$) has a higher weight in the computation of the response variable, as would be light for growth for instance.
 
-To account for genetic variability in our generated data, we add an intraspecific variability in species parameters by sampling each individual parameter in a normal distribution centered on the species mean parameter and with a standard deviation of a quarter of the species mean parameter.
+To account for genetic variability in our generated data, we add an IV in species parameters by sampling each individual parameter in a normal distribution centered on the species mean parameter and with a standard deviation of a quarter of the species mean parameter.
 
 To represent the spatialised environment of such a forest plot, we build a 2D matrix of dimension `r dim1` $\times$ `r dim2` for each environmental variable at a time $t_0$, by randomly generating them with spatial autocorrelation. We here consider that all environmental variables are independent.
-Each variable is simulated by using the gstat package, enabling to create autocorrelated random fields. A spherical semivariogram model is used for each of the ten environmental variables, with a mean of 0 for each explanatory variable (beta = 0), a sill of 1 (psill = 1) for each and a range of 50 (range = 50).
+Each variable is simulated by using the gstat package [@pebesma_multivariable_2004 ; @graler_spatio-temporal_2016], enabling to create autocorrelated random fields. A spherical semivariogram model is used for each of the ten environmental variables, with a mean of 0 for each explanatory variable (beta = 0), a sill of 1 (psill = 1) for each and a range of 50 (range = 50).
 
 ```{r SpatialModels, include=FALSE}
 #Matrixes of variables
@@ -142,7 +146,7 @@ For two other environmental variables randomly drawn, $X_{t_1} = X_{t_0} + |\eps
 
 This leads to two repeated measurements of $Y$ for each individual of each species, i.e. `r nobs` values of $Y_{i,j,t}$, with $i=[1;2]$ ; $j=[1,50]$ ; $t=[t_0;t_1]$.
 
-```{r SecondObservation, echo=FALSE}
+```{r SecondObservation}
 # Second observation
 #The variables have to vary in order to avoid identifiability problems + avoid a null residual variance
 Vars_t1 <- Vars_t0
@@ -157,7 +161,7 @@ Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1
 ```
 
 
-```{r IndividualCoordinates, echo=FALSE}
+```{r IndividualCoordinates}
  #Sample the coordinates of the individuals in the matrices of variables for each species
 Coord <- data.frame(matrix(nrow=2, ncol=nind*nsp))
 for (k in 1:ncol(Coord)) {
@@ -206,31 +210,6 @@ X <- cbind(rep(1, nobs), VarExp)
 
 ```
 
-These two virtual datasets (with and without genetic variability) is then analysed with a “Partial knowledge model”, which represents the process understanding ecologists can derive using these datasets and from their incomplete characterisation of the environment : only a few variables (here only one, $X_1$, e.g. light) are actually measured and taken into account.
-
-$\ln(Y_{ijt}) = [\beta'_{0j} + b_{0i}] + \beta'_{1j} \ln(X_{1ijt}) + \varepsilon_{ijt}$
-\hfill“Partial knowledge model”
-
-Priors :
-
-$\varepsilon_{ijt} \sim \mathcal{N}(0,V_j)$, $j = [1, 2]$, iid
-
-$\beta'_{kj}\sim \mathcal{N}_2(0, 1)$, $k = [0, 1]$, $j = [1, 2]$, iid
-
-$b_{0i} \sim \mathcal{N}(0, V_{bj})$, $i = [1, 500]$, $j = [1, 2]$, iid
-
-Second level priors :
-
-$V_j \sim \mathcal{IG}(10^-3, 10^-3)$, $j = [1, 2]$, iid
-
-$V_{bj} \sim \mathcal{IG}_2(10^-3, 10^-3)$, $j = [1, 2]$, iid
-
-This model includes a random individual effect on the intercept ($b_{0i}$) allowing to account for any variability among individuals within species regarding this parameter.
-
-We ran this model twice, with the datasets generated with and without intraspecific genetic variability. We then acquire the species parameters and the intraspecific variability generated with genetic intraspecific variability and get only intraspecific variability from the model with clones.
-
-These models were fitted with bayesian inference thanks to Stan, with the brms package in Rstudio, with 100000 iterations, a warming period of 50000 iterations and a thinning of 50, thus we finally obtain 1000 estimates per parameter.
-
 ```{r Growth, include=FALSE}
 # Growth of each individual
 
@@ -248,17 +227,20 @@ Xloglight[,2] <- log(Xloglight[,2]+const_log)
     
 # Process model : log(G) = beta1+beta2*log(Light)+...+beta10*X10
 Growth$Growth <- exp(rowSums(Xloglight * t(par_ind[,Growth$Ind])))
- #Without individual parameters
+ #Without genetic variability
 Growth$Growth_sp <- exp(rowSums(Xloglight * t(par_sp[,Growth$Species])))
     
 Growth$Species <- as.factor(Growth$Species)
 Growth$Ind <- as.factor(Growth$Ind)
-#Only one variable is selected to build the coming statistical model
+
 Growth$logLight <- Xloglight[,2] 
+
+Growth$logGrowth <- log(Growth$Growth)
+Growth$logGrowth_sp <- log(Growth$Growth_sp)
     
 ```
 
-Following are some plots to visualise the data, and a plot helping to visualise the link between the virtual landscape and the growth values (without genetic variability).
+Following are some plots to visualise the data, the link between the virtual landscape and the growth values (without genetic variability).
 
 ```{r GrowthPlots, message=FALSE, include=FALSE}
 # Plot the data
@@ -344,37 +326,60 @@ ggplot2::ggsave(filename = "Map_growth.png", plot=A, path=here::here("outputs", 
 
 ```
 
-```{r PlotsGrowthLight, echo=FALSE, fig.show="hold", out.width="50%", fig.cap="Raw and logged Y versus X1 plots without genetic IV"}
+```{r PlotsGrowthLight, fig.show="hold", out.width="50%", fig.cap="Raw and logged Y versus X1 plots without genetic IV"}
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Plot_Light_Growth.png"))
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Plot_logLight_logGrowth.png"))
 ```
 
-```{r PlotsGrowhtLightIV, echo=FALSE, fig.show="hold", out.width="50%", fig.cap="Raw and logged Y versus X1 plots with genetic IV"}
+
+```{r PlotsGrowthLightIV, fig.show="hold", out.width="50%", fig.cap="Raw and logged Y versus X1 plots with genetic IV"}
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Plot_Light_Growth_IV.png"))
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Plot_logLight_logGrowth_IV.png"))
 ```
 
-```{r HistogramsGrowth, echo=FALSE, fig.show="hold", out.width="50%", fig.cap="Histogram of Y and log(Y) without genetic IV"}
+```{r HistogramsGrowth, fig.show="hold", out.width="50%", fig.cap="Histogram of Y and log(Y) without genetic IV"}
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Histogram_Growth.png"))
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Histogram_logGrowth.png"))
 ```
 
-```{r HistogramsGrowthIV, echo=FALSE, fig.show="hold", out.width="50%", fig.cap="Histogram of Y and log(Y) with genetic IV"}
+```{r HistogramsGrowthIV, fig.show="hold", out.width="50%", fig.cap="Histogram of Y and log(Y) with genetic IV"}
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Histogram_Growth_IV.png"))
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Histogram_logGrowth_IV.png"))
 ```
 
-```{r MapGrowth, echo=FALSE, fig.cap="Virtual landscape representing X1 and the individual with their respective Y value."}
+```{r MapGrowth, fig.cap="Virtual landscape representing X1 and the individual with their respective Y value."}
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Map_growth.png"))
 ```
 
-On this figure, we can already see that microsite effects, which is the effect of the local multidimensional environment on the observed variable, can result in local reversals of the  competitive hierarchy between species, i.e. the local outcome of competition can be opposite to the mean hierarchy : at one point of the space-time, an individual of Species 1 can overcome an individual of Species 2, whilst Species 1 is, on average, the fittest of the two species. Doing this, microsite effects foster the coexistence of Species 1 and Species 2.
+In Figure \@ref(fig:MapGrowth), we can see that microsite effects, which are the effects of the local multidimensional environment on the observed variable, can result in local reversals of the  competitive hierarchy between species, i.e. the local outcome of competition can be opposite to the mean hierarchy : at one point of the space-time, an individual of Species 1 can overcome an individual of Species 2, whilst Species 1 is, on average, the fittest of the two species. Doing this, microsite effects foster the coexistence of Species 1 and Species 2.
 
-```{r LogGrowth, echo=FALSE}
-Growth$logGrowth <- log(Growth$Growth)
-Growth$logGrowth_sp <- log(Growth$Growth_sp)
-```
+# Partial knowledge model : interpreting the growth values with only one explanatory variable.
+
+These two virtual datasets (with and without genetic variability) is then analysed with a “Partial knowledge model”, which represents the process understanding ecologists can derive using these datasets and from their incomplete characterisation of the environment : only a few variables (here only one, $X_1$, e.g. light) are actually measured and taken into account.
+
+$\ln(Y_{ijt}) = [\beta'_{0j} + b_{0i}] + \beta'_{1j} \ln(X_{1ijt}) + \varepsilon_{ijt}$
+\hfill“Partial knowledge model”
+
+Priors :
+
+$\varepsilon_{ijt} \sim \mathcal{N}(0,V_j)$, $j = [1, 2]$, iid
+
+$\beta'_{kj}\sim \mathcal{N}_2(0, 1)$, $k = [0, 1]$, $j = [1, 2]$, iid
+
+$b_{0i} \sim \mathcal{N}(0, V_{bj})$, $i = [1, 500]$, $j = [1, 2]$, iid
+
+Second level priors :
+
+$V_j \sim \mathcal{IG}(10^-3, 10^-3)$, $j = [1, 2]$, iid
+
+$V_{bj} \sim \mathcal{IG}_2(10^-3, 10^-3)$, $j = [1, 2]$, iid
+
+This model includes a random individual effect on the intercept ($b_{0i}$) allowing to account for any variability among individuals within species regarding this parameter.
+
+We ran this model twice, with the datasets generated with and without genetic IV. We then acquire the species parameters and the IV generated with genetic IV and get only IV from the model with clones.
+
+These models were fitted with Bayesian inference thanks to Stan, using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018] in Rstudio, with 100000 iterations, a warming period of 50000 iterations and a thinning of 50, thus we finally obtain 1000 estimates per parameter.
 
 
 ```{r brmsModels, eval=FALSE, include=FALSE}
@@ -407,7 +412,8 @@ brms_mod_sp_1 <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_1,
                       prior= prior_brms,
                       iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      chains = 2, cores=2,
+                      backend = "cmdstanr")
 
 save(brms_mod_sp_1, file = here::here("outputs", "theoretical_model", "brms_mod_sp_1.RData"))
 
@@ -415,7 +421,8 @@ brms_mod_sp_2 <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_2,
                       prior= prior_brms,
                       iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      chains = 2, cores=2,
+                      backend = "cmdstanr")
 
 save(brms_mod_sp_2, file = here::here("outputs", "theoretical_model", "brms_mod_sp_2.RData"))
 
@@ -423,7 +430,8 @@ brms_mod_sp_1_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_1_IV,
                       prior= prior_brms,
                       iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      chains = 2, cores=2,
+                      backend = "cmdstanr")
 
 save(brms_mod_sp_1_IV, file = here::here("outputs", "theoretical_model", "brms_mod_sp_1_IV.RData"))
 
@@ -431,7 +439,8 @@ brms_mod_sp_2_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_2_IV,
                       prior= prior_brms,
                       iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      chains = 2, cores=2,
+                      backend = "cmdstanr")
 
 save(brms_mod_sp_2_IV, file = here::here("outputs", "theoretical_model", "brms_mod_sp_2_IV.RData"))
 
@@ -452,8 +461,8 @@ MCMC_brms_sp_2_IV <- brms::as.mcmc(brms_mod_sp_2_IV)
 
 We visualise the convergence and the results of the models thanks to trace and density plots and the summary of the models.
 
-```{r TraceSp1, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_1, type="trace")
+```{r TraceSp1, fig.cap="Trace of the posterior of the model for Species 1 without genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_1, type="trace")
 
 ggplot2::ggsave(filename = "Trace_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -461,8 +470,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```
 
 
-```{r DensSp1, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_1, type="dens")
+```{r DensSp1, fig.cap="Density of the posterior of the model for Species 1 without genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_1, type="dens")
 
 ggplot2::ggsave(filename = "Density_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -470,8 +479,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "D
 ```
 
 
-```{r TraceSp2, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_2, type="trace")
+```{r TraceSp2, fig.cap="Trace of the posterior of the model for Species 2 without genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_2, type="trace")
 
 ggplot2::ggsave(filename = "Trace_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -479,8 +488,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```
 
 
-```{r DensSp2, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_2, type="dens")
+```{r DensSp2, fig.cap="Density of the posterior of the model for Species 2 without genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_2, type="dens")
 
 ggplot2::ggsave(filename = "Dens_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -488,8 +497,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "D
 ```
 
 
-```{r TraceIVSp1, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_1_IV, type="trace")
+```{r TraceIVSp1, fig.cap="Trace of the posterior of the model for Species 1 with genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_1_IV, type="trace")
 
 ggplot2::ggsave(filename = "Trace_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -497,8 +506,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```
 
 
-```{r DensIVSp1, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_1_IV, type="dens")
+```{r DensIVSp1, fig.cap="Density of the posterior of the model for Species 1 with genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_1_IV, type="dens")
 
 ggplot2::ggsave(filename = "Dens_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -506,8 +515,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "D
 ```
 
 
-```{r TraceIVSp2, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_2_IV, type="trace")
+```{r TraceIVSp2, fig.cap="Trace of the posteriors of the model for Species 2 with genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_2_IV, type="trace")
 
 ggplot2::ggsave(filename = "Trace_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -515,8 +524,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```
 
 
-```{r DensIVSp2, echo=FALSE}
-brms::mcmc_plot(brms_mod_sp_2_IV, type="dens")
+```{r DensIVSp2, fig.cap="Density of the posteriors of the model for Species 2 with genetic IV"}
+g <- brms::mcmc_plot(brms_mod_sp_2_IV, type="dens")
 
 ggplot2::ggsave(filename = "Dens_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
 
@@ -524,7 +533,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "D
 ```
 
 
-```{r brmsSummary, echo=FALSE}
+```{r brmsSummary}
 
 Sum_sp1 <- summary(brms_mod_sp_1)
 Sum_sp2 <- summary(brms_mod_sp_2)
@@ -560,13 +569,12 @@ kableExtra::kbl(
 
 ```
 
-We infer a high intraspecific variability even in the absence of genetic intraspecific variability. Therefore, observed intraspecific variability does not necessarily reveal intrinsic (mainly genetic) intraspecific variability, but can also reveal hidden dimensions of the environment.
-
+We infer a high IV even in the absence of genetic IV. Therefore, observed IV does not necessarily reveal intrinsic (mainly genetic) IV, but can also reveal hidden dimensions of the environment.
 
 The mean and quantiles of the results of the models are used to visualise the inferred link between $Y$ and $X_1$.
 To do so, we create a sequence of explanatory variable values and compute the response variable with the mean and quantiles of the parameters inferred with the models.
 
-```{r PlotNoGeneticIV, echo=FALSE, fig.cap="Plot of the real values (points) and estimated mean (bold line) and 95% confidence interval (thin lines and shaded area) of Y versus X1."}
+```{r GrowthNoGeneticIV}
 
  #Create a sequence of 100 values of X (which is light for instance)
     npred <- 100
@@ -632,11 +640,10 @@ B <- ggplot2::ggplot(data=Growth[which(Growth$Time==1),], ggplot2::aes(Light, Gr
      text = ggplot2::element_text(size=12))
 
 ggplot2::ggsave(filename = "Partial_knowledge_model.png", plot=B, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model.png"))
-    
+
 ```
 
-```{r PlotGeneticIV, echo=FALSE, fig.cap="Plot of the real values (points) and estimated mean (bold line) and 95% confidence interval (thin lines) of Y versus X1. The dotted lines correspond to the 95% interval due to genetic IV."}
+```{r GrowthGeneticIV}
 #With genetic variation#
     
     #Growth for species 1
@@ -726,15 +733,24 @@ g <- ggplot2::ggplot(data=Growth[which(Growth$Time==1),], ggplot2::aes(Light, Gr
      text = ggplot2::element_text(size=12))
 
 ggplot2::ggsave(filename = "Partial_knowledge_model_genetic_var.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model_genetic_var.png"))
+```
+
+```{r PlotNoGeneticIV, fig.cap="Plot of the real values - points - and estimated mean - bold line - and 95 \\% confidence interval - thin lines and shaded area - of Y versus X1."}
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model.png"))
 ```
 
 
-In these figures, the solid and bold lines represent the mean growth rate of Species 1 (blue) and Species 2 (orange) as computed with the parameters retrieved from the model with or without genetic variability respectively. The plain lines represent the 95% interval of the posteriors from the model without genetic variability and the dotted lines show the 95% confidence interval of the posteriors from the model with genetic variability.
+```{r PlotGeneticIV, fig.cap="Plot of the real values - points - and estimated mean - bold line - and 95 \\% confidence interval - thin lines - of Y versus X1. The dotted lines correspond to the 95 \\% interval due to genetic IV."}
+
+knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model_genetic_var.png"))
+```
+
+In Figures \@ref(fig:PlotNoGeneticIV) and \@ref(fig:PlotGeneticIV), the solid and bold lines represent the mean growth rate of Species 1 (blue) and Species 2 (orange) as computed with the parameters retrieved from the model with or without genetic variability respectively. The plain lines represent the 95% interval of the posteriors from the model without genetic variability and the dotted lines show the 95% confidence interval of the posteriors from the model with genetic variability.
 
 Putting the virtual landscape of $X_1$ and the corresponding individual growth and the plot of growth versus light next to each other help to visualise this virtual experiment.
 
-```{r TwoPanelsFigure, echo=FALSE, fig.show="hold", out.width="50%", fig.cap="The virtual landscape of X1 values and of Y values and the corresponding estimated relationship between X1 and Y."}
+```{r TwoPanelsFigure, fig.show="hold", out.width="50%", fig.cap="The virtual landscape of X1 values and of Y values and the corresponding estimated relationship between X1 and Y."}
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Map_growth.png"))
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model.png"))
@@ -744,13 +760,15 @@ ggplot2::ggsave(filename = "arranged_figure.png",plot=arrange, path=here::here("
 
 ```
 
-In the model without genetic intraspecific variability, the unobserved variation in the environment results in an important “individual effect”. The performances of the two species can intersect, which means that the competitive hierarchy among the two species can be locally reversed depending on the micro-environmental variation, offering opportunities for the coexistence of the two species in a variable environment. In that sense, incorporating the individual level in statistical models can help to explain the coexistence of species through a better integration of niche multidimensionality in models.
+In the model without genetic IV, the unobserved variation in the environment results in an important “individual effect”. The performances of the two species can intersect, which means that the competitive hierarchy among the two species can be locally reversed depending on the micro-environmental variation, offering opportunities for the coexistence of the two species in a variable environment. In that sense, incorporating the individual level in statistical models can help to explain the coexistence of species through a better integration of niche multidimensionality in models.
 
-We then analyse the spatial structure of individual growth.
+# Spatial autocorrelation of individual growth.
 
-To do so, we compute Moran's I test, and we plot the semivariograms of all individuals and of individuals of each species separately. Morans's I is computed with the Moran.I function of the ape R package.
+We then analyse the spatial structure of individual growth. We hypothesise that as environmental variables are spatially autocorrelated, and growth is the result of these variables, then growth should also be spatially autocorrelated.
 
-```{r MoranAnalysis, echo=FALSE}
+To test this, we compute Moran's I test. It is computed with the Moran.I function of the ape R package [@paradis_ape_2019].
+
+```{r MoranAnalysis}
 
 Growth_norep <- Growth[which(Growth$Time==1),] #we study the growth at time t0
 Growth_1 <- Growth_norep[which(Growth_norep$Species==1),]
@@ -790,7 +808,7 @@ diag(Growth_vario_dists_sp2_inv) <- 0
 Mor_sp2 <- ape::Moran.I(Growth_vario_2$Growth, Growth_vario_dists_sp2_inv)
 ```
 
-```{r MoranTable, echo=FALSE}
+```{r MoranTable}
 kableExtra::kbl(data.frame(
   Group = c("Species 1", "Species 2", "All individuals"),
   Moran_I = c(
@@ -814,14 +832,14 @@ caption = "Results of the Morans's I test for both species separatly and togethe
 
 These results show that individual growth is largely spatially autocorrelated.
 This is due to the spatial autcorrelation in the environmental variables.
-In this simple, completely controlled experiment, this is natural. However, in a less controlled environment, detecting spatial autocorrelation in a response variable could be the sign of the spatial structure of the underlying environmental variables.
+In this simple, completely controlled experiment, this is natural. However, in a less controlled environment, detecting spatial autocorrelation in a response variable could be the sign of the spatial structure of the underlying environmental variables although other factors like the genetic structure could lead to spatial autocorrelation in growth.
 
-However, other factors like the genetic structure could lead to spatial autocorrelation in growth.
+# Similarity between conspecific individuals compared to heterospecific individuals and consequences for species coexistence.
 
-Finally, we can visualise this spatial autocorrelation with semivariograms, but also control if the individual growth is more similar within conspecifics than heterospecifics.
+Finally, we can visualise the spatial autocorrelation of growth with semivariograms, but also control if the individual growth is more similar within conspecifics than heterospecifics.
 The semivariograms are computed and modelled with the variogram and the fit.variogram functions of the gstat R package respectively. The variogram models are spherical.
 
-```{r Semivariograms, echo=FALSE}
+```{r Semivariograms}
 #Prepare data for variogram computation
 sp::coordinates(Growth_vario_all) = ~X+Y
 sp::coordinates(Growth_vario_1) = ~X+Y
@@ -844,7 +862,7 @@ vgLine <- rbind(
 
 ```
 
-```{r SemivariogramFigure, echo=FALSE, warning=FALSE, fig.cap="Estimated and empirical semivariograms of Y for each species and both species together."}
+```{r SemivariogramFigure, warning=FALSE, fig.cap="Estimated and empirical semivariograms of Y for each species and both species together."}
 #Plot variogram models
 g <- ggplot2::ggplot(rbind(Vario_all, Vario_1, Vario_2), ggplot2::aes(x = dist, y = gamma, colour = id)) +
   ggplot2::geom_point(data=Vario_all, ggplot2::aes(colour="All"), alpha=0.5) +
@@ -868,5 +886,9 @@ As the semivariance between individuals of both species is higher than the semiv
 Considering growth as a proxy of fitness, and linking fitness to competition, we argue that in a Lotka-Volterra model, this would translate into $\alpha_{i,i} > \alpha_{i,j}$, the main condition for stable coexistence.
 
 Therefore, stable coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
+
+# Code implementation
+
+The whole analysis is done using the R language [@R] in the Rstudio environment [@RStudio]. The tables are made with the kableExtra package [@kableExtra], the figures with the package ggplot2 [@wickham_ggplot2_2009], and the code uses  other packages of the Tidyverse [@wickham_welcome_2019] (dplyr [@dplyr], magrittr [@magrittr]) and other R packages (here [@here], ggpubr [@ggpubr], sp[@sp, @bivand_applied_2013], ggnewscale [@ggnewscale]). The pdf and html documents are produced thanks to the R packages rmarkdown [@Allaire2020-sr, @xie_r_2019, @xie_r_2020], knitr [@knitr, @xie_dynamic_2015, @stodden_knitr_2014] and bookdown [@xie_bookdown_2017].
 
 # References

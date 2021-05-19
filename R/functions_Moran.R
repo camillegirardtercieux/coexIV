@@ -138,7 +138,7 @@ moran_analysis <- function(data) {
         Growth_dists <- Growth_dists[which(Growth_dists$Plot_1==Growth_dists$Plot_2),]
         rownames(Growth_dists) <- c(1:nrow(Growth_dists))
         
-        Mor <- Paracou.Uppangala.BCI::moran_I(Growth_dists)
+        Mor <- coexIV::moran_I(Growth_dists)
         rm(Growth_dists)
         gc()
         res$Moran.I[k]<-Mor[1]
