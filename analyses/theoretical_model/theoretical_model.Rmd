@@ -278,12 +278,14 @@ hist(log(Growth$Growth), xlab = "log(Y)", main = "Histogram of log(Y), with gene
 dev.off()
 
 #we represent the growth of each individual at time t0
-Growth_illustration <- Growth[which(Growth$Time==1),] 
+Growth_illustration <- Growth[which(Growth$Time==1),]
 Growth_illustration$X <- t(Coord)[,1]
 Growth_illustration$Y <- t(Coord)[,2]
+#Reduce the number of individuals represented to make the figure more clear
+Growth_illustration <- Growth_illustration[sample(1:nrow(Growth_illustration), 200),]
     
 A <- ggplot2::ggplot(Vars_t0, ggplot2::aes(x, y)) +
-  ggplot2::geom_point(ggplot2::aes(color = Var1)) +
+  ggplot2::geom_point(ggplot2::aes(color = Var1), alpha = 0.1, size = 0.1) +
   ggplot2::scale_color_viridis_c(
     "Environmental variable X1",
     guide = ggplot2::guide_colourbar(
@@ -296,8 +298,7 @@ A <- ggplot2::ggplot(Vars_t0, ggplot2::aes(x, y)) +
                         y = Y,
                         color = Growth_sp,
                         shape=as.factor(Species)),
-                      size=2.5,
-                      alpha=0.8) +
+                      size=2.5) +
   ggplot2::scale_color_viridis_c("Response Y", option = "plasma")+
   ggplot2::guides(
     shape=ggplot2::guide_legend(
