@@ -283,14 +283,16 @@ Growth_illustration$X <- t(Coord)[,1]
 Growth_illustration$Y <- t(Coord)[,2]
 #Reduce the number of individuals represented to make the figure more clear
 Growth_illustration <- Growth_illustration[sample(1:nrow(Growth_illustration), 200),]
-    
+
 A <- ggplot2::ggplot(Vars_t0, ggplot2::aes(x, y)) +
   ggplot2::geom_point(ggplot2::aes(color = Var1), alpha = 0.1, size = 0.1) +
   ggplot2::scale_color_viridis_c(
     "Environmental variable X1",
     guide = ggplot2::guide_colourbar(
       title.position = "top",
-      label.position="bottom")) +
+      label.position="bottom"),
+    limits = c(-4.5, 4.5),
+    breaks = c(-4, -2, 0, 2, 4)) +
   ggnewscale::new_scale_color() +
   ggplot2::geom_point(data=Growth_illustration,
                       ggplot2::aes(
