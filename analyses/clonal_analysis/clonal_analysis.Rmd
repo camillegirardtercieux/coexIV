@@ -2,8 +2,13 @@
 title: "Analysis of an Eucalyptus clonal plantation dataset"
 output:
   bookdown::html_document2:
-    number_sections: false
-  bookdown::pdf_book: default
+    toc: true
+    toc_float: true
+    number_sections: true
+  bookdown::pdf_book:
+    toc: true
+    toc_float: true
+    number_sections: true
 bibliography: "`r here::here('References.bib')`"
 csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
 header-includes:
@@ -22,6 +27,8 @@ header-includes:
   - \usepackage{makecell}
   - \usepackage{xcolor}
   - \usepackage{float}
+  - \usepackage{chngcntr}
+  - \counterwithin{figure}{section}
 always_allow_html: true
 ---
 

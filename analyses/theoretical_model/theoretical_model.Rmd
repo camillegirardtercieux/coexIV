@@ -2,8 +2,13 @@
 title: "Virtual experiment with two species"
 output:
   bookdown::html_document2:
-    number_sections: false
-  bookdown::pdf_book: default
+    toc: true
+    toc_float: true
+    number_sections: true
+  bookdown::pdf_book:
+    toc: true
+    toc_float: true
+    number_sections: true
 bibliography: "`r here::here('References.bib')`"
 csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
 header-includes:
@@ -22,6 +27,8 @@ header-includes:
   - \usepackage{makecell}
   - \usepackage{xcolor}
   - \usepackage{float}
+  - \usepackage{chngcntr}
+  - \counterwithin{figure}{section}
 always_allow_html: true
 ---
 
@@ -892,6 +899,6 @@ Therefore, stable coexistence is possible even with high intraspecific variabili
 
 # Code implementation
 
-The whole analysis is done using the R language [@R] in the Rstudio environment [@RStudio]. The tables are made with the kableExtra package [@kableExtra], the figures with the package ggplot2 [@wickham_ggplot2_2009], and the code uses  other packages of the Tidyverse [@wickham_welcome_2019] (dplyr [@dplyr], magrittr [@magrittr]) and other R packages (here [@here], ggpubr [@ggpubr], sp[@sp, @bivand_applied_2013], ggnewscale [@ggnewscale]). The pdf and html documents are produced thanks to the R packages rmarkdown [@Allaire2020-sr, @xie_r_2019, @xie_r_2020], knitr [@knitr, @xie_dynamic_2015, @stodden_knitr_2014] and bookdown [@xie_bookdown_2017].
+The whole analysis is done using the R language [@R] in the Rstudio environment [@RStudio]. The tables are made with the kableExtra package [@kableExtra], the figures with the package ggplot2 [@wickham_ggplot2_2009], and the code uses  other packages of the Tidyverse [@wickham_welcome_2019] (dplyr [@dplyr], magrittr [@magrittr]) and other R packages (here [@here], ggpubr [@ggpubr], sp [@sp; @bivand_applied_2013], ggnewscale [@ggnewscale]). The pdf and html documents are produced thanks to the R packages rmarkdown [@Allaire2020-sr; @xie_r_2019; @xie_r_2020], knitr [@knitr; @xie_dynamic_2015; @stodden_knitr_2014] and bookdown [@xie_bookdown_2017].
 
 # References
