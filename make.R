@@ -73,3 +73,15 @@ rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.
 file.copy(here::here("analyses", "theoretical_model", "theoretical_model.html"), here::here("docs", "theoretical_model.html"), overwrite = TRUE)
 file.copy(here::here("analyses", "clonal_analysis", "clonal_analysis.html"), here::here("docs", "clonal_analysis.html"), overwrite = TRUE)
 file.copy(here::here("analyses", "tropical_analysis", "tropical_analysis.html"), here::here("docs", "tropical_analysis.html"), overwrite = TRUE)
+
+#########################################
+### Full supplementary ###
+#########################################
+
+rmarkdown::render(here::here("analyses","full_supplementary.Rmd"), output_format = "all")
+
+rmarkdown::render(here::here("analyses","full_supplementary.Rmd"), output_format = "bookdown::pdf_book")
+
+rmarkdown::render(here::here("analyses","full_supplementary.Rmd"), output_format = "bookdown::html_document2")
+
+file.copy(here::here("analyses", "full_supplementary.html"), here::here("docs", "full_supplementary.html"), overwrite = TRUE)

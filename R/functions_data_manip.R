@@ -155,7 +155,7 @@ compute_mean_growth_uppangala <- function(data){
     dplyr::mutate(Mean_G_Tree = ((dplyr::last(na.omit(D_t)) - dplyr::first(na.omit(D_t)))*10)/(as.numeric((dplyr::last(na.omit(Date_t)) - dplyr::first(na.omit(Date_t))))/365)) %>%
     dplyr::slice(1) %>%
     dplyr::ungroup()%>%
-    dplyr::mutate(Sp = as.factor(SpCode), Tree=as.factor(TreeID))
+    dplyr::mutate(Sp = as.factor(Sp), Tree=as.factor(TreeID))
   
   data <- data[which(is.na(data$Mean_G_Tree)==F),]
   
@@ -208,7 +208,7 @@ compute_mean_growth_BCI <- function(data){
     dplyr::mutate(Mean_G_Tree = ((dplyr::last(na.omit(D_t)) - dplyr::first(na.omit(D_t))))/(as.numeric((dplyr::last(na.omit(Date_t)) - dplyr::first(na.omit(Date_t))))/365)) %>%
     dplyr::slice(1) %>%
     dplyr::ungroup()%>%
-    dplyr::mutate(Sp = as.factor(sp), Tree=as.factor(treeID))
+    dplyr::mutate(Sp = as.factor(Sp), Tree=as.factor(treeID))
   
   data <- data[which(is.na(data$Mean_G_Tree)==F),]
   
