@@ -2247,6 +2247,333 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "S
 As the semivariance between individuals of both species was higher than the semivariance between conspecifics (\@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics. Considering this response variable as a proxy of fitness, and linking fitness to competition, we argue that in a Lotka-Volterra model, this would translate into $\alpha_{i,i} > \alpha_{i,j}$, the main condition for stable coexistence.
 Therefore, stable coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
 
+# Script producing Figure 1: Reinterpreting observed intraspecific variability (IV): from niche widening to niche projection into a high-dimensional environment.
+
+We obtain this figure by first generating a multivariate normal distribution.
+We then fix one of the two variables and obtain the mean and the standard deviation due to the second variable at this value.
+
+```{r CodeFig1, echo=TRUE}
+library(ggplot2)
+library(mvtnorm)
+library(dplyr)
+library(ggpubr)
+
+#Environmental variables
+minX = -5
+minY = -10
+maxX = 10
+maxY = 40
+
+data.grid <- expand.grid(x = seq(minX,maxX, length.out=200),
+                         y = seq(minY, maxY, length.out=200))
+
+#Species performance
+mu1 = c(0, 0)
+mu2 = c(3, 20)
+Sigma1 = matrix (c(5, 0, 0, 5), 2, 2) #x and y axes are independent (0)
+Sigma2 = matrix (c(10, 0, 0, 10), 2, 2)
+p1 <- data.frame(X=data.grid$x,
+                 Y=data.grid$y,
+                 Perf=mvtnorm::dmvnorm(x=data.grid,
+                                       mean = mu1,
+                                       sigma = Sigma1))
+p2 <- data.frame(X=data.grid$x,
+                 Y=data.grid$y,
+                 Perf=mvtnorm::dmvnorm(x=data.grid,
+                                       mean = mu2,
+                                       sigma = Sigma2))
+
+x0 = -2
+
+p1_E0 = data.frame(X=rep(x0, 200),
+                   Y=seq(minY, maxY, length.out=200),
+                   Perf=mvtnorm::dmvnorm(x=cbind(
+                     rep(x0, 200),
+                     seq(minY, maxY, length.out=200)),
+                     mean = mu1,
+                     sigma = Sigma1))
+
+mean_p1_E0 = mean(p1_E0$Perf)
+
+p2_E0 = data.frame(X=rep(x0, 200),
+                   Y=seq(minY, maxY, length.out=200),
+                   Perf=mvtnorm::dmvnorm(
+                     x=cbind(
+                       rep(x0, 200),
+                       seq(minY, maxY, length.out=200)),
+                     mean = mu2,
+                     sigma = Sigma2))
+
+mean_p2_E0 = mean(p2_E0$Perf)
+
+x1 = 3
+
+p1_E1 = data.frame(X=rep(x1, 200),
+                   Y=seq(minY, maxY, length.out=200),
+                   Perf=mvtnorm::dmvnorm(
+                     x=cbind(
+                       rep(x1, 200),
+                       seq(minY, maxY, length.out=200)),
+                     mean = mu1,
+                     sigma = Sigma1))
+
+mean_p1_E1 = mean(p1_E1$Perf)
+
+p2_E1 = data.frame(X=rep(x1, 200),
+                   Y=seq(minY, maxY, length.out=200),
+                   Perf=mvtnorm::dmvnorm(
+                     x=cbind(
+                       rep(x1, 200),
+                       seq(minY, maxY, length.out=200)),
+                     mean = mu2,
+                     sigma = Sigma2))
+
+mean_p2_E1 = mean(p2_E1$Perf)
+
+y0=0
+y1=20
+
+marginals_p1 <- p1%>%
+  dplyr::group_by(X)%>%
+  dplyr::summarise(mean=mean(Perf),
+                   median=quantile(Perf, 0.5),
+                   CI_2_5=quantile(Perf, 0.025),
+                   CI_97_5=quantile(Perf, 0.975),
+                   SD=sd(Perf))
+
+marginals_p2 <- p2%>%
+  dplyr::group_by(X)%>%
+  dplyr::summarise(mean=mean(Perf),
+                   median=quantile(Perf, 0.5),
+                   CI_2_5=quantile(Perf, 0.025),
+                   CI_97_5=quantile(Perf, 0.975),
+                   SD=sd(Perf))
+
+A <- ggplot2::ggplot(data=data.frame(Sp=as.factor(c("1","2")),
+                                     Mean=c(mean_p1_E0, mean_p2_E0),
+                                     Sd=c(sd(p1_E0$Perf), sd(p2_E0$Perf))),
+                     aes(x=Sp, y=Mean))+
+  ggplot2::geom_point(aes(colour=Sp))+
+  ggplot2::scale_color_manual(values=c("midnightblue", "orange"))+
+  ggplot2::coord_cartesian(xlim=c(1, 2), ylim = c(-0.004, 0.009), clip="off")+ 
+  ggplot2::theme(plot.background = ggplot2::element_blank(),
+                 panel.grid.major = ggplot2::element_blank(),
+                 panel.grid.minor = ggplot2::element_blank(),
+                 panel.border = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size = 12),
+                 legend.position="none",
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank(),
+                 plot.margin = unit(c(5.5, 5.5, 10, 10), "pt"),
+                 axis.title.y = element_text(vjust=4),
+                 axis.title.x = element_text(vjust=-3))+
+  ggplot2::labs(y="Performance at E0", x = "Species")+
+  ggplot2::geom_segment(ggplot2::aes(x = 0.4,
+                                     y = mean_p1_E0,
+                                     xend = 1,
+                                     yend = mean_p1_E0),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = 0.4,
+                                     y = mean_p2_E0,
+                                     xend = 2,
+                                     yend = mean_p2_E0),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = 1,
+                                     y = mean_p1_E0,
+                                     xend = 1,
+                                     yend = -0.0045),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = 2,
+                                     y = mean_p2_E0,
+                                     xend = 2,
+                                     yend = -0.0045),
+                        linetype="dashed",
+                        size=0.1)+
+  annotate("text", label="p1", x = 0.34, y = mean_p1_E0, size=3)+
+  annotate("text", label="p2", x = 0.34, y = mean_p2_E0, size=3)+
+  annotate("text", label="Species 1", x = 1, y = -0.0053, size=3)+
+  annotate("text", label="Species 2", x = 2, y = -0.0053, size=3)
+
+B <- ggplot2::ggplot(data=data.frame(Sp=as.factor(c("1","2")),
+                                     Mean=c(mean_p1_E0, mean_p2_E0),
+                                     Sd=c(sd(p1_E0$Perf), sd(p2_E0$Perf))),
+                     ggplot2::aes(x=Sp, y=Mean))+
+  ggplot2::geom_point(aes(colour=Sp))+
+  ggplot2::geom_errorbar(ggplot2::aes(ymin=Mean-Sd,
+                                      ymax=Mean+Sd,
+                                      colour=Sp),
+                         width=0.1, 
+                         size=0.5)+
+  ggplot2::scale_color_manual(values=c("midnightblue", "orange"))+
+  ggplot2::coord_cartesian(xlim=c(1, 2), ylim = c(-0.004, 0.009), clip="off")+
+  ggplot2::theme(plot.background = ggplot2::element_blank(),
+                 panel.grid.major = ggplot2::element_blank(),
+                 panel.grid.minor = ggplot2::element_blank(),
+                 panel.border = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size = 12),
+                 legend.position="none",
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank(),
+                 plot.margin = unit(c(5.5, 5.5, 10, 10), "pt"),
+                 axis.title.x = element_text(vjust=-3),
+                 axis.title.y = element_text(vjust=4))+
+  ggplot2::labs(y="Performance at E0", x = "Species")+
+  ggplot2::geom_segment(ggplot2::aes(x = 0.4,
+                                     y = mean_p1_E0,
+                                     xend = 1,
+                                     yend = mean_p1_E0),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = 0.4,
+                                     y = mean_p2_E0,
+                                     xend = 2,
+                                     yend = mean_p2_E0),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = 1,
+                                     y = mean_p1_E0,
+                                     xend = 1,
+                                     yend = -0.0045),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = 2,
+                                     y = mean_p2_E0,
+                                     xend = 2,
+                                     yend = -0.0045),
+                        linetype="dashed", 
+                        size=0.1)+
+  annotate("text", label="p1", x = 0.34, y = mean_p1_E0, size=3)+
+  annotate("text", label="p2", x = 0.34, y = mean_p2_E0, size=3)+
+  annotate("text", label="Species 1", x = 1, y = -0.0053, size=3)+
+  annotate("text", label="Species 2", x = 2, y = -0.0053, size=3)
+
+C <- ggplot2::ggplot(data=marginals_p1, aes(x=X, y=mean))+
+  ggplot2::geom_line(colour="midnightblue")+
+  ggplot2::geom_line(data=marginals_p2, colour="orange")+
+  ggplot2::coord_cartesian(xlim=c(minX, maxX), ylim = c(-0.004, 0.009), clip = "off")+
+  ggplot2::geom_point(ggplot2::aes(x=x0, y=mean_p1_E0), colour="midnightblue") +
+  ggplot2::geom_point(ggplot2::aes(x=x0, y=mean_p2_E0), colour="orange")+
+  ggplot2::geom_errorbar(ggplot2::aes(x=x0,
+                                      ymin=mean_p1_E0-sd(p1_E0$Perf),
+                                      ymax=mean_p1_E0+sd(p1_E0$Perf)),
+                         colour="midnightblue",
+                         width=0.5,
+                         size=0.2)+
+  ggplot2::geom_errorbar(ggplot2::aes(x=x0,
+                                      ymin=mean_p2_E0-sd(p2_E0$Perf),
+                                      ymax=mean_p2_E0+sd(p2_E0$Perf)),
+                         colour="orange",
+                         width=0.5,
+                         size=0.2)+
+  ggplot2::theme(plot.background = ggplot2::element_blank(),
+                 panel.grid.major = ggplot2::element_blank(),
+                 panel.grid.minor = ggplot2::element_blank(),
+                 panel.border = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size = 12),
+                 legend.position="none",
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank(),
+                 plot.margin = unit(c(5.5, 5.5, 10, 10), "pt"),
+                 axis.title.x = element_text(vjust=-3),
+                 axis.title.y = element_text(vjust=4))+
+  ggplot2::labs(x="x", y = "Performance")+
+  ggplot2::labs(x="x", y = "Performance")+
+  ggplot2::geom_segment(ggplot2::aes(x = x0,
+                                     y = -0.0045,
+                                     xend = x0,
+                                     yend = max(mean_p1_E0,mean_p2_E0)),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = x1,
+                                     y = -0.0045,
+                                     xend = x1,
+                                     yend = max(mean_p1_E1,mean_p2_E1)),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = x0-3.7,
+                                     y = mean_p1_E0,
+                                     xend = x0,
+                                     yend = mean_p1_E0),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = x0-3.7,
+                                     y = mean_p2_E0,
+                                     xend = x0,
+                                     yend = mean_p2_E0),
+                        linetype="dashed",
+                        size=0.1)+
+  annotate("text", label="p1", x = x0-4.1, y = mean_p1_E0, size=3)+
+  annotate("text", label="p2", x = x0-4.1, y = mean_p2_E0, size=3)+
+  annotate("text", label="x0", x = x0, y = -0.0053, size=3)+
+  annotate("text", label="x1", x = x1, y = -0.0053, size=3)
+
+
+D <- ggplot2::ggplot(data=p1, ggplot2::aes(x=X, y=Y, z=Perf)) +
+  ggplot2::geom_contour(data=p1, colour="midnightblue")+
+  ggplot2::geom_contour(data=p2, ggplot2::aes(x=X, y=Y, z=Perf), colour="orange")+
+  ggplot2::coord_cartesian(xlim=c(minX, maxX), ylim=c(-5.1, 28), clip="off")+
+  ggplot2::geom_segment(ggplot2::aes(x = -5.7,
+                                     y = y0,
+                                     xend = 10,
+                                     yend = y0),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = -5.7,
+                                     y = y1,
+                                     xend = 10,
+                                     yend = y1),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = x0,
+                                     y = -6,
+                                     xend = x0,
+                                     yend = 28),
+                        linetype="dashed",
+                        size=0.1)+
+  ggplot2::geom_segment(ggplot2::aes(x = x1,
+                                     y = -6,
+                                     xend = x1,
+                                     yend = 28),
+                        linetype="dashed",
+                        size=0.1)+
+  annotate("text", label="x0", x = x0, y = -8.1, size=3)+
+  annotate("text", label="x1", x = x1, y = -8.1, size=3)+
+  annotate("text", label="y0", x =-6.2, y = y0, size=3)+
+  annotate("text", label="y1", x =-6.2, y = y1, size=3)+
+  ggplot2::theme(plot.background = ggplot2::element_blank(),
+                 panel.grid.major = ggplot2::element_blank(),
+                 panel.grid.minor = ggplot2::element_blank(),
+                 panel.border = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size = 12),
+                 legend.position="none",
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank(),
+                 plot.margin = unit(c(5.5, 5.5, 10, 10), "pt"),
+                 axis.title.x = element_text(vjust=-3),
+                 axis.title.y = element_text(vjust=4))+
+  ggplot2::labs(x="x", y = "y")
+
+Fig_1 <- ggpubr::ggarrange(A, D, B, C,
+                           labels=c("A", "C", "B", "D"),
+                           widths = c(1,1.3),
+                           hjust=c(-3, -3, -3, -3),
+                           vjust=c(2, 2, 2, 2))
+ggplot2::ggsave(file=here::here("outputs", "Fig_1.png"),
+                Fig_1,
+                width= 16.6,
+                height=16.6/1.5,
+                units='cm', 
+                dpi=300,
+                bg="white")
+
+```
+
+```{r Fig1}
+knitr::include_graphics(here::here("outputs", "Fig_1.png"))
+```
 
 # Code implementation
 
