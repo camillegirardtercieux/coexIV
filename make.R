@@ -78,9 +78,11 @@ file.copy(here::here("analyses", "tropical_analysis", "tropical_analysis.html"),
 ### Full supplementary ###
 #########################################
 
+pdf_format <- bookdown::pdf_book(toc = TRUE, toc_float = TRUE, number_sections = TRUE, includes=list(in_header=here::here("header.tex"), before_body=here::here("doc_prefix.tex")))
+
 rmarkdown::render(here::here("analyses","full_supplementary.Rmd"), output_format = "all")
 
-rmarkdown::render(here::here("analyses","full_supplementary.Rmd"), output_format = "bookdown::pdf_book")
+rmarkdown::render(here::here("analyses","full_supplementary.Rmd"), output_format = pdf_format)
 
 rmarkdown::render(here::here("analyses","full_supplementary.Rmd"), output_format = "bookdown::html_document2")
 

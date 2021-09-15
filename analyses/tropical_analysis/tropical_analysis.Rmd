@@ -37,46 +37,65 @@ always_allow_html: true
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
 
-In this section, we aim at exploring the intraspecific variability of tree growth in three natural hyperdiverse tropical forests.  First, we estimate the intraspecific variance of annualised growth in the three datasets using a hierarchical bayesian model. Then, we test if we can detect spatial structure in individual mean growth. Finally, we test if intraspecific variability is higher than interspecific variability.
+In this section, we aimed at exploring the intraspecific variability of tree growth in three hyperdiverse mature forests across the Tropics. First, for each dataset, we estimated the intraspecific variance of annualized growth using a hierarchical bayesian model. Then, we tested if spatial structure in individual mean growth could be detected. Finally, we tested if intraspecific variability was higher than interspecific variability in individual mean growth.
 
 # Datasets
 
 ## Paracou
 
-The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm . The studied 93,75 ha area harbours 768 species, 254 genera and 65 families of plants. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow ( < 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site, which is managed by the CIRAD but is open to the scientific community. Here, we used data from a silvicultural experiment called the “disturbance experiment” where 15 plots of 6,25 ha were exposed to four different logging conditions between 1986 and 1988. Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November). The final dataset contains ca. 46000 tree measurements.
+The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm. The studied 93,75-ha area harbours 768 species, 254 genera and 65 families of plants. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow (< 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site (https://paracou.cirad.fr/). Here, we used data from a disturbance experiment, where 15 plots of 6.25 ha were exposed to four different logging intensities between 1986 and 1988. Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November). The final dataset contains ca. 46,000 tree measurements.
+
+Figure \@ref(fig:IncludePlotParacou) shows the location of the trees in the Paracou site.
+
+```{r IncludePlotParacou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
+```
+
 
 
 ## Uppangala
 
-The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. The studied area, of 5.07 ha, is quite steep, with a mean slope angle of about 30–35°. The plots are five north–south oriented transects, 20 m wide, 180 to 370 m long, and 100 m apart center to center and three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The final dataset contains measurements of 3870 trees and 102 species (including 2 morphospecies). This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
+The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, and was established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. The studied area, of 5.07 ha, is quite steep, with a mean slope angle of about 30–35°. The plots consist in five North–South oriented transects that are 20-m wide, 180- to 370-m long, and 100-m apart center to center, in addition to three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The final dataset contains measurements of 3,870 trees of 102 species (including 2 morphospecies). This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
+
+Figure \@ref(fig:IncludePlotUppangala) shows the location of the trees in Uppangala.
+
+
+```{r IncludePlotUppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Uppangala_site.png"))
+```
 
 
 ## BCI
 
 The Barro Colorado Island site is located in central America, in Panama, covered by a lowland tropical moist forest. The zone became an island after a valley was flooded in order to build the Panama Canal, in 1913. It is nowadays considered as the most intensively studied tropical forest in the world. The studied site is a 50 ha plot (500 $\times$ 1000 m). It has an elevation of 120 m and is quite flat (most slopes are gentler than 10°). Complete censuses of all trees with DBH $\ge$ 1 cm have been performed every 5 years since 1980. The dataset contains measurements of 328 tree species and 423617 trees, and when only taking into account trees with DBH $\ge$ 10 cm, it contains measurements of  255 species and 37224 trees. The dataset is available at [@condit_complete_2019].
 
+Figure \@ref(fig:IncludePlotBCI) shows the location of the selected trees in BCI.
+
+
+```{r IncludePlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
+```
+
 
 # Data preparation
 
 ## Paracou
 
-We first charge the original data (plots 1 to 15).
+We used the plots 1 to 15 of the Paracou site.
+
 
 ```{r ChargeParacou, message=FALSE, warning=FALSE}
 Paracou <- coexIV::read_data_paracou()
 ```
 
 
-```{r PlotParacou, fig.cap = "Plots at the Paracou site. Each point is a tree."}
+```{r ProducePlotParacou}
 g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")
-ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
+ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 ```
 
-Figure \@ref(fig:PlotParacou) shows the location of the trees in Paracou.
-
-We then compute annualised growth between two censuses and rename all indeterminate species with the same name. Growth is computed as the difference of DBH (Diameter at Breast Height) between two consecutive censuses, divided by the time period between those two censuses.
+We computed annualized growth between two censuses and removed all trees of undetermined species. Growth was computed as the difference of DBH (Diameter at Breast Height) between two consecutive censuses, divided by the time period between those two censuses.
 
 ```{r GrowthParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::compute_growth_paracou(Paracou)
@@ -87,13 +106,11 @@ rm(Paracou)
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-There are `r length(unique(Paracou_no_mean$Sp))` species, `r length(unique(Paracou_no_mean$idTree))` trees and `r nrow(Paracou)` observations in this dataset.
-
 ```{r RenameSpeciesParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::rename_indet_paracou(Paracou_no_mean) %>% coexIV::create_identspecies()
 ```
 
-Then we remove the observations where growth < -2 mm/an or > 100 mm/an and remove the years before the perturbations were performed and the biodiversity plots were added (1985-1991).
+We then removed estimates with  a growth < -2 mm/an or > 100 mm/an and removed the years before the perturbations were performed and the biodiversity plots were added (1985-1991).
 
 ```{r RemoveValuesParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- Paracou_no_mean[Paracou_no_mean$G_tp1_corr>(-2)&Paracou_no_mean$G_tp1_corr<100,]
@@ -107,9 +124,9 @@ save(Paracou_no_mean, file = here::here("outputs", "tropical_analysis", "Paracou
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-There are `r length(unique(Paracou_no_mean$Sp))` species and `r length(unique(Paracou_no_mean$idTree))` and `r nrow(Paracou_no_mean)` trees at this step.
+This led to a dataset with `r nrow(Paracou_no_mean)` growth estimates for `r length(unique(Paracou_no_mean$idTree))` trees of `r length(unique(Paracou_no_mean$Sp))` species.
 
-We finally compute mean annual growth. Mean growth is computed as the difference of DBH between the first and the last time a tree was measured, divided by the period between those two measures.
+We finally computed the mean annual growth for each individual tree in this final dataset as the difference of DBH between the first and the last time a tree was measured, divided by the period between those two measurements.
 
 ```{r MeanGrowthParacou, message=FALSE, warning=FALSE, paged.print=TRUE}
 Data_Paracou <- coexIV::compute_mean_growth_paracou(Paracou_no_mean)
@@ -126,27 +143,20 @@ load(here::here("outputs", "tropical_analysis", "Data_Paracou.RData"))
 
 ## Uppangala
 
-We first charge the original data.
-
 ```{r ChargeUppangala}
 load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
 
 ```
 
 
-```{r PlotUppangala, fig.cap="Plots at Uppangala site. Each point is a tree."}
+```{r ProducePlotUppangala}
 g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
 #Save as png and include in order to make the pdf lighter
-ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Uppangala_site.png"))
+ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
 
 ```
 
-Figure \@ref(fig:PlotUppangala) shows the location of the trees in Uppangala.
-
-There are `r length(unique(upsp.dataset$SpCode))` species, `r length(unique(upsp.dataset$TreeID))` and `r nrow(upsp.dataset)` observations in this dataset.
-
-We then remove the census dates which were not common for all plots.
+We removed the census dates which were not common for all plots.
 
 ```{r RemoveYearsUppangala, eval=FALSE, include=FALSE}
 Uppangala_no_mean <- upsp.dataset[which(upsp.dataset$date>1339),]
@@ -158,7 +168,7 @@ Species_list_Uppangala <- read.table(here::here("data", "Uppangala", "Species_li
 Uppangala_no_mean$Sp <- Species_list_Uppangala$LatinName[match(Uppangala_no_mean$SpCode, Species_list_Uppangala$SpCode)]
 ```
 
-We then compute annualised growth and remove the lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
+We then computed annualized growth between two censuses as for the Paracou site and removed estimates with a growth >100 mm/y or < -2 mm/y.
 
 ```{r GrowthUppangala, eval=FALSE, include=FALSE}
 Uppangala_no_mean <- coexIV::compute_growth_uppangala(Uppangala_no_mean)
@@ -178,9 +188,10 @@ save(Uppangala_no_mean, file = here::here("outputs", "tropical_analysis", "Uppan
 load(here::here("outputs", "tropical_analysis", "Uppangala_no_mean.RData"))
 ```
 
-Thus there are `r length(unique(Uppangala_no_mean$SpCode))` species, `r length(unique(Uppangala_no_mean$TreeID))` trees  and `r nrow(Uppangala_no_mean)` observations after annual growth computation.
+This led to a dataset with `r nrow(Uppangala_no_mean)` growth estimates for `r length(unique(Uppangala_no_mean$TreeID))` trees of `r length(unique(Uppangala_no_mean$SpCode))` species.
 
-We finally compute mean annual growth.
+
+We finally computed mean annual growth as for the Paracou site.
 
 ```{r MeanGrowthUppangala, eval=FALSE, include=FALSE}
 Data_Uppangala <- coexIV::compute_mean_growth_uppangala(Uppangala_no_mean)
@@ -199,33 +210,26 @@ load(here::here("outputs", "tropical_analysis", "Data_Uppangala.RData"))
 
 ## BCI
 
-We first load the original data.
-
 ```{r ChargeBCI, include=FALSE}
 BCI <- coexIV::read_data_bci()
 load(here::here("data", "BCI", "bci.spptable.rdata"))
 BCI$Sp <- bci.spptable$Latin[match(BCI$sp, bci.spptable$sp)]
 ```
 
-There are `r length(unique(BCI$sp))` species, `r length(unique(BCI$treeID))` trees and `r nrow(BCI)` observations in this dataset.
-
-We then remove the lines with missing DBH measures and trees with DBH < 10 cm for consistence with the other datasets.
+We removed the trees with missing DBH measures and trees with DBH < 10 cm for consistency with the Paracou and Uppangala sites.
 
 ```{r RemoveValuesBCI, include=FALSE}
 BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
 BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
 ```
 
-```{r PlotBCI, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
+```{r ProducePlotBCI}
 g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
 #Save as png and include in order to make the pdf lighter
-ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
+ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
 ```
 
-Figure \@ref(fig:PlotBCI) shows the location of the selected trees in BCI.
-
-We then compute annualised growth and remove lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
+We then computed annualized growth as for the Paracou site and removed estimates with a growth >100 mm/y or < -2 mm/y.
 
 ```{r GrowthBCI, eval=FALSE, include=FALSE}
 BCI_no_mean <- compute_growth_BCI(BCI)
@@ -246,9 +250,9 @@ save(BCI_no_mean, file = here::here("outputs", "tropical_analysis", "BCI_no_mean
 load(here::here("outputs", "tropical_analysis", "BCI_no_mean.RData"))
 ```
 
-There are now `r length(unique(BCI_no_mean$sp))` species and `r length(unique(BCI_no_mean$treeID))` trees and `r nrow(BCI_no_mean)` observations.
+This led to a dataset with `r nrow(BCI_no_mean)` growth estimates for `r length(unique(BCI_no_mean$treeID))` trees of `r length(unique(BCI_no_mean$sp))` species.
 
-We finally compute mean annual growth.
+We finally computed mean annual growth as for the Paracou site.
 
 ```{r MeanGrowthBCI, eval=FALSE, include=FALSE}
 Data_BCI <- compute_mean_growth_BCI(BCI_no_mean)
@@ -281,7 +285,7 @@ knitr::include_graphics(
 
 ```
 
-These diagrams (Figure \@ref(fig:AbundanceDiagrams)) can help to visualise how diverse the tropical forest is, but also that there are few dominant species and many rare species (long threshold).
+These diagrams (Figure \@ref(fig:AbundanceDiagrams)) enable us to visualise how diverse the tropical forest is, but also that there are few dominant species and many rare species (long threshold).
 
 # Estimation of IV
 
@@ -354,14 +358,14 @@ load(here::here("outputs", "tropical_analysis", "brms_mod_Paracou.RData"))
 
 ```{r MCMCTraceParacou, fig.cap = "Trace of the posterior estimates for Paracou"}
 g <- brms::mcmc_plot(brms_mod, type="trace")
-ggplot2::ggsave(filename="MCMC_trace_Paracou.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename="MCMC_trace_Paracou.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_Paracou.png"))
 
 ```
 
 ```{r MCMCDensityParacou, fig.cap = "Density of the posterior estimates for Paracou"}
 g <- brms::mcmc_plot(brms_mod, type="dens")
-ggplot2::ggsave(filename="MCMC_density_Paracou.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename="MCMC_density_Paracou.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_density_Paracou.png"))
 
 ```
@@ -413,13 +417,13 @@ load(here::here("outputs", "tropical_analysis", "brms_mod_Uppangala.RData"))
 ```{r MCMCTraceUppangala, fig.cap = "Trace of the posterior estimates for Paracou"}
 
 g <- brms::mcmc_plot(brms_mod, type="trace")
-ggplot2::ggsave(filename="MCMC_trace_Uppangala.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename="MCMC_trace_Uppangala.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_Uppangala.png"))
 ```
 
 ```{r MCMCDensityUppangala, fig.cap = "Density of the posterior estimates for Uppangala"}
 g <- brms::mcmc_plot(brms_mod, type="dens")
-ggplot2::ggsave(filename="MCMC_density_Uppangala.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename="MCMC_density_Uppangala.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_density_Uppangala.png"))
 ```
 
@@ -472,7 +476,7 @@ load(here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData"))
 ```{r MCMCTraceBCI, fig.cap = "Trace of the posterior estimates for BCI"}
 
 g <- brms::mcmc_plot(brms_mod, type="trace")
-ggplot2::ggsave(filename="MCMC_trace_BCI.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename="MCMC_trace_BCI.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_BCI.png"))
 
 ```
@@ -643,13 +647,13 @@ Plot_prop_var_BCI <- ggplot2::ggplot(Prop_var_BCI, ggplot2::aes(x="", y=amount, 
     plot.title = ggplot2::element_text(vjust = - 7)) +
   ggplot2::scale_fill_viridis_d()
 
-ggplot2::ggsave(filename = "Variance_partition_Paracou.png", plot = Plot_prop_var_Paracou, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 5, height = 5)
+ggplot2::ggsave(filename = "Variance_partition_Paracou.png", plot = Plot_prop_var_Paracou, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 5, height = 5, dpi=300)
 
 
-ggplot2::ggsave(filename = "Variance_partition_Uppangala.png", plot = Plot_prop_var_Uppangala, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 5, height = 5)
+ggplot2::ggsave(filename = "Variance_partition_Uppangala.png", plot = Plot_prop_var_Uppangala, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 5, height = 5, dpi=300)
 
 
-ggplot2::ggsave(filename = "Variance_partition_BCI.png", plot = Plot_prop_var_BCI, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 5, height = 5)
+ggplot2::ggsave(filename = "Variance_partition_BCI.png", plot = Plot_prop_var_BCI, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 5, height = 5, dpi=300)
 
 ```
 

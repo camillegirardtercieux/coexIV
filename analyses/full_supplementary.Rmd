@@ -1,119 +1,86 @@
 ---
-title: "Supplementary material"
-subtitle: "Rethinking the role of intraspecific variability in species coexistence"
-author:
-- Camille Girard-Tercieux (1, camillegirardtercieux@protonmail.com)
-- Isabelle Maréchaux (1)
-- Adam T. Clark (2)
-- James S. Clark(3,4)
-- Benoît Courbaud (4)
-- Claire Fortunel (1)
-- Joannès Guillemot (5)
-- Georges Künstler (4)
-- Guerric le Maire (5)
-- Raphaël Pélissier (1, 6)
-- Nadja Rüger (7, 8, 9)
-- Ghislain Vieilledent (1)
 output:
   bookdown::html_document2:
     toc: true
     toc_float: true
     number_sections: true
-  bookdown::pdf_book:
-    toc: false
-    toc_float: true
-    number_sections: true
 bibliography: "`r here::here('References.bib')`"
 csl: "`r here::here('trends-in-ecology-and-evolution.csl')`"
-header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{longtable}
-  - \usepackage{array}
-  - \usepackage{multirow}
-  - \usepackage{wrapfig}
-  - \usepackage{float}
-  - \usepackage{colortbl}
-  - \usepackage{pdflscape}
-  - \usepackage{tabu}
-  - \usepackage{threeparttable}
-  - \usepackage{threeparttablex}
-  - \usepackage[normalem]{ulem}
-  - \usepackage{makecell}
-  - \usepackage{xcolor}
-  - \usepackage{float}
-  - \floatplacement{figure}{H}
-  - \usepackage{chngcntr}
-  - \counterwithin{figure}{section}
 always_allow_html: true
 ---
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
-
-1. AMAP, Univ. Montpellier, CIRAD, CNRS, INRAE, IRD, Montpellier, France
-2. Institute of Biology, Karl‐Franzens University of Graz, Graz, Austria
-3. Nicholas School of the Environment, Duke University, Durham (NC), USA
-4. Univ. Grenoble Alpes, INRAE, LESSEM, F-38402 St‐Martin‐d'Hères, France
-5. Eco&Sols, Univ. Montpellier, CIRAD, INRAE, IRD, Institut Agro, Montpellier, France
-6. Department of Ecology, French Institute of Pondicherry, Puducherry, India
-7. Department of Economics, University of Leipzig, Leipzig, Germany
-8. German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig, Leipzig, Germany
-9. Smithsonian Tropical Research Institute, Balboa, Panama
 
 
 # Body of evidence
 
-We used literature and data analyses of various nature to support our opinions.
+We used literature and data analyses of various nature to support our opinions. Figure \@ref(fig:Bodyofevidence) illustrates how these elements articulate together.
 
 ```{r Bodyofevidence, echo=FALSE, fig.cap="The body of evidence used to support the opinion of the paper"}
 knitr::include_graphics(here::here("data", "Body-of-evidences.png"))
 ```
 
-Figure \@ref(fig:Bodyofevidence) illustrates how these elements articulate together.
-Following are the details of the three data analyses cited in the figure.
-
 # Analysis of tropical forest inventory data
 
-In this section, we aim at exploring the intraspecific variability of tree growth in three natural hyperdiverse tropical forests.  First, we estimate the intraspecific variance of annualised growth in the three datasets using a hierarchical bayesian model. Then, we test if we can detect spatial structure in individual mean growth. Finally, we test if intraspecific variability is higher than interspecific variability.
+In this section, we aimed at exploring the intraspecific variability of tree growth in three hyperdiverse mature forests across the Tropics. First, for each dataset, we estimated the intraspecific variance of annualized growth using a hierarchical bayesian model. Then, we tested if spatial structure in individual mean growth could be detected. Finally, we tested if intraspecific variability was higher than interspecific variability in individual mean growth.
 
 ## Datasets
 
 ### Paracou
 
-The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm . The studied 93,75 ha area harbours 768 species, 254 genera and 65 families of plants. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow ( < 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site, which is managed by the CIRAD but is open to the scientific community. Here, we used data from a sylvicultural experiment called the “disturbance experiment” where 15 plots of 6,25 ha were exposed to four different logging conditions between 1986 and 1988. Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November). The final dataset contains ca. 46000 tree measurements.
+The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm. The studied 93,75-ha area harbours 768 species, 254 genera and 65 families of plants. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow (< 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site (https://paracou.cirad.fr/). Here, we used data from a disturbance experiment, where 15 plots of 6.25 ha were exposed to four different logging intensities between 1986 and 1988. Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November). The final dataset contains ca. 46,000 tree measurements.
+
+Figure \@ref(fig:IncludePlotParacou) shows the location of the trees in the Paracou site.
+
+```{r IncludePlotParacou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
+```
 
 
 ### Uppangala
 
-The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. The studied area, of 5.07 ha, is quite steep, with a mean slope angle of about 30–35°. The plots are five north–south oriented transects, 20 m wide, 180 to 370 m long, and 100 m apart center to center and three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The final dataset contains measurements of 3870 trees and 102 species (including 2 morphospecies). This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
+The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, and was established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. The studied area, of 5.07 ha, is quite steep, with a mean slope angle of about 30–35°. The plots consist in five North–South oriented transects that are 20-m wide, 180- to 370-m long, and 100-m apart center to center, in addition to three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The final dataset contains measurements of 3,870 trees of 102 species (including 2 morphospecies). This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
+
+Figure \@ref(fig:IncludePlotUppangala) shows the location of the trees in Uppangala.
+
+
+```{r IncludePlotUppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Uppangala_site.png"))
+```
 
 
 ### BCI
 
 The Barro Colorado Island site is located in central America, in Panama, covered by a lowland tropical moist forest. The zone became an island after a valley was flooded in order to build the Panama Canal, in 1913. It is nowadays considered as the most intensively studied tropical forest in the world. The studied site is a 50 ha plot (500 $\times$ 1000 m). It has an elevation of 120 m and is quite flat (most slopes are gentler than 10°). Complete censuses of all trees with DBH $\ge$ 1 cm have been performed every 5 years since 1980. The dataset contains measurements of 328 tree species and 423617 trees, and when only taking into account trees with DBH $\ge$ 10 cm, it contains measurements of  255 species and 37224 trees. The dataset is available at [@condit_complete_2019].
 
+Figure \@ref(fig:IncludePlotBCI) shows the location of the selected trees in BCI.
+
+
+```{r IncludePlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
+```
+
 
 ## Data preparation
 
 ### Paracou
 
-We first charge the original data (plots 1 to 15).
+We used the plots 1 to 15 of the Paracou site.
+
 
 ```{r ChargeParacou, message=FALSE, warning=FALSE}
 Paracou <- coexIV::read_data_paracou()
 ```
 
 
-```{r PlotParacou, fig.cap = "Plots at the Paracou site. Each point is a tree."}
+```{r ProducePlotParacou}
 g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")
-ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
+ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 ```
 
-Figure \@ref(fig:PlotParacou) shows the location of the trees in Paracou.
-
-We then compute annualised growth between two censuses and rename all indeterminate species with the same name. Growth is computed as the difference of DBH (Diameter at Breast Height) between two consecutive censuses, divided by the time period between those two censuses.
+We computed annualized growth between two censuses and removed all trees of undetermined species. Growth was computed as the difference of DBH (Diameter at Breast Height) between two consecutive censuses, divided by the time period between those two censuses.
 
 ```{r GrowthParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::compute_growth_paracou(Paracou)
@@ -124,13 +91,11 @@ rm(Paracou)
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-There are `r length(unique(Paracou_no_mean$Sp))` species, `r length(unique(Paracou_no_mean$idTree))` trees and `r nrow(Paracou)` observations in this dataset.
-
 ```{r RenameSpeciesParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::rename_indet_paracou(Paracou_no_mean) %>% coexIV::create_identspecies()
 ```
 
-Then we remove the observations where growth < -2 mm/an or > 100 mm/an and remove the years before the perturbations were performed and the biodiversity plots were added (1985-1991).
+We then removed estimates with  a growth < -2 mm/an or > 100 mm/an and removed the years before the perturbations were performed and the biodiversity plots were added (1985-1991).
 
 ```{r RemoveValuesParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- Paracou_no_mean[Paracou_no_mean$G_tp1_corr>(-2)&Paracou_no_mean$G_tp1_corr<100,]
@@ -144,9 +109,9 @@ save(Paracou_no_mean, file = here::here("outputs", "tropical_analysis", "Paracou
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-There are `r length(unique(Paracou_no_mean$Sp))` species and `r length(unique(Paracou_no_mean$idTree))` and `r nrow(Paracou_no_mean)` trees at this step.
+This led to a dataset with `r nrow(Paracou_no_mean)` growth estimates for `r length(unique(Paracou_no_mean$idTree))` trees of `r length(unique(Paracou_no_mean$Sp))` species.
 
-We finally compute mean annual growth. Mean growth is computed as the difference of DBH between the first and the last time a tree was measured, divided by the period between those two measures.
+We finally computed the mean annual growth for each individual tree in this final dataset as the difference of DBH between the first and the last time a tree was measured, divided by the period between those two measurements.
 
 ```{r MeanGrowthParacou, message=FALSE, warning=FALSE, paged.print=TRUE}
 Data_Paracou <- coexIV::compute_mean_growth_paracou(Paracou_no_mean)
@@ -163,7 +128,6 @@ load(here::here("outputs", "tropical_analysis", "Data_Paracou.RData"))
 
 ### Uppangala
 
-We first charge the original data.
 
 ```{r ChargeUppangala}
 load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
@@ -171,19 +135,14 @@ load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
 ```
 
 
-```{r PlotUppangala, fig.cap="Plots at Uppangala site. Each point is a tree."}
+```{r ProducePlotUppangala}
 g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
 #Save as png and include in order to make the pdf lighter
-ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Uppangala_site.png"))
+ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
 
 ```
 
-Figure \@ref(fig:PlotUppangala) shows the location of the trees in Uppangala.
-
-There are `r length(unique(upsp.dataset$SpCode))` species, `r length(unique(upsp.dataset$TreeID))` and `r nrow(upsp.dataset)` observations in this dataset.
-
-We then remove the census dates which were not common for all plots.
+We removed the census dates which were not common for all plots.
 
 ```{r RemoveYearsUppangala, eval=FALSE, include=FALSE}
 Uppangala_no_mean <- upsp.dataset[which(upsp.dataset$date>1339),]
@@ -195,7 +154,7 @@ Species_list_Uppangala <- read.table(here::here("data", "Uppangala", "Species_li
 Uppangala_no_mean$Sp <- Species_list_Uppangala$LatinName[match(Uppangala_no_mean$SpCode, Species_list_Uppangala$SpCode)]
 ```
 
-We then compute annualised growth and remove the lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
+We then computed annualized growth between two censuses as for the Paracou site and removed estimates with a growth >100 mm/y or < -2 mm/y.
 
 ```{r GrowthUppangala, eval=FALSE, include=FALSE}
 Uppangala_no_mean <- coexIV::compute_growth_uppangala(Uppangala_no_mean)
@@ -215,9 +174,10 @@ save(Uppangala_no_mean, file = here::here("outputs", "tropical_analysis", "Uppan
 load(here::here("outputs", "tropical_analysis", "Uppangala_no_mean.RData"))
 ```
 
-Thus there are `r length(unique(Uppangala_no_mean$SpCode))` species, `r length(unique(Uppangala_no_mean$TreeID))` trees  and `r nrow(Uppangala_no_mean)` observations after annual growth computation.
+This led to a dataset with `r nrow(Uppangala_no_mean)` growth estimates for `r length(unique(Uppangala_no_mean$TreeID))` trees of `r length(unique(Uppangala_no_mean$SpCode))` species.
 
-We finally compute mean annual growth.
+
+We finally computed mean annual growth as for the Paracou site.
 
 ```{r MeanGrowthUppangala, eval=FALSE, include=FALSE}
 Data_Uppangala <- coexIV::compute_mean_growth_uppangala(Uppangala_no_mean)
@@ -236,40 +196,32 @@ load(here::here("outputs", "tropical_analysis", "Data_Uppangala.RData"))
 
 ### BCI
 
-We first load the original data.
-
 ```{r ChargeBCI, include=FALSE}
 BCI <- coexIV::read_data_bci()
 load(here::here("data", "BCI", "bci.spptable.rdata"))
 BCI$Sp <- bci.spptable$Latin[match(BCI$sp, bci.spptable$sp)]
 ```
 
-There are `r length(unique(BCI$sp))` species, `r length(unique(BCI$treeID))` trees and `r nrow(BCI)` observations in this dataset.
-
-We then remove the lines with missing DBH measures and trees with DBH < 10 cm for consistence with the other datasets.
+We removed the trees with missing DBH measures and trees with DBH < 10 cm for consistency with the Paracou and Uppangala sites.
 
 ```{r RemoveValuesBCI, include=FALSE}
 BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
 BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
 ```
 
-```{r PlotBCI, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
+```{r ProducePlotBCI}
 g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
 #Save as png and include in order to make the pdf lighter
-ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5)
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
+ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
 ```
 
-Figure \@ref(fig:PlotBCI) shows the location of the selected trees in BCI.
-
-We then compute annualised growth and remove lines with a growth higher than 100 mm/y or inferior to -2 mm/y.
+We then computed annualized growth as for the Paracou site and removed estimates with a growth >100 mm/y or < -2 mm/y.
 
 ```{r GrowthBCI, eval=FALSE, include=FALSE}
 BCI_no_mean <- compute_growth_BCI(BCI)
 rm(BCI)
 gc()
 ```
-
 
 ```{r RemoveValuesBCI2, eval=FALSE, include=FALSE}
 BCI_no_mean <- BCI_no_mean[BCI_no_mean$G_tp1>(-2)&BCI_no_mean$G_tp1<100,]
@@ -283,9 +235,9 @@ save(BCI_no_mean, file = here::here("outputs", "tropical_analysis", "BCI_no_mean
 load(here::here("outputs", "tropical_analysis", "BCI_no_mean.RData"))
 ```
 
-There are now `r length(unique(BCI_no_mean$sp))` species and `r length(unique(BCI_no_mean$treeID))` trees and `r nrow(BCI_no_mean)` observations.
+This led to a dataset with `r nrow(BCI_no_mean)` growth estimates for `r length(unique(BCI_no_mean$treeID))` trees of `r length(unique(BCI_no_mean$sp))` species.
 
-We finally compute mean annual growth.
+We finally computed mean annual growth as for the Paracou site.
 
 ```{r MeanGrowthBCI, eval=FALSE, include=FALSE}
 Data_BCI <- compute_mean_growth_BCI(BCI_no_mean)
@@ -318,7 +270,7 @@ knitr::include_graphics(
 
 ```
 
-These diagrams (Figure \@ref(fig:AbundanceDiagrams)) can help to visualise how diverse the tropical forest is, but also that there are few dominant species and many rare species (long threshold).
+These diagrams (Figure \@ref(fig:AbundanceDiagrams)) enable us to visualise how diverse the tropical forest is, but also that there are few dominant species and many rare species (long threshold).
 
 ## Estimation of IV
 
@@ -906,12 +858,14 @@ We here used data on tree growth, which is one component of individual fitness a
 
 # Analysis of an Eucalyptus clonal plantation dataset
 
-In this analysis we test whether intraspecific variability (IV) in observed individual tree growth can emerge from the environment. To this aim, we use a clonal experimental setup. The EUCFLUX common garden is a clonal trial where 14 Eucalyptus clones are grown in a replicated, statistically-sound design. One of its main goals is to determine and compare the productivity of each clone. Our hypothesis on growth IV is that it mainly results from responses to environmental factors, and not only from intrinsic (here more precisely genetic) factors. Therefore, we use the EUCFLUX dataset in order to quantify IV of growth within clones, i.e. in a dataset where genetically-driven IV is nil. Following our hypothesis, we expect to detect IV in growth within single genotypes, although we also expect the genotype to influence the growth response.
+In this analysis we tested whether intraspecific variability (IV) in observed individual tree growth can emerge from the environment only. To this aim, we used a clonal experimental setup. The EUCFLUX common garden is a clonal trial where 14 Eucalyptus clones were grown in a replicated, statistically-sound design. One of its main goals is to determine and compare the productivity of each clone. Our hypothesis was that IV in tree growth mainly results from responses to environmental factors, and not only from intrinsic genetic factors. Therefore, we used the EUCFLUX dataset in order to quantify IV (within clones) for growth, i.e. in a dataset where genetically-driven IV is nil. Following our hypothesis, we expected to detect IV in growth within single genotypes.
+
 
 ## The dataset
 
-The EUCFLUX experiment is located in Brazil, in the state of São Paulo. It includes 14 clones of 5 different species or hybrids, planted at the same date and grown in 10 replicated blocks of 100 trees each, which were monitored during 6 years. Each replicated block is distant by up to 1.5 km in a 200 ha stand showing some small changes in soil properties. The details of the setup can be found in [@le_maire_light_2019]. We used the DBH measured during 5 complete censuses in order to compute annualised growth in mm/year. The raw data of the experiment was manually rearranged into six files with LibreOffice Calc, each file corresponding to a complete census.
-We computed annualised growth of each tree in mm/y as the difference between two consecutive censuses divided by the time between the two censuses. In case of mortality of the tree between two censuses, the data was discarded. We computed the neperian logarithm of diameter and of growth (with a constant for growth in order to avoid undefined values).
+The EUCFLUX experiment is located in Brazil, in the state of São Paulo. It includes 14 genotypes of 5 different species or hybrids, planted at the same date and grown in 10 replicated blocks of 100 trees each, which were monitored during 6 years. Each replicated block is distant by up to 1.5 km in a 200 ha stand showing some small changes in soil properties. The details of the setup can be found in [@le_maire_light_2019]. We used the DBH measured during 6 complete censuses in order to compute mean annual growth in mm/year at five points in time.
+We computed the mean annual growth of each tree in mm/y as the difference between two consecutive censuses divided by the time between the two censuses. In case of mortality of the tree between two censuses, the data was discarded. We computed the neperian logarithm of diameter and growth (with a constant for growth in order to avoid undefined values).
+
 
 ```{r ChargeTheData, include=FALSE}
 Full_Data <- list()
@@ -994,7 +948,7 @@ ggplot2::ggsave(filename = "Raw_data.png", plot = g, path=here::here("outputs", 
 Data <- Raw_data
 ```
 
-The final dataset included `r nrow(Data)` DBH measurements corresponding to `r length(unique(Data$Tree))` trees.
+The dataset included `r nrow(Data)` growth estimates corresponding to `r length(unique(Data$Tree))` trees.
 
 ```{r PlotsGrowthLight, fig.cap="The original data without negative growth values (A) and the log-transformed growth (B).", message=FALSE, warning=FALSE}
 
@@ -1029,7 +983,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Plo
 
 ```
 
-Figure \@ref(fig:Coordinates) shows the disposition of the trees in a single plot. There are 14 clones times 10 repetitions, so 140 plots with this same design.
+Figure \@ref(fig:Coordinates) shows the disposition of the trees in a single plot. There are 14 genotypes times 10 repetitions, so 140 plots with this same design.
 
 ## Competition index
 
@@ -1039,7 +993,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw
 ```
 
 Figure \@ref(fig:PlotColoursDate) shows the age of the trees has a big influence on the values of growth but also on the relationship between growth and diameter : the slope is smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases.
-Therefore, we computed a competition index to integrate this effect in the growth model. The competition index is computed for each tree which is not on the edge of a plot. It is the sum of the basal areas of the 8 direct neighbours divided by the area of the rectangle that comprises all the direct neighbours. It was then log-transformed.
+Therefore, we computed a competition index $C_{i,t}$ to integrate this effect in the growth model. The competition index is computed for each tree which is not on the edge of a plot. It is the sum of the basal areas (BA) of the 8 direct neighbours divided by the area of the rectangle that comprises all the direct neighbours. It was then log-transformed. Dead neighbours are considered as having a null BA.
 
 
 $C_{i, t} = \sum BA_{neighbours(i, t)}$
@@ -1110,9 +1064,10 @@ load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 ## Statistical growth model
 
 In order to partition the variance of individual growth data, we built a hierarchical Bayesian model and used Stan and the package brms [@burkner_brms_2017 ; @burkner_advanced_2018] in Rstudio to implement it in R. We used the following parameters : n.adapt = 1000 ; n.burn = 1000 ; n.iter = 5000 ; n.thin = 5.
-Our model incorporated a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$),and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (block, $b_b$), and genotype ($b_g$).
+Our model incorporated a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$), and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (block, $b_b$), and genotype ($b_g$).
 
-Variables are scaled to help the convergence of the model.
+Variables were scaled to help the convergence of the model.
+
 
 $ln(G_{it}+1) = (\beta_0 + b_i + b_b + b_g + b_t) + \beta_1 \times ln(D_{it}) + \beta_2 \times ln(C_{it}) + \epsilon_{it}$
 
@@ -1329,7 +1284,7 @@ kableExtra::kbl(
 ```
 
 We found that the two most important contributors to variance were the date and individual identity. High estimation error for the intercept and the temporal random effect must be noted.
-The proportion of variance represented by each random effect and the residual variance are computed to visualise the variance partition.
+The proportion of variance represented by each random effect and the residual variance were computed to visualise the variance partition.
 
 
 ```{r Chart, fig.cap="Proportion of each variance component of the unexplained variance."}
@@ -1354,16 +1309,18 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Var
 ```
 
 
-The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of block was even smaller. The temporal random effects declined with the date (Figure \@ref(fig:PlotsRanef), panel A), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
-The temporal effect explained the highest fraction of variance (\@ref(tab:ResultsTable), \@ref(fig:Coordinates)). This is due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
-Importantly, variability between individuals is much higher than between genotypes. This shows that there is individual variability even if the trees are clones and, therefore, that individual variability is only caused by exogenous factors. This individual effect can be due to the micro-environment where the tree is positioned, but also to some individual history, such as seedling manipulation and plantation.
-The genotype explained only 6.1% of the variance. Therefore the impact of individual identity on growth is stronger than the effect of genotype.
-The block had the littlest impact with 2.5% of the variance explained. This means that the physical environment between blocks is quite homogeneous, or that the physical environment does not play a big role in growth. 
+The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel A), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
+The temporal effect explained the highest fraction of variance (\@ref(tab:ResultsTable), \@ref(fig:Coordinates)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
+
+Importantly, variability between individuals within genotypes (10.8%) is higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
+
+The block had the littlest impact with 2.5% of the variance explained. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
 As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions [@le_maire_light_2019], this dataset is a strongly conservative test case for our hypothesis.
+
 
 ## Conclusion
 
-Overall, we found that there is IV within clonal tree plantations. This shows that the environmental factors (in a broad sense : not genetic) have a strong impact on growth and that IV can indeed emerge within a clone.
+Overall, we found that there is IV within clonal tree plantations. This shows that IV can be due only to the environmental factors varying between individuals, proving that the source of IV is not necessarily intrinsic.
 
 # Virtual experiment with two species
 
@@ -1595,7 +1552,7 @@ scatterplot1 <- ggplot2::ggplot(Growth, ggplot2::aes(x=Light, y= Growth_sp))+
   ggplot2::labs(x= "X1",
                 y = "Y",
                 title = "Y versus X1 without genetic IV")
-ggplot2::ggsave(filename = "Plot_Light_Growth.png", plot = scatterplot1, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Plot_Light_Growth.png", plot = scatterplot1, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 
 scatterplot2 <- ggplot2::ggplot(Growth, ggplot2::aes(x=logLight, y= logGrowth_sp))+
@@ -1603,49 +1560,49 @@ scatterplot2 <- ggplot2::ggplot(Growth, ggplot2::aes(x=logLight, y= logGrowth_sp
   ggplot2::labs(x= "log(X1+constant)",
                 y = "log(Y)",
                 title = "log-transformed Y versus X1 without genetic IV")
-ggplot2::ggsave(filename = "Plot_logLight_logGrowth.png", plot = scatterplot2, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Plot_logLight_logGrowth.png", plot = scatterplot2, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 scatterplot3 <- ggplot2::ggplot(Growth, ggplot2::aes(x=Light, y= Growth))+
   ggplot2::geom_point()+
   ggplot2::labs(x= "X1",
                 y = "Y",
                 title = "Y versus X1 with genetic IV")
-ggplot2::ggsave(filename = "Plot_Light_Growth_IV.png", plot = scatterplot3, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Plot_Light_Growth_IV.png", plot = scatterplot3, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 scatterplot4 <- ggplot2::ggplot(Growth, ggplot2::aes(x=logLight, y= logGrowth))+
   ggplot2::geom_point()+
   ggplot2::labs(x= "log(X1+constant)",
                 y = "log(Y)",
                 title = "log-transformed Y versus X1 with genetic IV")
-ggplot2::ggsave(filename = "Plot_logLight_logGrowth_IV.png", plot = scatterplot4, path= here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Plot_logLight_logGrowth_IV.png", plot = scatterplot4, path= here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 histo1 <- ggplot2::ggplot(Growth, ggplot2::aes(x=Growth_sp))+
   ggplot2::geom_histogram(color="black", fill="white", bins=30)+
   ggplot2::labs(x= "Y",
                 y = "Frequency",
                 title = "Histogram of Y without genetic IV")
-ggplot2::ggsave(filename = "Histogram_Growth.png", plot = histo1, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Histogram_Growth.png", plot = histo1, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 histo2 <- ggplot2::ggplot(Growth, ggplot2::aes(x=logGrowth_sp))+
   ggplot2::geom_histogram(color="black", fill="white", bins=30)+
   ggplot2::labs(x= "log(Y)",
                 y = "Frequency",
                 title = "Histogram of log-transformed Y without genetic IV")
-ggplot2::ggsave(filename = "Histogram_logGrowth.png", plot = histo2, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Histogram_logGrowth.png", plot = histo2, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 histo3 <- ggplot2::ggplot(Growth, ggplot2::aes(x=Growth))+
   ggplot2::geom_histogram(color="black", fill="white", bins=30)+
   ggplot2::labs(x= "Y",
                 y = "Frequency",
                 title = "Histogram of Y with genetic IV")
-ggplot2::ggsave(filename = "Histogram_Growth_IV.png", plot = histo3, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Histogram_Growth_IV.png", plot = histo3, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 histo4 <- ggplot2::ggplot(Growth, ggplot2::aes(x=logGrowth))+
   ggplot2::geom_histogram(color="black", fill="white", bins=30)+
   ggplot2::labs(x= "log(Y)",
                 y = "Frequency",
                 title = "Histogram of log-transformed Y with genetic IV")
-ggplot2::ggsave(filename = "Histogram_logGrowth_IV.png", plot = histo4, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Histogram_logGrowth_IV.png", plot = histo4, path = here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 #we represent the growth of each individual at time t0
 Growth_illustration <- Growth[which(Growth$Time==1),]
@@ -1695,14 +1652,14 @@ A <- ggplot2::ggplot(Vars_t0, ggplot2::aes(x, y)) +
   ggplot2::xlab("Coordinate X")+
   ggplot2::ylab("Coordinate Y")
     
-ggplot2::ggsave(filename = "Map_growth.png", plot=A, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Map_growth.png", plot=A, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 ```
 
 ```{r HistogramsGrowth, fig.cap="Histogram of raw and log-transformed Y with and without genetic IV"}
 
 g <- ggpubr::ggarrange(histo1, histo2, histo3, histo4, ncol=2, nrow=2, labels=c("A", "B", "C", "D"))
-ggplot2::ggsave(filename="arranged_histograms_theoretical.png",path=here::here("outputs", "theoretical_model", "figures"),plot=g, device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename="arranged_histograms_theoretical.png",path=here::here("outputs", "theoretical_model", "figures"),plot=g, device = "png", width = 7, height = 5, dpi = 300)
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "arranged_histograms_theoretical.png"))
 
 ```
@@ -1711,7 +1668,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "a
 ```{r PlotsXY, fig.cap="Raw and log-transformed Y versus X1 plots with and without genetic IV"}
 
 g <- ggpubr::ggarrange(scatterplot1, scatterplot2, scatterplot3, scatterplot4, ncol=2, nrow=2, labels=c("A", "B", "C", "D"))
-ggplot2::ggsave(filename="arranged_plots_theoretical.png",path=here::here("outputs", "theoretical_model", "figures"),plot=g, device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename="arranged_plots_theoretical.png",path=here::here("outputs", "theoretical_model", "figures"),plot=g, device = "png", width = 7, height = 5, dpi = 300)
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "arranged_plots_theoretical.png"))
 ```
 
@@ -1833,7 +1790,7 @@ We visualised the convergence and the results of the models thanks to trace and 
 ```{r TraceSp1, fig.cap="Trace of the posterior of the model for Species 1 without genetic IV", message=FALSE, warning=FALSE}
 g <- brms::mcmc_plot(brms_mod_sp_1, type="trace")
 
-ggplot2::ggsave(filename = "Trace_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Trace_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_Sp1.png"))
 ```
@@ -1842,7 +1799,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```{r DensSp1, fig.cap="Density of the posterior of the model for Species 1 without genetic IV"}
 g <- brms::mcmc_plot(brms_mod_sp_1, type="dens")
 
-ggplot2::ggsave(filename = "Density_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Density_model_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Density_model_Sp1.png"))
 ```
@@ -1851,7 +1808,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "D
 ```{r TraceSp2, fig.cap="Trace of the posterior of the model for Species 2 without genetic IV", message=FALSE, warning=FALSE}
 g <- brms::mcmc_plot(brms_mod_sp_2, type="trace")
 
-ggplot2::ggsave(filename = "Trace_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Trace_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_Sp2.png"))
 ```
@@ -1860,7 +1817,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```{r DensSp2, fig.cap="Density of the posterior of the model for Species 2 without genetic IV"}
 g <- brms::mcmc_plot(brms_mod_sp_2, type="dens")
 
-ggplot2::ggsave(filename = "Dens_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Dens_model_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Dens_model_Sp2.png"))
 ```
@@ -1869,7 +1826,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "D
 ```{r TraceIVSp1, fig.cap="Trace of the posterior of the model for Species 1 with genetic IV", message=FALSE, warning=FALSE}
 g <- brms::mcmc_plot(brms_mod_sp_1_IV, type="trace")
 
-ggplot2::ggsave(filename = "Trace_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Trace_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_IV_Sp1.png"))
 ```
@@ -1878,7 +1835,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```{r DensIVSp1, fig.cap="Density of the posterior of the model for Species 1 with genetic IV"}
 g <- brms::mcmc_plot(brms_mod_sp_1_IV, type="dens")
 
-ggplot2::ggsave(filename = "Dens_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Dens_model_IV_Sp1.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Dens_model_IV_Sp1.png"))
 ```
@@ -1887,7 +1844,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "D
 ```{r TraceIVSp2, fig.cap="Trace of the posteriors of the model for Species 2 with genetic IV", message=FALSE, warning=FALSE}
 g <- brms::mcmc_plot(brms_mod_sp_2_IV, type="trace")
 
-ggplot2::ggsave(filename = "Trace_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Trace_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Trace_model_IV_Sp2.png"))
 ```
@@ -1896,7 +1853,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 ```{r DensIVSp2, fig.cap="Density of the posteriors of the model for Species 2 with genetic IV"}
 g <- brms::mcmc_plot(brms_mod_sp_2_IV, type="dens")
 
-ggplot2::ggsave(filename = "Dens_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Dens_model_IV_Sp2.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Dens_model_IV_Sp2.png"))
 ```
@@ -2007,7 +1964,7 @@ B <- ggplot2::ggplot(data=Growth[which(Growth$Time==1),], ggplot2::aes(Light, Gr
      legend.text = ggplot2::element_text(size = 10),
      text = ggplot2::element_text(size=12))
 
-ggplot2::ggsave(filename = "Partial_knowledge_model.png", plot=B, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Partial_knowledge_model.png", plot=B, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 ```
 
@@ -2100,7 +2057,7 @@ g <- ggplot2::ggplot(data=Growth[which(Growth$Time==1),], ggplot2::aes(Light, Gr
      legend.text = ggplot2::element_text(size = 10),
      text = ggplot2::element_text(size=12))
 
-ggplot2::ggsave(filename = "Partial_knowledge_model_genetic_var.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Partial_knowledge_model_genetic_var.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 ```
 
 
@@ -2113,7 +2070,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "P
 ```{r TwoPanelsFigure, fig.cap="The virtual landscape of X1 values and of Y values and the corresponding estimated relationship between X1 and Y."}
 
 g <- ggpubr::ggarrange(A, B, ncol = 2, labels = c("A", "B"))
-ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white")
+ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white", dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "landscape_relationship.png"))
 
@@ -2239,7 +2196,7 @@ g <- ggplot2::ggplot(rbind(Vario_all, Vario_1, Vario_2), ggplot2::aes(x = dist, 
     legend.text = ggplot2::element_text(size = 10),
     text = ggplot2::element_text(size=12))
 
-ggplot2::ggsave(filename = "Semivariograms.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5)
+ggplot2::ggsave(filename = "Semivariograms.png", plot = g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Semivariograms.png"))
 ```
 
@@ -2247,7 +2204,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "S
 As the semivariance between individuals of both species was higher than the semivariance between conspecifics (\@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics. Considering this response variable as a proxy of fitness, and linking fitness to competition, we argue that in a Lotka-Volterra model, this would translate into $\alpha_{i,i} > \alpha_{i,j}$, the main condition for stable coexistence.
 Therefore, stable coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
 
-# Script producing Figure 1: Reinterpreting observed intraspecific variability (IV): from niche widening to niche projection into a high-dimensional environment.
+# Code used to generate Figure 1 in the main text: _Reinterpreting observed intraspecific variability (IV): from niche widening to niche projection into a high-dimensional environment_.
 
 We obtain this figure by first generating a multivariate normal distribution.
 We then fix one of the two variables and obtain the mean and the standard deviation due to the second variable at this value.
