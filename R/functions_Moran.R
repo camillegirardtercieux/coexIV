@@ -263,7 +263,7 @@ results_moran <- function(data1, data2, data3){
     #   )
   )
   
-  colnames (Results_moran) <- c(" ", "Significant (i)", "Not significant (ii)")                      
+  colnames (Results_moran) <- c(" ", "Significant", "Not significant")                      
   return(Results_moran)
   
 }
@@ -309,7 +309,7 @@ results_moran_undisturbed <- function(data){
     )
   )
   
-  colnames (Results_moran) <- c(" ", "Significant (i)", "Not significant (ii)")                      
+  colnames (Results_moran) <- c(" ", "Significant", "Not significant")                      
   return(Results_moran)
   
 }

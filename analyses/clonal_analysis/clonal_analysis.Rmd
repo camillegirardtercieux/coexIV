@@ -33,17 +33,18 @@ header-includes:
 always_allow_html: true
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
 
-In this analysis we tested whether intraspecific variability (IV) in observed individual tree growth can emerge from the environment only. To this aim, we used a clonal experimental setup. The EUCFLUX common garden is a clonal trial where 14 Eucalyptus clones were grown in a replicated, statistically-sound design. One of its main goals is to determine and compare the productivity of each clone. Our hypothesis was that IV in tree growth mainly results from responses to environmental factors, and not only from intrinsic genetic factors. Therefore, we used the EUCFLUX dataset in order to quantify IV (within clones) for growth, i.e. in a dataset where genetically-driven IV is nil. Following our hypothesis, we expected to detect IV in growth within single genotypes.
+
+In this analysis we tested whether intraspecific variability (IV) in observed individual tree growth can emerge from the environment only. To this aim, we used a clonal experimental setup. The EUCFLUX common garden is a clonal trial where 14 Eucalyptus genotypes were grown in a replicated, statistically-sound design. One of its main goals is to determine and compare the productivity of each genotype. Our hypothesis was that IV in tree growth mainly results from responses to environmental factors, and not only from intrinsic genetic factors. Therefore, we used the EUCFLUX dataset in order to quantify IV (within genotypes) for growth, i.e. in a dataset where genetically-driven IV is nil. Following our hypothesis, we expected to detect IV in growth within single genotypes.
 
 
 # The dataset
 
 The EUCFLUX experiment is located in Brazil, in the state of São Paulo. It includes 14 genotypes of 5 different species or hybrids, planted at the same date and grown in 10 replicated blocks of 100 trees each, which were monitored during 6 years. Each replicated block is distant by up to 1.5 km in a 200 ha stand showing some small changes in soil properties. The details of the setup can be found in [@le_maire_light_2019]. We used the DBH measured during 6 complete censuses in order to compute mean annual growth in mm/year at five points in time.
-We computed the mean annual growth of each tree in mm/y as the difference between two consecutive censuses divided by the time between the two censuses. In case of mortality of the tree between two censuses, the data was discarded. We computed the neperian logarithm of diameter and growth (with a constant for growth in order to avoid undefined values).
+We computed the mean annual growth of each tree in mm/year as the difference between two consecutive censuses divided by the time between the two censuses. In case of mortality of the tree between two censuses, the data was discarded. We computed the neperian logarithm of diameter and growth (with a constant for growth in order to avoid undefined values).
 
 
 ```{r ChargeTheData, include=FALSE}
@@ -91,7 +92,7 @@ Raw_data<-Raw_data %>%
   # n() is the number of rows within the group, i.e. per tree
   dplyr::mutate(D_1 = c(NA, D_2[1:(dplyr::n()-1)]))%>%
   dplyr::mutate(Growth = D_2 - D_1)%>%
-  #growth in mm/y
+  #growth in mm/year
   dplyr::mutate(Growth_yearly=(Growth/(Dates$Interval/365))*10)%>%
   dplyr::ungroup()%>%
   dplyr::mutate(Gen=as.factor(Gen), Block=as.factor(Block), Tree=as.factor(Tree), Date=as.factor(Date))
@@ -242,8 +243,9 @@ load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 
 # Statistical growth model
 
-In order to partition the variance of individual growth data, we built a hierarchical Bayesian model and used Stan and the package brms [@burkner_brms_2017 ; @burkner_advanced_2018] in Rstudio to implement it in R. We used the following parameters : n.adapt = 1000 ; n.burn = 1000 ; n.iter = 5000 ; n.thin = 5.
-Our model incorporated a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$), and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (block, $b_b$), and genotype ($b_g$).
+In order to partition the variance of individual growth data, we built a model incorporating a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$), and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (block, $b_b$), and genotype ($b_g$).
+
+This model was fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10000 iterations, a warming period of 5000 iterations and a thinning of 5. We obtained 1000 estimates per parameter.
 
 Variables were scaled to help the convergence of the model.
 
@@ -303,12 +305,11 @@ save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData")
 
 # Results of the model and variance partitioning
 
-After convergence of the model (checked visually), we examined the variance of each random effect, and this enabled us to perform a variance partitioning.
+After convergence of the model (checked visually), we examined the proportion of the residual variance (variation of the response variables that is not explained by the covariates , i.e. in the unexplained part of the statistical model) related to each random effect, and this enabled us to perform a residual variance partitioning.
 
 ```{r LoadBRMS, include=FALSE}
 load(here::here("outputs", "clonal_analysis", "brms_mod.RData"))
 ```
-
 
 ```{r TracePosteriors, fig.cap="Trace of the posteriors of the infered parameters"}
 
@@ -319,7 +320,6 @@ ggplot2::ggsave(filename = "Trace_model.png", plot = g, path=here::here("outputs
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_model.png"))
 ```
 
-
 ```{r DensityPosteriors, fig.cap="Density of the posteriors of the inferred parameters"}
 g <- brms::mcmc_plot(brms_mod, type="dens")
 
@@ -327,7 +327,6 @@ ggplot2::ggsave(filename = "Density_posteriors.png", plot = g, path=here::here("
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Density_posteriors.png"))
 ```
-
 
 ```{r TemporalRandomEffects, fig.cap="Trace of the temporal random effects"}
 
@@ -344,7 +343,6 @@ ggplot2::ggsave(filename = "Trace_temporal_random_effects.png", plot = g, path=h
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_temporal_random_effects.png"))
 ```
 
-
 ```{r GenotypeRandomEffects, fig.cap="Trace of the genotype random effects"}
 
 #Genotype random effects
@@ -358,7 +356,6 @@ ggplot2::ggsave(filename = "Trace_genotype_random_effects.png", plot = g, path=h
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_genotype_random_effects.png"))
 ```
 
-
 ```{r SpatialRandomEffects, fig.cap="Trace of the spatial (block) random effects."}
 #Spatial random effects
 Ranef_block <- as.data.frame(brms::ranef(brms_mod, summary = F)$Block)
@@ -370,7 +367,6 @@ ggplot2::ggsave(filename = "Trace_block_random_effects.png", plot = g, path=here
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_block_random_effects.png"))
 ```
-
 
 ```{r RanefValues}
 #Look at random effects values
@@ -421,14 +417,11 @@ ggplot2::ggsave(filename = "Ranef_block.png", plot = g, path=here::here("outputs
 Sum_EUCFLUX <- summary(brms_mod)
 ```
 
-
 ```{r PlotsRanef, fig.cap="Mean values and 95% confidence interval of the temporal, genetic and spatial and random effects."}
 g <- ggpubr::ggarrange(g1, g2, g3, ncol=1, nrow=3, labels = c("A", "B", "C"))
 ggplot2::ggsave(filename = "Ranef_values.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 10, dpi = 300)
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_values.png"))
 ```
-
-
 
 ```{r ResultsTable}
 Res_var_partition <- data.frame(
@@ -492,13 +485,10 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Var
 The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel A), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
 The temporal effect explained the highest fraction of variance (\@ref(tab:ResultsTable), \@ref(fig:Coordinates)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
 
-Importantly, variability between individuals within genotypes (10.8%) is higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
+Importantly, variability between individuals within genotypes (`r Res_var_partition[which(Res_var_partition$category=="Individual"),]$amount`%) is higher than between genotypes (`r Res_var_partition[which(Res_var_partition$category=="Genotype"),]$amount`%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
 
-The block had the littlest impact with 2.5% of the variance explained. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
+The block had the littlest impact with `r Res_var_partition[which(Res_var_partition$category=="Block"),]$amount`% of the variance explained. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
 As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions [@le_maire_light_2019], this dataset is a strongly conservative test case for our hypothesis.
-
-
-# Conclusion
 
 Overall, we found that there is IV within clonal tree plantations. This shows that IV can be due only to the environmental factors varying between individuals, proving that the source of IV is not necessarily intrinsic.
 

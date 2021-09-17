@@ -18,7 +18,7 @@ abundance_diagram <- function(data, site){
     ggplot2::geom_point()+
     ggplot2::xlab("Species number")+
     ggplot2::ylab("Cumulative proportion of individuals")+
-    ggplot2::labs(title=paste("All species", site, sep='\n'))+
+    ggplot2::labs(title=site)+
     ggplot2::theme(legend.title = ggplot2::element_text(size = 20),
                    legend.text = ggplot2::element_text(size = 20),
                    text = ggplot2::element_text(size=20))
@@ -35,7 +35,7 @@ abundance_diagram <- function(data, site){
       ggplot2::ylim(0,1)+
       ggplot2::xlab("Species number")+
       ggplot2::ylab("Cumulative proportion of individuals")+
-      ggplot2::labs(title=paste("Only determined species", site, sep='\n'))+
+      ggplot2::labs(title=site)+
       ggplot2::theme(legend.title = ggplot2::element_text(size = 20),
                      legend.text = ggplot2::element_text(size = 20),
                      text = ggplot2::element_text(size=20))

@@ -32,23 +32,24 @@ header-includes:
   - \counterwithin{figure}{section}
 always_allow_html: true
 ---
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
 
-Intraspecific variability (IV) is often seen as an unstructured, intrinsic property of individuals, mostly genetic. Here, we investigate whether it can result from the species responses to the  spatial variations of the environment. Our hypothesis is that the individuals can be clones, i.e. have no genetic differences between them, and still have different measured attributes because the environment in which they strive varies, as shown in the previous analysis of a clonal dataset. The response of an individual results from the integrated effects of the environmental conditions it has encountered during its life (local environmental variation, or microsite effect) and its genetic features. Moreover, the differences between individuals due to environmental variation does not imply a broader overlap of the species niches. Therefore, this type of IV has no effect on species coexistence directly.
-We designed and conducted a virtual experiment that aims at illustrating that IV, or “individual effects,” can result from unobserved variation in some environmental variables [@clark_resolving_2007], therefore accounting for multidimensional species differences which cannot be observed on a few niche axes.
+Intraspecific variability (IV) is often seen as an intrinsic property of individuals, associated with genetics, which is unstructured in space and time. Here, we investigated whether it can result from the species responses to the spatial variations of the environment. Our hypothesis was that the individuals can be clones, i.e. have no genetic differences between them, and still have different measured attributes because the environment in which they strive varies, as shown in the previous analysis of a clonal dataset. The response of an individual results from the integrated effects of the environmental conditions which the individual has encountered during its life (local environmental variation, also called microsite effect) and its genetic features. Moreover, the differences between individuals due to environmental variation does not imply a broader overlap of the species niches. Therefore, this type of IV has no direct effect on species coexistence.
 
+Here, we designed and conducted a virtual experiment that aims at illustrating that IV, or “individual effects,” can result from variation in unobserved environmental variables [@clark_resolving_2007], therefore accounting for multidimensional species differences which cannot be observed on a few niche axes.
 
 # Perfect knowledge model : generating response values.
 
-To do so, we first considered a model that depicts the response of a process, e.g. growth, for individual clones of two different species to all the environmental variables that influence it. Henceforth denoted the “Perfect knowledge model,” it represents the perfect knowledge of the process as it occurs in the field and thus includes no residuals :
+To do so, we first considered a “perfect-knowledge” model that depicts the ecological response (e.g. growth) of individual clones for two different species as a function of a set of environmental variables. This model represents the perfect knowledge of the process as it occurs in the field and thus includes no residuals:
+
 
 $Y_{ijt} = \beta_{0j} + \beta_{1j} * ln(X_{1ijt}) + \beta_{2j} * X_{2ijt} + \ldots + \beta_{Nj} * X_{Nijt}$
 \hfill“Perfect knowledge model”
 
 where $1 \leq i \leq 500$ are the individuals ; $1 \leq j \leq 2$ are the species ; $Y$ is a response variable, for instance growth ; $X1$ to $XN$ are explanatory variables, for instance environmental variables, that can vary with time $t$ ; and the $\beta_{k,i}$ , $1 \leq k \leq N$ depict the species-specific responses to these environmental variables. As we consider clones, individuals of the same species respond the same way to environmental variables, and variation in $Y$ among individuals within species is due to differences in the environment where each individual thrives.
-The first explanatory variable was natural log-transformed to represent a log-log relationship as would be the relationship between tree growth and light.
+The first explanatory variable was natural log-transformed to represent a log-log relationship as would be the relationship between tree growth and light for example.
 
 
 ```{r Options, include=FALSE}
@@ -91,18 +92,18 @@ par_ind1 <- rbind(rnorm (nind, param1[1], abs(param1[1]/4)), rnorm (nind, param1
   par_ind <- cbind(par_ind1, par_ind2)
 ```
 
-We fix the species parameters of the "Perfect knowledge model” as follows, using 10 environmental variables (N=10) :
+We fixed the species parameters of the "Perfect knowledge model” as follows, using 10 environmental variables (N=10) :
 
-Parameters of species 1 :  $\beta_0$ = `r param1[1]`, $\beta_1$ = `r param1[2]`, $\beta_2$ to $\beta_{6}$ are chosen randomly between -0.05 and 0.05 and $\beta_{7}$ to $\beta_{10}$ are chosen randomly between 0 and 0.05.
+Parameters of species 1 :  $\beta_0$ = `r param1[1]`, $\beta_1$ = `r param1[2]`, $\beta_2$ to $\beta_{6}$ were chosen randomly between -0.05 and 0.05 and $\beta_{7}$ to $\beta_{10}$ were chosen randomly between 0 and 0.05.
 
-Parameters of species 2 :  $\beta_0$ = `r param2[1]`, $\beta_1$ = `r param2[2]`, $\beta_2$ to $\beta_{10}$ are chosen the same way as for species 1.
+Parameters of species 2 :  $\beta_0$ = `r param2[1]`, $\beta_1$ = `r param2[2]`, $\beta_2$ to $\beta_{10}$ were chosen the same way as for species 1.
 
-The difference between the species is imposed by those parameters. Here, species 1 is more competitive on average thanks to its higher intercept ($\beta_0$) and reaction to the first environmental variable ($\beta_1$).
+The difference between the species is imposed by those parameters. Here, species 1 was more competitive on average thanks to its higher intercept ($\beta_0$) and responseto the first environmental variable ($\beta_1$).
 The first environmental variable ($X1$) has a higher weight in the computation of the response variable, as would be the most limiting factor for the response variable.
 
 To account for genetic variability in our generated data, we added an IV in species parameters by sampling each individual parameter in a normal distribution centered on the species mean parameter and with a standard deviation of a quarter of the species mean parameter.
 
-To represent the spatialised environment of such a forest plot, we build a 2D matrix of dimension `r dim1` $\times$ `r dim2` for each environmental variable at a time $t_0$, by randomly generating them with spatial autocorrelation. We here considered that all environmental variables were independent.
+To represent the spatialised environment, we build a 2D matrix of dimension `r dim1` $\times$ `r dim2` for each environmental variable at a time $t_0$, by randomly generating them with spatial autocorrelation. We here considered that all environmental variables were independent.
 Each variable was simulated by using the gstat R package [@pebesma_multivariable_2004 ; @graler_spatio-temporal_2016], enabling to create autocorrelated random fields. A spherical semivariogram model was used for each of the ten environmental variables, with a mean of 0 for each explanatory variable (beta = 0), a sill of 1 (psill = 1) for each and a range of 50 (range = 50).
 
 
@@ -390,12 +391,12 @@ Figure \@ref(fig:HistogramsGrowth) shows the distribution of the data and Figure
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Map_growth.png"))
 ```
 
-Figure \@ref(fig:MapGrowth) shows that microsite effects, which are the effects of the local multidimensional environment on the observed variable, can result in local reversals of the competitive hierarchy between species. Indeed, the local outcome of competition can be opposite to the mean hierarchy : at one point of the space-time, an individual of Species 1 can overcome an individual of Species 2, whilst Species 1 is, on average, the fittest of the two species. Consequently, microsite effects foster the coexistence of Species 1 and Species 2.
+Figure \@ref(fig:MapGrowth) shows that microsite effects, which are the effects of the local multidimensional environment on the response variable, can result in local reversals of the competitive hierarchy between species. Indeed, the local outcome of competition can be opposite to the mean hierarchy : at one point of the space-time, an individual of Species 1 can overcome an individual of Species 2, whilst Species 1 is, on average, the fittest of the two species. Consequently, niche multidimensionality and variation of the environment in space allow the coexistence of Species 1 and Species 2.
 
 
 # Partial knowledge model : interpreting the response values with only one explanatory variable.
 
-These two virtual datasets (with and without genetic variability) were then analysed with a “Partial knowledge model,” which represents the process understanding ecologists can derive using these datasets and from their incomplete characterisation of the environment : only a few variables (here only one, $X_1$) are actually measured and taken into account.
+These two virtual datasets (with and without genetic variability) were then analysed with a “Partial knowledge model,” which represents the model derived by ecologists when using datasets derived from an incomplete characterisation of the environment : only a few variables (here only one, $X_1$) are actually measured and taken into account.
 
 
 $\ln(Y_{ijt}) = [\beta'_{0j} + b_{0i}] + \beta'_{1j} \ln(X_{1ijt}) + \varepsilon_{ijt}$
@@ -415,9 +416,8 @@ $V_j \sim \mathcal{IG}(10^-3, 10^-3)$, $j = [1, 2]$, iid
 
 $V_{bj} \sim \mathcal{IG}_2(10^-3, 10^-3)$, $j = [1, 2]$, iid
 
-This model includes a random individual effect on the intercept ($b_{0i}$) allowing to account for any variability among individuals within species regarding this parameter.
-We ran this model twice, with the datasets generated with and without genetic IV. We then acquired the species parameters and the IV generated with genetic IV and get only IV from the perfect knowledge model.
-These models were fitted with Bayesian inference thanks to Stan, using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018] in Rstudio, with 100000 iterations, a warming period of 50000 iterations and a thinning of 50, thus we finally obtain 1000 estimates per parameter.
+This model includes a random individual effect on the intercept ($b_{0i}$) to account for  the variability among individuals within species.
+We ran this model twice, with the datasets generated with and without genetic IV. These models were fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 100000 iterations, a warming period of 50000 iterations and a thinning of 50. We obtained 1000 estimates per parameter.
 
 
 ```{r brmsModels, eval=FALSE, include=FALSE}
@@ -608,7 +608,7 @@ kableExtra::kbl(
 ```
 
 We inferred a high IV even in the absence of genetic IV (\@ref(tab:brmsSummary)). Therefore, observed IV does not necessarily reveal intrinsic (mainly genetic) IV, but can also reveal hidden dimensions of the environment.
-The mean and quantiles of the results of the models were used to visualise the inferred link between $Y$ and $X1$. To do so, we created a sequence of explanatory variable values and computed the response variable with the mean and quantiles of the parameters inferred with the models.
+We used the model parameters to plot the relationship between $Y$ and $X1$ accounting for intraspecific variability.
 
 
 ```{r GrowthNoGeneticIV}
@@ -792,12 +792,13 @@ In Figure \@ref(fig:PlotGeneticIV) and panel A of Figure \@ref(fig:TwoPanelsFigu
 
 Figure \@ref(fig:TwoPanelsFigure) represents the virtual landscape of $X_1$ and the corresponding individual response and the plot of $Y$ versus $X1$ (without genetic variability) next to each other, helping to visualise this virtual experiment.
 
-In the model without genetic IV, the unobserved variation in the environment resulted in an important “individual effect.” The performances of the two species can intersect, which means that the competitive hierarchy among the two species can be locally reversed depending on the micro-environmental variation, offering opportunities for the coexistence of the two species in a variable environment. In that sense, incorporating the individual level in statistical models can help to explain the coexistence of species through a better integration of niche multidimensionality in models.
+In the model without genetic IV, the unobserved variation in the environment resulted in an important inferred intraspecific variability. The performances of the two species can intersect, which means that the competitive hierarchy among the two species can be locally reversed depending on the micro-environmental variation, offering opportunities for the coexistence of the two species in a variable environment. 
 
 # Spatial autocorrelation of individual response
 
-We then analysed the spatial structure of individual the response variable. We hypothesised that as environmental variables are spatially autocorrelated, and the response variable is the result of these variables, then the response variable should also be spatially autocorrelated.
+We then analysed the spatial structure of the response variable at the individual scale. We hypothesised that as environmental variables are spatially autocorrelated, and the response variable is the result of these variables, then the response variable should also be spatially autocorrelated.
 To test this, we computed Moran’s I test. It is computed with the Moran.I function of the ape R package [@paradis_ape_2019].
+
 
 ```{r MoranAnalysis}
 
@@ -861,7 +862,7 @@ caption = "Results of the Morans's I test for both species separatly and togethe
 ```
 
 
-Table \@ref(tab:MoranTable) shows that the individual response variable is largely spatially autocorrelated. This is due to the spatial autcorrelation in the environmental variables. In this simple, completely controlled experiment, this is natural. However, in a less controlled environment, detecting spatial autocorrelation in a response variable could be the sign of the spatial structure of the underlying environmental variables although other factors like the genetic structure could lead to spatial autocorrelation in the response variable.
+Table \@ref(tab:MoranTable) shows that the individual response variable is largely spatially autocorrelated. This is due to the spatial autocorrelation in the environmental variables. In this simple and controlled experiment, this seems natural. However, in a less controlled environment, detecting spatial autocorrelation in a response variable could be the sign of the spatial structure of the underlying environmental variables. Nonetheless, we acknowledge that the genetic structure of the population associated with limited dispersion for example could also lead to spatial autocorrelation in the response variable of the individuals, but this is likely to happen on a much larger geographical scale.
 
 # Similarity between conspecific individuals compared to heterospecific individuals and consequences for species coexistence.
 
@@ -913,8 +914,9 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "S
 ```
 
 
-As the semivariance between individuals of both species was higher than the semivariance between conspecifics (\@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics. Considering this response variable as a proxy of fitness, and linking fitness to competition, we argue that in a Lotka-Volterra model, this would translate into $\alpha_{i,i} > \alpha_{i,j}$, the main condition for stable coexistence.
-Therefore, stable coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
+As the semivariance between individuals of both species was higher than the semivariance between conspecifics (\@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics. Considering this response variable as a proxy of the species performance, we argue that this would imply that intraspecific competition is greater than interspecific competition), which is the main condition for stable coexistence.
+Therefore, **stable** coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
+
 
 
 # Code implementation
