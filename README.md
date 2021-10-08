@@ -12,6 +12,9 @@ These analyses are associated with an article (*Rethinking the role of intraspec
 - **Appendix 5**: Script producing Figure 1 of the main text.
 [Script_figure_1.html](https://camillegirardtercieux.github.io/coexIV/Script_figure_1.html)
 
+A full Supplementary Material file is also available:
+[full_supplementary.html](https://camillegirardtercieux.github.io/coexIV/full_supplementary.html)
+
 In order to execute the analyses, use the make.R file. The analyses are organised in a research compendium and therefore some functions and a package name need to be loaded.
 To look directly at the code, open the Rmd files in the folder "analyses". They contain all the code for Appendix 1 and 2, and call functions that are in the "R" and "C" folders for Appendix 3.
 The Appendices are also available in pdf format in the folder "analyses".
