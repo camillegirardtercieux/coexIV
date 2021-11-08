@@ -10,7 +10,7 @@ output:
     toc_float: true
     number_sections: true
 bibliography: "`r here::here('References.bib')`"
-csl: "`r here::here('ecology-letters.csl')`"
+csl: "`r here::here('bib_style.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}

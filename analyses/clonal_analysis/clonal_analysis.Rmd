@@ -10,7 +10,7 @@ output:
     toc_float: true
     number_sections: true
 bibliography: "`r here::here('References.bib')`"
-csl: "`r here::here('ecology-letters.csl')`"
+csl: "`r here::here('bib_style.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -132,7 +132,7 @@ The dataset included `r nrow(Data)` growth estimates corresponding to `r length(
 
 ```{r PlotsGrowthLight, fig.cap="The original data without negative growth values (A) and the log-transformed growth (B).", message=FALSE, warning=FALSE}
 
-g <- ggpubr::ggarrange(plot1,plot2,ncol=2,nrow=1,labels=c("A", "B"))
+g <- ggpubr::ggarrange(plot1,plot2,ncol=2,nrow=1,labels=c("a", "b"))
 ggplot2::ggsave(filename = "Histograms_Raw_Data.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Histograms_Raw_Data.png"))
 
@@ -418,7 +418,7 @@ Sum_EUCFLUX <- summary(brms_mod)
 ```
 
 ```{r PlotsRanef, fig.cap="Mean values and 95% confidence interval of the temporal, genetic and spatial and random effects."}
-g <- ggpubr::ggarrange(g1, g2, g3, ncol=1, nrow=3, labels = c("A", "B", "C"))
+g <- ggpubr::ggarrange(g1, g2, g3, ncol=1, nrow=3, labels = c("a", "b", "c"))
 ggplot2::ggsave(filename = "Ranef_values.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 10 )
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_values.png"))
 ```

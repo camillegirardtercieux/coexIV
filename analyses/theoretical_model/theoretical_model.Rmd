@@ -10,7 +10,7 @@ output:
     toc_float: true
     number_sections: true
 bibliography: "`r here::here('References.bib')`"
-csl: "`r here::here('ecology-letters.csl')`"
+csl: "`r here::here('bib_style.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -369,7 +369,7 @@ ggplot2::ggsave(filename = "Map_growth.png", plot=A, path=here::here("outputs", 
 
 ```{r HistogramsGrowth, fig.cap="Histogram of raw and log-transformed Y with and without genetic IV"}
 
-g <- ggpubr::ggarrange(histo1, histo2, histo3, histo4, ncol=2, nrow=2, labels=c("A", "B", "C", "D"))
+g <- ggpubr::ggarrange(histo1, histo2, histo3, histo4, ncol=2, nrow=2, labels=c("a", "b", "c", "d"))
 ggplot2::ggsave(filename="arranged_histograms_theoretical.png",path=here::here("outputs", "theoretical_model", "figures"),plot=g, device = "png", width = 7, height = 5, dpi = 300)
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "arranged_histograms_theoretical.png"))
 
@@ -377,7 +377,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "a
 
 ```{r PlotsXY, fig.cap="Raw and log-transformed Y versus X1 plots with and without genetic IV"}
 
-g <- ggpubr::ggarrange(scatterplot1, scatterplot2, scatterplot3, scatterplot4, ncol=2, nrow=2, labels=c("A", "B", "C", "D"))
+g <- ggpubr::ggarrange(scatterplot1, scatterplot2, scatterplot3, scatterplot4, ncol=2, nrow=2, labels=c("a", "b", "c", "d"))
 ggplot2::ggsave(filename="arranged_plots_theoretical.png",path=here::here("outputs", "theoretical_model", "figures"),plot=g, device = "png", width = 7, height = 5, dpi = 300)
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "arranged_plots_theoretical.png"))
 ```
@@ -768,7 +768,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "P
 
 ```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (A) Positions of a sample of I=600 individuals from J=2 species in a landscape defined by a square grid of C x C cells (C=500). The background color indicates the value of the environmental variable X1 (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (B) Response as a function of the observed environmental variable X1 for the two species. Points represent the data {Yijt, X1ijt}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account Vbj). The envelopes thus represent the intraspecific variability which is due to the N-1 unobserved environmental variables. "}
 
-g <- ggpubr::ggarrange(A, B, ncol = 2, labels = c("A", "B"))
+g <- ggpubr::ggarrange(A, B, ncol = 2, labels = c("a", "b"))
 ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white", dpi = 300)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "landscape_relationship.png"))

@@ -310,7 +310,7 @@ D <- ggplot2::ggplot(data=p1, ggplot2::aes(x=X, y=Y, z=Perf)) +
   ggplot2::labs(x="x", y = "y")
 
 Fig_1 <- ggpubr::ggarrange(A, D, B, C,
-                           labels=c("A", "C", "B", "D"),
+                           labels=c("a", "c", "b", "d"),
                            widths = c(1,1.3),
                            hjust=c(-3, -3, -3, -3),
                            vjust=c(2, 2, 2, 2))
