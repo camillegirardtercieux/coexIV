@@ -32,59 +32,113 @@ Note that we here used data on tree growth, which is one component of individual
 
 ### Paracou
 
-The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm. The studied 93.75-ha area harbours 768 species, 254 genera and 65 families of plants. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow (< 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site (https://paracou.cirad.fr/). Here, we used data from a disturbance experiment, where 15 plots of 6.25 ha were exposed to four different logging intensities between 1986 and 1988. Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November). The final dataset contains ca. 46,000 tree measurements.
-
-Figure \@ref(fig:IncludePlotParacou) shows the location of the trees in the Paracou site.
-
-
-```{r IncludePlotParacou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
-```
-
-
-### Uppangala
-
-The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, and was established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. The studied area, of 5.07 ha, is quite steep, with a mean slope angle of about 30–35°. The plots consist in five North–South oriented transects that are 20-m wide, 180- to 370-m long, and 100-m apart center to center, in addition to three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The final dataset contains measurements of 3,870 trees of 102 species (including 2 morphospecies). This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
-
-Figure \@ref(fig:IncludePlotUppangala) shows the location of the trees in the Uppangala site.
-
-
-```{r IncludePlotUppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Uppangala_site.png"))
-```
-
-
-### BCI
-
-The Barro Colorado Island site is located in central America, in Panama, covered by a lowland tropical moist forest. The zone became an island after a valley was flooded in order to build the Panama Canal, in 1913. It is nowadays considered as the most intensively studied tropical forest in the world. The studied site is a 50 ha plot (500 $\times$ 1000 m). It has an elevation of 120 m and is quite flat (most slopes are gentler than 10°). Complete censuses of all trees with DBH $\ge$ 1 cm have been performed every 5 years since 1980. The dataset contains measurements of 328 tree species and 423617 trees, and when only taking into account trees with DBH $\ge$ 10 cm, it contains measurements of  255 species and 37224 trees. The dataset is available at [@condit_complete_2019].
-
-Figure \@ref(fig:IncludePlotBCI) shows the location of the selected trees in the BCI site.
-
-
-```{r IncludePlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
-knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
-```
-
-
-## Data preparation
-
-For the Paracou site, we used the plots 1 to 15 of the Paracou site. We removed all trees of undetermined species and all measures of the years before the perturbations were performed and the biodiversity plots were added (1985-1991).
-
-For the Uppangala site, we removed the census dates which were not common for all plots.
-
-For the BCI site, we removed the trees with missing DBH measures and trees with DBH < 10 cm for consistency with the Paracou and Uppangala sites.
-
-For all three datasets, we computed annualized growth between two censuses as the difference of DBH (Diameter at Breast Height) between two consecutive censuses, divided by the time period between those two censuses. We then removed estimates with a growth < -2 mm/year or > 100 mm/year.
-
 ```{r ChargeParacou, message=FALSE, warning=FALSE}
 Paracou <- coexIV::read_data_paracou()
 ```
+
+```{r RenameSpeciesParacou, eval=FALSE, include=FALSE}
+Paracou <- coexIV::rename_indet_paracou(Paracou) %>% coexIV::create_identspecies()
+```
+
+The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow (< 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site (https://paracou.cirad.fr/).
+Here, we used data from a disturbance experiment, where 12 square plots of 6.25 ha were exposed to four different logging intensities between 1986 and 1988, as well as four square plots of 6.25 ha which were set up for biodiversity monitoring in 1990-1992 (plots 1-15). Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November).
+The studied 93.75-ha area harbours `r length(unique(Paracou$idTree))` measured trees, among which `r length(unique(Paracou[which(Paracou$Sp=="Indet_sp"),]$idTree))` belong to an undetermined species and others belong to `r length(unique(Paracou$Sp))-1` determined species, `r length(unique(Paracou$Genus))-1` genera and `r length(unique(Paracou$Family))` families.
+
+```{r RemoveYearsParacou}
+Paracou <- Paracou[which(!(Paracou$CensusYear %in% c(1985:1991))),]
+```
+
+We removed all measures of the years before the perturbations were performed and the biodiversity plots were added (1985-1991), thus obtaining a dataset containing `r length(unique(Paracou$idTree))` measured trees, among which `r length(unique(Paracou[which(Paracou$Sp=="Indet_sp"),]$idTree))` belong to an undetermined species and others belong to `r length(unique(Paracou$Sp))-1` determined species, `r length(unique(Paracou$Genus))-1` genera and `r length(unique(Paracou$Family))` families.
 
 ```{r ProducePlotParacou}
 g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")
 ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 ```
+
+Figure \@ref(fig:IncludePlotParacou) shows the location of the used trees in the Paracou site.
+
+```{r IncludePlotParacou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
+```
+
+### Uppangala
+
+```{r ChargeUppangala}
+load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
+```
+
+```{r NamesUppangala, eval=FALSE, include=FALSE}
+Species_list_Uppangala <- read.table(here::here("data", "Uppangala", "Species_list_Uppangala.txt"), sep = "\t", header = TRUE)
+
+Species_list_Uppangala$Genus <- stringr::str_split_fixed(Species_list_Uppangala$LatinName, " ", 2)[,1]
+
+upsp.dataset$Sp <- Species_list_Uppangala$LatinName[match(upsp.dataset$SpCode, Species_list_Uppangala$SpCode)]
+
+upsp.dataset$Genus <- Species_list_Uppangala$Genus[match(upsp.dataset$SpCode, Species_list_Uppangala$SpCode)]
+
+upsp.dataset$Family <- Species_list_Uppangala$Family[match(upsp.dataset$SpCode, Species_list_Uppangala$SpCode)]
+```
+
+The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, and was established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
+The studied area of 5.07 ha is quite steep, with a mean slope angle of about 30–35°. The plots consist in five North–South oriented transects that are 20-m wide, 180- to 370-m long, and 100-m apart center to center, in addition to three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The original dataset contains measurements of `r length(unique(upsp.dataset$TreeID))` trees of `r length(unique(upsp.dataset$SpCode))` species (including 2 morphospecies),`r length(unique(upsp.dataset$Genus))` genera and `r length(unique(upsp.dataset$Family))` families.
+
+We removed the census dates which were not common for all plots (1990-1992).
+
+```{r RemoveYearsUppangala, eval=FALSE, include=FALSE}
+upsp.dataset <- upsp.dataset[which(upsp.dataset$date>1339),]
+```
+
+Thus, we obtain a dataset containing `r length(unique(upsp.dataset$TreeID))` trees of `r length(unique(upsp.dataset$SpCode))` species (including 2 morphospecies),`r length(unique(upsp.dataset$Genus))` genera and `r length(unique(upsp.dataset$Family))` families.
+
+```{r ProducePlotUppangala}
+g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
+#Save as png and include in order to make the pdf lighter
+ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
+
+```
+
+Figure \@ref(fig:IncludePlotUppangala) shows the location of the trees in the Uppangala site.
+
+```{r IncludePlotUppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Uppangala_site.png"))
+```
+
+### BCI
+
+```{r ChargeBCI, include=FALSE}
+BCI <- coexIV::read_data_bci()
+load(here::here("data", "BCI", "bci.spptable.rdata"))
+BCI$Sp <- bci.spptable$Latin[match(BCI$sp, bci.spptable$sp)]
+BCI$Genus <- bci.spptable$Genus[match(BCI$sp, bci.spptable$sp)]
+BCI$Family <- bci.spptable$Family[match(BCI$sp, bci.spptable$sp)]
+```
+
+The Barro Colorado Island site is located in central America, in Panama, covered by a lowland tropical moist forest. The zone became an island after a valley was flooded in order to build the Panama Canal, in 1913. It is nowadays considered as the most intensively studied tropical forest in the world. The studied site is a 50 ha plot (500 $\times$ 1000 m). It has an elevation of 120 m and is quite flat (most slopes are gentler than 10°). Complete censuses of all trees with DBH $\ge$ 1 cm have been performed every 5 years since 1980. The dataset contains measurements of `r length(unique(BCI$treeID))` trees of `r length(unique(BCI$sp))` tree species, `r length(unique(BCI$Genus))` genera and `r length(unique(BCI$Family))` families.
+
+```{r RemoveValuesBCI, include=FALSE}
+BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
+BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
+```
+
+When only taking into account trees with DBH $\ge$ 10 cm for consistency with the other datasets, it contains measurements of `r length(unique(BCI$treeID))` trees of `r length(unique(BCI$sp))` tree species, `r length(unique(BCI$Genus))` genera and `r length(unique(BCI$Family))` families.
+The dataset is available in [@condit_complete_2019].
+
+```{r ProducePlotBCI, warning=FALSE}
+g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
+ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
+```
+
+Figure \@ref(fig:IncludePlotBCI) shows the location of the selected trees in the BCI site.
+
+```{r IncludePlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
+```
+
+
+## Growth and mean growth estimation
+
+For all three datasets, we computed annualized growth between two censuses as the difference of DBH between two consecutive censuses, divided by the time period between those two censuses. We then removed estimates with a growth < -2 mm/year or > 100 mm/year.
 
 ```{r GrowthParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::compute_growth_paracou(Paracou)
@@ -95,13 +149,9 @@ rm(Paracou)
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-```{r RenameSpeciesParacou, eval=FALSE, include=FALSE}
-Paracou_no_mean <- coexIV::rename_indet_paracou(Paracou_no_mean) %>% coexIV::create_identspecies()
-```
-
 ```{r RemoveValuesParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- Paracou_no_mean[Paracou_no_mean$G_tp1_corr>(-2)&Paracou_no_mean$G_tp1_corr<100,]
-Paracou_no_mean <- Paracou_no_mean[which(!(Paracou_no_mean$CensusYear %in% c(1985:1991))),]
+
 Paracou_no_mean <- Paracou_no_mean%>%
   dplyr::mutate(Growth = G_tp1_corr, Diameter = D_t_corr)
 save(Paracou_no_mean, file = here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
@@ -123,28 +173,6 @@ save(Data_Paracou, file = here::here("outputs", "tropical_analysis", "Data_Parac
 load(here::here("outputs", "tropical_analysis", "Data_Paracou.RData"))
 ```
 
-
-```{r ChargeUppangala}
-load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
-
-```
-
-```{r ProducePlotUppangala}
-g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
-#Save as png and include in order to make the pdf lighter
-ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
-
-```
-
-```{r RemoveYearsUppangala, eval=FALSE, include=FALSE}
-Uppangala_no_mean <- upsp.dataset[which(upsp.dataset$date>1339),]
-```
-
-```{r NamesUppangala, eval=FALSE, include=FALSE}
-Species_list_Uppangala <- read.table(here::here("data", "Uppangala", "Species_list_Uppangala.txt"), sep = "\t", header = TRUE)
-
-Uppangala_no_mean$Sp <- Species_list_Uppangala$LatinName[match(Uppangala_no_mean$SpCode, Species_list_Uppangala$SpCode)]
-```
 
 ```{r GrowthUppangala, eval=FALSE, include=FALSE}
 Uppangala_no_mean <- coexIV::compute_growth_uppangala(Uppangala_no_mean)
@@ -177,22 +205,6 @@ save(Data_Uppangala, file = here::here("outputs", "tropical_analysis", "Data_Upp
 load(here::here("outputs", "tropical_analysis", "Data_Uppangala.RData"))
 ```
 
-
-```{r ChargeBCI, include=FALSE}
-BCI <- coexIV::read_data_bci()
-load(here::here("data", "BCI", "bci.spptable.rdata"))
-BCI$Sp <- bci.spptable$Latin[match(BCI$sp, bci.spptable$sp)]
-```
-
-```{r RemoveValuesBCI, include=FALSE}
-BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
-BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
-```
-
-```{r ProducePlotBCI, warning=FALSE}
-g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
-ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
-```
 
 ```{r GrowthBCI, eval=FALSE, include=FALSE}
 BCI_no_mean <- compute_growth_BCI(BCI)
@@ -610,7 +622,7 @@ knitr::include_graphics(
 ```
 
 
-Overall, a large part of variability in tree growth was imputable to individual effects in the three sites, even after accounting for the effect of diameter on tree growth, showing a high intraspecific variability in growth in this tropical forests (Figure \@ref(fig:PlotsVarianceProportion)).
+Overall, a large part of variability in tree growth was imputable to individual effects in the three sites, even after accounting for the effect of diameter on tree growth, showing a high intraspecific variability in growth in these tropical forests (Figure \@ref(fig:PlotsVarianceProportion)).
 
 ## Moran's I analysis
 
@@ -890,7 +902,7 @@ Data <- Raw_data
 
 The dataset included `r nrow(Data)` growth estimates corresponding to `r length(unique(Data$Tree))` trees.
 
-```{r PlotsGrowthLight, fig.cap="The original data without negative growth values (A) and the log-transformed growth (B).", message=FALSE, warning=FALSE}
+```{r PlotsGrowthLight, fig.cap="The original data without negative growth values (a) and the log-transformed growth (b).", message=FALSE, warning=FALSE}
 
 g <- ggpubr::ggarrange(plot1,plot2,ncol=2,nrow=1,labels=c("a", "b"))
 ggplot2::ggsave(filename = "Histograms_Raw_Data.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
@@ -1240,7 +1252,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Var
 ```
 
 
-The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel A), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
+The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel a), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
 The temporal effect explained the highest fraction of variance (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
 
 Importantly, variability between individuals within genotypes (10.8%) is higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
@@ -1253,7 +1265,7 @@ As the experimental design aimed at minimizing environmental variations and sele
 
 Overall, we found that there is IV within clonal tree plantations (Figure \@ref(fig:SummaryPlot)). This shows that IV can be due only to the environmental factors varying between individuals, proving that the source of IV is not necessarily intrinsic.
 
-```{r SummaryPlot, fig.cap="The EUCFLUX setup and the variance partitioning. Site (A; each square represents a block) and organisation of a block (B; each coloured square represents a genotype) in the EUCFLUX experiment. 16 clones are represented in B, but only 14 were used since the last two are from seed-origin and thus not genetically identical. (C) Variance partitioning of tree growth for a common garden experiment with various Eucalyptus clones"}
+```{r SummaryPlot, fig.cap="The EUCFLUX setup and the variance partitioning. Site (a; each square represents a block) and organisation of a block (b; each coloured square represents a genotype) in the EUCFLUX experiment. 16 clones are represented in B, but only 14 were used since the last two are from seed-origin and thus not genetically identical. (c) Variance partitioning of tree growth for a common garden experiment with various Eucalyptus clones"}
 knitr::include_graphics(here::here("data", "EUCFLUX", "Eucflux_summary.jpg"))
 ```
 
@@ -1988,7 +2000,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "P
 ```
 
 
-```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (A) Positions of a sample of I=600 individuals from J=2 species in a landscape defined by a square grid of C x C cells (C=500). The background color indicates the value of the environmental variable X1 (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (B) Response as a function of the observed environmental variable X1 for the two species. Points represent the data {Yijt, X1ijt}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account Vbj). The envelopes thus represent the intraspecific variability which is due to the N-1 unobserved environmental variables. "}
+```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (a) Positions of a sample of I=600 individuals from J=2 species in a landscape defined by a square grid of C x C cells (C=500). The background color indicates the value of the environmental variable X1 (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (b) Response as a function of the observed environmental variable X1 for the two species. Points represent the data {Yijt, X1ijt}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account Vbj). The envelopes thus represent the intraspecific variability which is due to the N-1 unobserved environmental variables. "}
 
 g <- ggpubr::ggarrange(A, B, ncol = 2, labels = c("a", "b"))
 ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white", dpi = 300)
@@ -1997,7 +2009,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "l
 
 ```
 
-In Figure \@ref(fig:PlotGeneticIV) and panel A of Figure \@ref(fig:TwoPanelsFigure), the solid and bold lines represent the mean rate of the response variable (e.g. growth) of Species 1 (blue) and Species 2 (orange) as computed with the parameters retrieved from the model with or without genetic variability respectively. The plain lines represent the 95% interval of the posteriors from the model without genetic variability and the dotted lines show the 95% confidence interval of the posteriors from the model with genetic variability. Figure \@ref(fig:PlotGeneticIV) shows that genetic IV increases the overlap between the response of Species 1 and Species 2.
+In Figure \@ref(fig:PlotGeneticIV) and panel a of Figure \@ref(fig:TwoPanelsFigure), the solid and bold lines represent the mean rate of the response variable (e.g. growth) of Species 1 (blue) and Species 2 (orange) as computed with the parameters retrieved from the model with or without genetic variability respectively. The plain lines represent the 95% interval of the posteriors from the model without genetic variability and the dotted lines show the 95% confidence interval of the posteriors from the model with genetic variability. Figure \@ref(fig:PlotGeneticIV) shows that genetic IV increases the overlap between the response of Species 1 and Species 2.
 
 Figure \@ref(fig:TwoPanelsFigure) represents the virtual landscape of $X_1$ and the corresponding individual response and the plot of $Y$ versus $X1$ (without genetic variability) next to each other, helping to visualise this virtual experiment.
 

@@ -312,14 +312,14 @@ D <- ggplot2::ggplot(data=p1, ggplot2::aes(x=X, y=Y, z=Perf)) +
 Fig_1 <- ggpubr::ggarrange(A, D, B, C,
                            labels=c("a", "c", "b", "d"),
                            widths = c(1,1.3),
-                           hjust=c(-3, -3, -3, -3),
+                           hjust=c(-4, -4, -4, -4),
                            vjust=c(2, 2, 2, 2))
 ggplot2::ggsave(file=here::here("outputs", "Fig_1.png"),
                 Fig_1,
                 width= 16.6,
                 height=16.6/1.5,
                 units='cm', 
-                dpi=300,
+                dpi=600,
                 bg="white")
 
 ```

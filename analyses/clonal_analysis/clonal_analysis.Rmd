@@ -28,8 +28,7 @@ header-includes:
   - \usepackage{xcolor}
   - \usepackage{float}
   - \floatplacement{figure}{H}
-  - \usepackage{chngcntr}
-  - \counterwithin{figure}{section}
+  - \renewcommand{\thefigure}{S\thesection.\arabic{figure}}
 always_allow_html: true
 ---
 
@@ -130,7 +129,7 @@ Data <- Raw_data
 
 The dataset included `r nrow(Data)` growth estimates corresponding to `r length(unique(Data$Tree))` trees.
 
-```{r PlotsGrowthLight, fig.cap="The original data without negative growth values (A) and the log-transformed growth (B).", message=FALSE, warning=FALSE}
+```{r PlotsGrowthLight, fig.cap="The original data without negative growth values (a) and the log-transformed growth (b).", message=FALSE, warning=FALSE}
 
 g <- ggpubr::ggarrange(plot1,plot2,ncol=2,nrow=1,labels=c("a", "b"))
 ggplot2::ggsave(filename = "Histograms_Raw_Data.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 7, height = 5)
@@ -480,7 +479,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Var
 ```
 
 
-The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel A), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
+The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel a), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
 The temporal effect explained the highest fraction of variance (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
 
 Importantly, variability between individuals within genotypes (10.8%) is higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.

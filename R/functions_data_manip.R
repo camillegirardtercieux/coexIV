@@ -28,11 +28,25 @@ Get_Spe <- function (Sp) {
 transform_Indet_species <- function (Binomial_name) {
   Genus <- Get_Gen(Binomial_name)
   Species <- Get_Spe(Binomial_name)
+  Sp <- Binomial_name
+  
   if (grepl("Indet", Species, fixed = TRUE) == TRUE) {
-    Genus <- "Indet"
-    Species <- "sp"
+    Sp <- "Indet_sp"
   }
-  paste0(Genus, "_", Species)
+  return(Sp)
+}
+
+#' Transforms the name of the undertermined genera into "Indet"
+#'
+#' @param Binomial_name 
+#'
+#' @return a character string for the new name of the genus
+transform_Indet_genus <- function (Binomial_name) {
+  Genus <- Get_Gen(Binomial_name)
+  if (grepl("Indet", Genus, fixed = TRUE) == TRUE) {
+    Genus <- "Indet_gen"
+  }
+  return(Genus)
 }
 
 #' Read the original paracou data
@@ -45,6 +59,37 @@ read_data_paracou <- function(){
   }
   Paracou <- dplyr::bind_rows(Plots)
   return(Paracou)
+}
+
+#' Rename the indeterminate species in paracou
+#'
+#' @param data
+#'
+#' @return the dataframe with a modified Sp column
+rename_indet_paracou <- function(data){
+  data <- data %>%
+    dplyr::mutate(Sp = paste0(Genus, "_",Species), Tree = paste0("P", Plot, "T", idTree)) %>%
+    dplyr::group_by(Sp)%>%
+    dplyr::mutate(Sp_inter = transform_Indet_species(Sp),
+                  Genus_inter = transform_Indet_genus(Sp))%>%
+    dplyr::ungroup()%>%
+    dplyr::select(-Sp, -Genus)%>%
+    dplyr::rename(Sp=Sp_inter, Genus=Genus_inter)%>%
+    
+    return(data)
+}
+
+#' Add IdentSpecies column
+#'
+#' @param data 
+#'
+#' @return the dataframe with a new column
+create_identspecies <- function(data){
+  data <- data %>%
+    dplyr::mutate(Sp = as.factor(Sp), Tree=as.factor(Tree), IdentSpecies=factor(Sp))
+  levels(data$IdentSpecies) <-1:length(levels(data$IdentSpecies))
+  
+  return(data)
 }
 
 #' Compute the annual growth of each tree of the paracou dataset
@@ -65,41 +110,10 @@ compute_growth_paracou <- function(Paracou){
                   DiffDate = Date_tp1 - Date_t) %>%
     dplyr::mutate(G_tp1 = DiffD*10/(as.numeric(DiffDate/365)),
                   G_tp1_corr = DiffD_corr*10/(as.numeric(DiffDate/365))) %>%
-    dplyr::mutate(Tree = paste0("P", Plot, "T", idTree)) %>%
-    dplyr::mutate(Sp = paste0(Genus, "_",Species))%>%
     dplyr::ungroup() %>%
     tidyr::drop_na()
   
   return(Paracou_no_mean)
-}
-
-#' Rename the indeterminate species in paracou
-#'
-#' @param Paracou_no_mean 
-#'
-#' @return the dataframe with a modified Sp column
-rename_indet_paracou <- function(Paracou_no_mean){
-  Paracou_no_mean <- Paracou_no_mean %>%
-    dplyr::group_by(Sp)%>%
-    dplyr::mutate(Sp_inter = transform_Indet_species(Sp))%>%
-    dplyr::ungroup()%>%
-    dplyr::select(-Sp)%>%
-    dplyr::rename(Sp=Sp_inter)%>%
-    
-    return(Paracou_no_mean)
-}
-
-#' Add IdentSpecies column
-#'
-#' @param data 
-#'
-#' @return the dataframe with a new column
-create_identspecies <- function(data){
-  data <- data %>%
-    dplyr::mutate(Sp = as.factor(Sp), Tree=as.factor(Tree), IdentSpecies=factor(Sp))
-  levels(data$IdentSpecies) <-1:length(levels(data$IdentSpecies))
-  
-  return(data)
 }
 
 #' Compute the mean growth for paracou

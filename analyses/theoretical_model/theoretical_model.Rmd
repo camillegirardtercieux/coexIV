@@ -28,13 +28,13 @@ header-includes:
   - \usepackage{xcolor}
   - \usepackage{float}
   - \floatplacement{figure}{H}
-  - \usepackage{chngcntr}
-  - \counterwithin{figure}{section}
+  - \renewcommand{\thefigure}{S\thesection.\arabic{figure}}
 always_allow_html: true
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
+
 
 # Virtual experiment with two species
 
@@ -766,16 +766,16 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "P
 ```
 
 
-```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (A) Positions of a sample of I=600 individuals from J=2 species in a landscape defined by a square grid of C x C cells (C=500). The background color indicates the value of the environmental variable X1 (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (B) Response as a function of the observed environmental variable X1 for the two species. Points represent the data {Yijt, X1ijt}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account Vbj). The envelopes thus represent the intraspecific variability which is due to the N-1 unobserved environmental variables. "}
+```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (a) Positions of a sample of I=600 individuals from J=2 species in a landscape defined by a square grid of C x C cells (C=500). The background color indicates the value of the environmental variable X1 (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (b) Response as a function of the observed environmental variable X1 for the two species. Points represent the data {Yijt, X1ijt}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account Vbj). The envelopes thus represent the intraspecific variability which is due to the N-1 unobserved environmental variables. "}
 
 g <- ggpubr::ggarrange(A, B, ncol = 2, labels = c("a", "b"))
-ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white", dpi = 300)
+ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white", dpi = 600)
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "landscape_relationship.png"))
 
 ```
 
-In Figure \@ref(fig:PlotGeneticIV) and panel A of Figure \@ref(fig:TwoPanelsFigure), the solid and bold lines represent the mean rate of the response variable (e.g. growth) of Species 1 (blue) and Species 2 (orange) as computed with the parameters retrieved from the model with or without genetic variability respectively. The plain lines represent the 95% interval of the posteriors from the model without genetic variability and the dotted lines show the 95% confidence interval of the posteriors from the model with genetic variability. Figure \@ref(fig:PlotGeneticIV) shows that genetic IV increases the overlap between the response of Species 1 and Species 2.
+In Figure \@ref(fig:PlotGeneticIV) and panel a of Figure \@ref(fig:TwoPanelsFigure), the solid and bold lines represent the mean rate of the response variable (e.g. growth) of Species 1 (blue) and Species 2 (orange) as computed with the parameters retrieved from the model with or without genetic variability respectively. The plain lines represent the 95% interval of the posteriors from the model without genetic variability and the dotted lines show the 95% confidence interval of the posteriors from the model with genetic variability. Figure \@ref(fig:PlotGeneticIV) shows that genetic IV increases the overlap between the response of Species 1 and Species 2.
 
 Figure \@ref(fig:TwoPanelsFigure) represents the virtual landscape of $X_1$ and the corresponding individual response and the plot of $Y$ versus $X1$ (without genetic variability) next to each other, helping to visualise this virtual experiment.
 
