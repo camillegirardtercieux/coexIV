@@ -14,4 +14,7 @@
 \usepackage{xcolor}
 \usepackage{float}
 \floatplacement{figure}{H}
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
 \renewcommand{\thefigure}{S\thesection.\arabic{figure}}
+\renewcommand{\thetable}{S\thesection.\arabic{table}}

@@ -74,9 +74,9 @@ rename_indet_paracou <- function(data){
                   Genus_inter = transform_Indet_genus(Sp))%>%
     dplyr::ungroup()%>%
     dplyr::select(-Sp, -Genus)%>%
-    dplyr::rename(Sp=Sp_inter, Genus=Genus_inter)%>%
+    dplyr::rename(Sp=Sp_inter, Genus=Genus_inter)
     
-    return(data)
+  return(data)
 }
 
 #' Add IdentSpecies column
