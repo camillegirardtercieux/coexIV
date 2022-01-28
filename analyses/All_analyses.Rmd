@@ -9,8 +9,8 @@ output:
     toc: true
     toc_float: true
     number_sections: true
-bibliography: "`r here::here('References.bib')`"
-csl: "`r here::here('bib_style.csl')`"
+bibliography: "`r here::here('tools_latex', 'References.bib')`"
+csl: "`r here::here('tools_latex', 'bib_style.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -73,7 +73,7 @@ Paracou <- Paracou[which(!(Paracou$CensusYear %in% c(1985:1991))),]
 We removed all measures of the years before the perturbations were performed and the biodiversity plots were added (1985-1991), thus obtaining a dataset containing `r length(unique(Paracou$idTree))` measured trees, among which `r length(unique(Paracou[which(Paracou$Sp=="Indet_sp"),]$idTree))` belong to an undetermined species and others belong to `r length(unique(Paracou$Sp))-1` determined species, `r length(unique(Paracou$Genus))-1` genera and `r length(unique(Paracou$Family))` families.
 
 ```{r ProducePlotParacou}
-g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")
+g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")+ggplot2::coord_fixed(ratio = 1)
 ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 
 ```
@@ -710,8 +710,8 @@ Results_moran <- coexIV::results_moran(data1=Moran_I_Paracou, data2=Moran_I_Uppa
 save(Results_moran, file=here::here("outputs", "tropical_analysis", "Results_moran.RData"))
 
 kableExtra::kbl(Results_moran, booktabs = T, caption = "Spatial autocorrelation of the growth of conspecific individuals in three tropical forest sites. Shown are the proportion of species, and of corresponding individuals, in \\%, for which individual growth was significantly positively spatially autocorrelated. The spatial autocorrelation of individual growth was tested using Moran’s I index.")%>%
-  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"),
-                full_width = F) %>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position"),
+                full_width = FALSE) %>%
   kableExtra::pack_rows("Paracou", start_row = 1, end_row = 2) %>% 
   kableExtra::pack_rows("Uppangala", start_row = 3, end_row = 4)%>%
   kableExtra::pack_rows("BCI", start_row = 5, end_row = 6)
@@ -851,7 +851,7 @@ Results_moran_undisturbed <- coexIV::results_moran_undisturbed(data=Moran_I_Para
 save(Results_moran_undisturbed, file=here::here("outputs", "tropical_analysis", "Results_moran_undisturbed.RData"))
 
 kableExtra::kbl(Results_moran_undisturbed, booktabs = T, caption = "Spatial autocorrelation of the growth of conspecific individuals in the undisturbed plots of the Paracou site. Shown are the proportion of species, and of corresponding individuals, in \\%, for which individual growth was significantly spatially autocorrelated, or not significantly spatially autocorrelated. The spatial autocorrelation of individual growth was tested using Moran’s I index.")%>%
-  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down", full_width = F))
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", full_width = FALSE))
 ```
 
 Considering the undisturbed plots only, the proportion of individuals of species with a significant Moran’s I test was `r round(as.numeric(Results_moran_undisturbed[2,2]))`%, much lower than when including the disturbed plots (`r round(as.numeric(Results_moran[2,2]))`%, see Table \@ref(tab:MoransResults); Table \@ref(tab:ResultsMoranParacouUndisturbed)). This corroborates our hypothesis that  the openness of the canopy triggered important spatial structure in disturbed plots due to light gaps, and as in these gaps, trees tend to grow faster, the spatial structure of growth is stronger.

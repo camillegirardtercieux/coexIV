@@ -1,9 +1,0 @@
----
-title: "Body of evidence"
-output: bookdown::html_document2
----
-We used literature and data analyses of various nature to support our opinions. Figure \@ref(fig:Bodyofevidence) illustrates how these elements articulate together.
-
-```{r Bodyofevidence, echo=FALSE, fig.cap="The body of evidence used to support the opinion of the paper"}
-knitr::include_graphics(here::here("data", "Body-of-evidences.png"))
-```

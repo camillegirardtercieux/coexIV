@@ -9,8 +9,8 @@ output:
     toc: true
     toc_float: true
     number_sections: true
-bibliography: "`r here::here('References.bib')`"
-csl: "`r here::here('bib_style.csl')`"
+bibliography: "`r here::here('tools_latex', 'References.bib')`"
+csl: "`r here::here('tools_latex', 'bib_style.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -29,12 +29,14 @@ header-includes:
   - \usepackage{float}
   - \floatplacement{figure}{H}
   - \renewcommand{\thefigure}{S\thesection.\arabic{figure}}
+  - \renewcommand{\thetable}{S\thesection.\arabic{table}}
 always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
+
 
 In this section, we aimed at exploring the intraspecific variability of tree growth in three hyperdiverse mature forests, encompassing contrasting climates and disturbance regimes across the Tropics. First, for each dataset, we estimated the intraspecific variance of annualized growth using a hierarchical bayesian model. Then, we tested if spatial structure in individual mean growth could be detected. Finally, we tested if intraspecific variability was higher than interspecific variability in individual mean growth.
 
@@ -45,59 +47,113 @@ Note that we here used data on tree growth, which is one component of individual
 
 ## Paracou
 
-The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm. The studied 93.75-ha area harbours 768 species, 254 genera and 65 families of plants. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow (< 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site (https://paracou.cirad.fr/). Here, we used data from a disturbance experiment, where 15 plots of 6.25 ha were exposed to four different logging intensities between 1986 and 1988. Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November). The final dataset contains ca. 46,000 tree measurements.
+```{r ChargeParacou, message=FALSE, warning=FALSE}
+Paracou <- coexIV::read_data_paracou()
+```
 
-Figure \@ref(fig:IncludePlotParacou) shows the location of the trees in the Paracou site.
+```{r RenameSpeciesParacou, eval=FALSE, include=FALSE}
+Paracou <- coexIV::rename_indet_paracou(Paracou) %>% coexIV::create_identspecies()
+```
 
+The Paracou forest is located in French Guiana. It is one of the best-studied lowland tropical forests in the Guiana Shield region. It belongs to the Caesalpiniaceae facies and has amongst the highest alpha-diversity in the Guiana shield with 150-200 tree species per hectare in inventories of trees with diameter at breast height (DBH) $\ge$ 10 cm. The Guiana Shield is characterized by Pre-Cambrian granitic and metamorphic geological formations, highly eroded. It is associated with gently undulating landscapes and a very dense hydrographic system. Paracou forest lies in a hilly area, on a formation called “série Armina” characterized by schists and sandstones and locally crossed by veins of pegmatite, aplite and quartz. The topography of the site consists of small hills separated by narrow (< 5 m wide) sandy waterbeds. The altitude varies from 5 to about 45 m above sea level [@gourlet-fleury_ecology_2004, @herault_key_2018]. The mean annual temperature is 26 °C and winds are generally weak. There is a well marked dry season (from mid-August to mid-November) and a long rain season with a short drier period between March and April (mean annual rainfall of 3,041 mm). Different study programs have been led at the Paracou site (https://paracou.cirad.fr/).
+Here, we used data from a disturbance experiment, where 12 square plots of 6.25 ha were exposed to four different logging intensities between 1986 and 1988, as well as four square plots of 6.25 ha which were set up for biodiversity monitoring in 1990-1992 (plots 1-15). Since then, cartesian coordinates, DBH, species identity and survival of each tree with a DBH $\ge$ 10 cm have been collected every one or two years, during the dry season (mid-August to mid-November).
+The studied 93.75-ha area harbours `r length(unique(Paracou$idTree))` measured trees, among which `r length(unique(Paracou[which(Paracou$Sp=="Indet_sp"),]$idTree))` belong to an undetermined species and others belong to `r length(unique(Paracou$Sp))-1` determined species, `r length(unique(Paracou$Genus))-1` genera and `r length(unique(Paracou$Family))` families.
+
+```{r RemoveYearsParacou}
+Paracou <- Paracou[which(!(Paracou$CensusYear %in% c(1985:1991))),]
+```
+
+We removed all measures of the years before the perturbations were performed and the biodiversity plots were added (1985-1991), thus obtaining a dataset containing `r length(unique(Paracou$idTree))` measured trees, among which `r length(unique(Paracou[which(Paracou$Sp=="Indet_sp"),]$idTree))` belong to an undetermined species and others belong to `r length(unique(Paracou$Sp))-1` determined species, `r length(unique(Paracou$Genus))-1` genera and `r length(unique(Paracou$Family))` families.
+
+```{r ProducePlotParacou}
+g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")+ggplot2::coord_fixed(ratio = 1)
+ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
+
+```
+
+Figure \@ref(fig:IncludePlotParacou) shows the location of the used trees in the Paracou site.
 
 ```{r IncludePlotParacou, echo=FALSE, fig.cap = "Plots at the Paracou site. Each point is a tree."}
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Paracou_site.png"))
 ```
 
-
 ## Uppangala
 
-The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, and was established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. The studied area, of 5.07 ha, is quite steep, with a mean slope angle of about 30–35°. The plots consist in five North–South oriented transects that are 20-m wide, 180- to 370-m long, and 100-m apart center to center, in addition to three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The final dataset contains measurements of 3,870 trees of 102 species (including 2 morphospecies). This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
+```{r ChargeUppangala}
+load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
+```
+
+```{r NamesUppangala, eval=FALSE, include=FALSE}
+Species_list_Uppangala <- read.table(here::here("data", "Uppangala", "Species_list_Uppangala.txt"), sep = "\t", header = TRUE)
+
+Species_list_Uppangala$Genus <- stringr::str_split_fixed(Species_list_Uppangala$LatinName, " ", 2)[,1]
+
+upsp.dataset$Sp <- Species_list_Uppangala$LatinName[match(upsp.dataset$SpCode, Species_list_Uppangala$SpCode)]
+
+upsp.dataset$Genus <- Species_list_Uppangala$Genus[match(upsp.dataset$SpCode, Species_list_Uppangala$SpCode)]
+
+upsp.dataset$Family <- Species_list_Uppangala$Family[match(upsp.dataset$SpCode, Species_list_Uppangala$SpCode)]
+```
+
+The Uppangala Permanent Sample Plot (UPSP) is located in South-East Asia, in the Western Ghats of India, and was established in 1989 by the French Institute of Pondicherry in the Kadamakal Reserve Forest, in the Pushpagiri Wildlife Sanctuary, in Karnataka state, India [@pelissier_tree_2011]. It is a low altitude (500-600 m) wet evergreen monsoon Dipterocarp forest [@bec_characterizing_2015]. This forest is considered as one of the rare undisturbed tropical forests in the world [@pascal_structure_1996].
+The studied area of 5.07 ha is quite steep, with a mean slope angle of about 30–35°. The plots consist in five North–South oriented transects that are 20-m wide, 180- to 370-m long, and 100-m apart center to center, in addition to three rectangular plots which overlap the transects. The transects gather data from 1990 to 2011 and the rectangular plots from 1993 to 2011. The trees with GBH (Girth at Breast Height) $\ge$ 30 cm (equivalent to ca. 9.5 cm DBH) were measured every 3 to 5 years. The original dataset contains measurements of `r length(unique(upsp.dataset$TreeID))` trees of `r length(unique(upsp.dataset$SpCode))` species (including 2 morphospecies),`r length(unique(upsp.dataset$Genus))` genera and `r length(unique(upsp.dataset$Family))` families.
+
+We removed the census dates which were not common for all plots (1990-1992).
+
+```{r RemoveYearsUppangala, eval=FALSE, include=FALSE}
+upsp.dataset <- upsp.dataset[which(upsp.dataset$date>1339),]
+```
+
+Thus, we obtained a dataset containing `r length(unique(upsp.dataset$TreeID))` trees of `r length(unique(upsp.dataset$SpCode))` species (including 2 morphospecies),`r length(unique(upsp.dataset$Genus))` genera and `r length(unique(upsp.dataset$Family))` families.
+
+```{r ProducePlotUppangala}
+g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
+#Save as png and include in order to make the pdf lighter
+ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
+
+```
 
 Figure \@ref(fig:IncludePlotUppangala) shows the location of the trees in the Uppangala site.
-
 
 ```{r IncludePlotUppangala, echo=FALSE, fig.cap="Plots at Uppangala site. Each point is a tree."}
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Uppangala_site.png"))
 ```
 
-
 ## BCI
 
-The Barro Colorado Island site is located in central America, in Panama, covered by a lowland tropical moist forest. The zone became an island after a valley was flooded in order to build the Panama Canal, in 1913. It is nowadays considered as the most intensively studied tropical forest in the world. The studied site is a 50 ha plot (500 $\times$ 1000 m). It has an elevation of 120 m and is quite flat (most slopes are gentler than 10°). Complete censuses of all trees with DBH $\ge$ 1 cm have been performed every 5 years since 1980. The dataset contains measurements of 328 tree species and 423617 trees, and when only taking into account trees with DBH $\ge$ 10 cm, it contains measurements of  255 species and 37224 trees. The dataset is available at [@condit_complete_2019].
+```{r ChargeBCI, include=FALSE}
+BCI <- coexIV::read_data_bci()
+load(here::here("data", "BCI", "bci.spptable.rdata"))
+BCI$Sp <- bci.spptable$Latin[match(BCI$sp, bci.spptable$sp)]
+BCI$Genus <- bci.spptable$Genus[match(BCI$sp, bci.spptable$sp)]
+BCI$Family <- bci.spptable$Family[match(BCI$sp, bci.spptable$sp)]
+```
+
+The Barro Colorado Island site is located in central America, in Panama, covered by a lowland tropical moist forest. The zone became an island after a valley was flooded in order to build the Panama Canal, in 1913. It is nowadays considered as the most intensively studied tropical forest in the world. The studied site is a 50 ha plot (500 $\times$ 1,000 m). It has an elevation of 120 m and is quite flat (most slopes are gentler than 10°). Complete censuses of all trees with DBH $\ge$ 1 cm have been performed every 5 years since 1980. The dataset contains measurements of `r length(unique(BCI$treeID))` trees of `r length(unique(BCI$sp))` tree species, `r length(unique(BCI$Genus))` genera and `r length(unique(BCI$Family))` families.
+
+```{r RemoveValuesBCI, include=FALSE}
+BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
+BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
+```
+
+When only taking into account trees with DBH $\ge$ 10 cm for consistency with the other datasets, it contains measurements of `r length(unique(BCI$treeID))` trees of `r length(unique(BCI$sp))` tree species, `r length(unique(BCI$Genus))` genera and `r length(unique(BCI$Family))` families.
+The dataset is available in [@condit_complete_2019].
+
+```{r ProducePlotBCI, warning=FALSE}
+g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
+ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
+```
 
 Figure \@ref(fig:IncludePlotBCI) shows the location of the selected trees in the BCI site.
-
 
 ```{r IncludePlotBCI, echo=FALSE, fig.cap="The 50 ha plot of the Barro Colorado Island site. Each point is a tree.", warning=FALSE}
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "BCI_site.png"))
 ```
 
 
-# Data preparation
+# Growth and mean growth estimation
 
-For the Paracou site, we used the plots 1 to 15 of the Paracou site. We removed all trees of undetermined species and all measures of the years before the perturbations were performed and the biodiversity plots were added (1985-1991).
-
-For the Uppangala site, we removed the census dates which were not common for all plots.
-
-For the BCI site, we removed the trees with missing DBH measures and trees with DBH < 10 cm for consistency with the Paracou and Uppangala sites.
-
-For all three datasets, we computed annualized growth between two censuses as the difference of DBH (Diameter at Breast Height) between two consecutive censuses, divided by the time period between those two censuses. We then removed estimates with a growth < -2 mm/year or > 100 mm/year.
-
-```{r ChargeParacou, message=FALSE, warning=FALSE}
-Paracou <- coexIV::read_data_paracou()
-```
-
-```{r ProducePlotParacou}
-g <- ggplot2::ggplot(data=Paracou, ggplot2::aes(x=Xutm, y=Yutm))+ggplot2::geom_point(size=0.1)+ggplot2::labs(x="X (UTM)", y = "Y (UTM")
-ggplot2::ggsave(filename = "Paracou_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi = 300)
-
-```
+For all three datasets, we computed annualized growth between two censuses as the difference of DBH between two consecutive censuses, divided by the time period between those two censuses. We then removed estimates with a growth < -2 mm/year or > 100 mm/year.
 
 ```{r GrowthParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- coexIV::compute_growth_paracou(Paracou)
@@ -108,13 +164,9 @@ rm(Paracou)
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-```{r RenameSpeciesParacou, eval=FALSE, include=FALSE}
-Paracou_no_mean <- coexIV::rename_indet_paracou(Paracou_no_mean) %>% coexIV::create_identspecies()
-```
-
 ```{r RemoveValuesParacou, eval=FALSE, include=FALSE}
 Paracou_no_mean <- Paracou_no_mean[Paracou_no_mean$G_tp1_corr>(-2)&Paracou_no_mean$G_tp1_corr<100,]
-Paracou_no_mean <- Paracou_no_mean[which(!(Paracou_no_mean$CensusYear %in% c(1985:1991))),]
+
 Paracou_no_mean <- Paracou_no_mean%>%
   dplyr::mutate(Growth = G_tp1_corr, Diameter = D_t_corr)
 save(Paracou_no_mean, file = here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
@@ -137,30 +189,8 @@ load(here::here("outputs", "tropical_analysis", "Data_Paracou.RData"))
 ```
 
 
-```{r ChargeUppangala}
-load(here::here("data", "Uppangala", "upsp.dataset.Rdata"))
-
-```
-
-```{r ProducePlotUppangala}
-g <- ggplot2::ggplot(data=upsp.dataset, ggplot2::aes(x=Xsite, y=Ysite))+ggplot2::geom_point(size=0.5)+ggplot2::labs(x="X (m)", y = "Y (m)")
-#Save as png and include in order to make the pdf lighter
-ggplot2::ggsave(filename = "Uppangala_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
-
-```
-
-```{r RemoveYearsUppangala, eval=FALSE, include=FALSE}
-Uppangala_no_mean <- upsp.dataset[which(upsp.dataset$date>1339),]
-```
-
-```{r NamesUppangala, eval=FALSE, include=FALSE}
-Species_list_Uppangala <- read.table(here::here("data", "Uppangala", "Species_list_Uppangala.txt"), sep = "\t", header = TRUE)
-
-Uppangala_no_mean$Sp <- Species_list_Uppangala$LatinName[match(Uppangala_no_mean$SpCode, Species_list_Uppangala$SpCode)]
-```
-
 ```{r GrowthUppangala, eval=FALSE, include=FALSE}
-Uppangala_no_mean <- coexIV::compute_growth_uppangala(Uppangala_no_mean)
+Uppangala_no_mean <- coexIV::compute_growth_uppangala(upsp.dataset)
 ```
 
 ```{r RemoveValuesUppangala, eval=FALSE, include=FALSE}
@@ -190,22 +220,6 @@ save(Data_Uppangala, file = here::here("outputs", "tropical_analysis", "Data_Upp
 load(here::here("outputs", "tropical_analysis", "Data_Uppangala.RData"))
 ```
 
-
-```{r ChargeBCI, include=FALSE}
-BCI <- coexIV::read_data_bci()
-load(here::here("data", "BCI", "bci.spptable.rdata"))
-BCI$Sp <- bci.spptable$Latin[match(BCI$sp, bci.spptable$sp)]
-```
-
-```{r RemoveValuesBCI, include=FALSE}
-BCI <- BCI[is.na(BCI$dbh)==F,]#remove NA
-BCI <- BCI[which(BCI$dbh>=100),]#remove trees with DBH < 10cm (for consistance with the other datasets)
-```
-
-```{r ProducePlotBCI, warning=FALSE}
-g <- ggplot2::ggplot(data=BCI, ggplot2::aes(x=gx, y=gy))+ggplot2::geom_point(size=0.5, alpha = 0.2)+ggplot2::labs(x="X (m)", y="Y (m)")
-ggplot2::ggsave(filename = "BCI_site.png", path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 7, height = 5, dpi=300)
-```
 
 ```{r GrowthBCI, eval=FALSE, include=FALSE}
 BCI_no_mean <- compute_growth_BCI(BCI)
@@ -237,11 +251,11 @@ save(Data_BCI, file = here::here("outputs", "tropical_analysis", "Data_BCI.RData
 load(here::here("outputs", "tropical_analysis", "Data_BCI.RData"))
 ```
 
-For the Paracou site, after removing `r nrow(Paracou_no_mean[which(Paracou_no_mean$Sp=="Indet_sp"),])` growth estimates for `r length(unique(Paracou_no_mean[which(Paracou_no_mean$Sp=="Indet_sp"),]$idTree))` trees of indeterminate species, this leads to a dataset with `r nrow(Paracou_no_mean[which(Paracou_no_mean$Sp!="Indet_sp"),])` growth estimates for `r length(unique(Paracou_no_mean[which(Paracou_no_mean$Sp!="Indet_sp"),]$idTree))` trees of `r length(unique(Paracou_no_mean[which(Paracou_no_mean$Sp!="Indet_sp"),]$Sp))` species.
+For the Paracou site, after removing `r nrow(Paracou_no_mean[which(Paracou_no_mean$Sp=="Indet_sp"),])` growth estimates for `r length(unique(Paracou_no_mean[which(Paracou_no_mean$Sp=="Indet_sp"),]$idTree))` trees of indeterminate species, we obtained a dataset with `r nrow(Paracou_no_mean[which(Paracou_no_mean$Sp!="Indet_sp"),])` growth estimates for `r length(unique(Paracou_no_mean[which(Paracou_no_mean$Sp!="Indet_sp"),]$idTree))` trees of `r length(unique(Paracou_no_mean[which(Paracou_no_mean$Sp!="Indet_sp"),]$Sp))` species.
 
-For the Uppangala site, this leads to a dataset with `r nrow(Uppangala_no_mean)` growth estimates for `r length(unique(Uppangala_no_mean$TreeID))` trees of `r length(unique(Uppangala_no_mean$SpCode))` species.
+For the Uppangala site, we obtained a dataset with `r nrow(Uppangala_no_mean)` growth estimates for `r length(unique(Uppangala_no_mean$TreeID))` trees of `r length(unique(Uppangala_no_mean$SpCode))` species.
 
-For the BCI site, this leads to a dataset with `r nrow(BCI_no_mean)` growth estimates for `r length(unique(BCI_no_mean$treeID))` trees of `r length(unique(BCI_no_mean$sp))` species.
+For the BCI site, we obtained a dataset with `r nrow(BCI_no_mean)` growth estimates for `r length(unique(BCI_no_mean$treeID))` trees of `r length(unique(BCI_no_mean$sp))` species.
 
 For all three datasets, we finally computed the mean annual growth for each individual tree as the difference of DBH between the first and the last time a tree was measured, divided by the period between those two measurements.
 
@@ -308,13 +322,13 @@ print(nrow(Data_stan_Paracou))
 
 options("m.cores"=2)
 
-## Priors
+### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
                 brms::prior(normal(0, 1), class = "b"),
                 brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
-## Fit
+### Fit
 
 brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTree), 
                data = Data_stan_BCI,
@@ -359,13 +373,13 @@ print(nrow(Data_stan_Uppangala))
 
 options("m.cores"=2)
 
-## Priors
+### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
                 brms::prior(normal(0, 1), class = "b"),
                 brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
-## Fit
+### Fit
 
 brms_mod <- brms::brm(formula = logG ~ 1 + logD + logD2 + (1|IdentSpecies) + (1|IdentTree), 
                data = Data_stan_Uppangala,
@@ -409,13 +423,13 @@ print(nrow(Data_stan_BCI))
 
 options("m.cores"=2)
 
-## Priors
+### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
                 brms::prior(normal(0, 1), class = "b"),
                 brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
-## Fit
+### Fit
 
 brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTree), 
                data = Data_stan_BCI,
@@ -455,44 +469,44 @@ Res_mods <-
   data.frame(
     Amount = rep(c("Estimate", "Estimation error"), 3),
     Intercept = c(
-      format(Sum_paracou$fixed[1,1], digits = 2, scientific = T),
-      format(Sum_paracou$fixed[1,2], digits = 2, scientific = T),
-      format(Sum_uppangala$fixed[1,1], digits = 2, scientific = T),
-      format(Sum_uppangala$fixed[1,2], digits = 2, scientific = T),
-      format(Sum_BCI$fixed[1,1], digits = 2, scientific = T),
-      format(Sum_BCI$fixed[1,2], digits = 2, scientific = T)
+      format(as.numeric(Sum_paracou$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[1,2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,2]), digits = 2, scientific = T)
       ),
     Diameter = c(
-      format(Sum_paracou$fixed[2,1], digits = 2, scientific = T),
-      format(Sum_paracou$fixed[2,2], digits = 2, scientific = T),
-      format(Sum_uppangala$fixed[2,1], digits = 2, scientific = T),
-      format(Sum_uppangala$fixed[2,2], digits = 2, scientific = T),
-      format(Sum_BCI$fixed[2,1], digits = 2, scientific = T),
-      format(Sum_BCI$fixed[2,2], digits = 2, scientific = T)
+      format(as.numeric(Sum_paracou$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[2,2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,2]), digits = 2, scientific = T)
       ),
     Vb = c(
-      format(Sum_paracou$random$IdentSpecies[1], digits = 2, scientific = T),
-      format(Sum_paracou$random$IdentSpecies[2], digits = 2, scientific = T),
-      format(Sum_uppangala$random$IdentSpecies[1], digits = 2, scientific = T),
-      format(Sum_uppangala$random$IdentSpecies[2], digits = 2, scientific = T),
-      format(Sum_BCI$random$IdentSpecies[1], digits = 2, scientific = T),
-      format(Sum_BCI$random$IdentSpecies[2], digits = 2, scientific = T)
+      format(as.numeric(Sum_paracou$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[2]), digits = 2, scientific = T)
       ),
     Vd = c(
-      format(Sum_paracou$random$IdentTree[1], digits = 2, scientific = T),
-      format(Sum_paracou$random$IdentTree[2], digits = 2, scientific = T),
-      format(Sum_uppangala$random$IdentTree[1], digits = 2, scientific = T),
-      format(Sum_uppangala$random$IdentTree[2], digits = 2, scientific = T),
-      format(Sum_BCI$random$IdentTree[1], digits = 2, scientific = T),
-      format(Sum_BCI$random$IdentTree[2], digits = 2, scientific = T)
+      format(as.numeric(Sum_paracou$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentTree[2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[2]), digits = 2, scientific = T)
       ),
     V=c(
-      format(Sum_paracou$spec_pars[1], digits = 2, scientific = T),
-      format(Sum_paracou$spec_pars[2], digits = 2, scientific = T),
-      format(Sum_uppangala$spec_pars[1], digits = 2, scientific = T),
-      format(Sum_uppangala$spec_pars[2], digits = 2, scientific = T),
-      format(Sum_BCI$spec_pars[1], digits = 2, scientific = T),
-      format(Sum_BCI$spec_pars[2], digits = 2, scientific = T)
+      format(as.numeric(Sum_paracou$spec_pars[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$spec_pars[2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[2]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[2]), digits = 2, scientific = T)
       )
     )
 kableExtra::kbl(
@@ -509,35 +523,39 @@ kableExtra::kbl(
 ```
 
 ```{r ComputeVarianceProportions}
-Var_tot_Paracou <- Sum_paracou$random$IdentSpecies[1] + Sum_paracou$random$IdentTree[1] + Sum_paracou$spec_pars[1]
+Var_tot_Paracou <- as.numeric(Sum_paracou$random$IdentSpecies[1]) + as.numeric(Sum_paracou$random$IdentTree[1]) + as.numeric(Sum_paracou$spec_pars[1])
 
-Var_tot_Uppangala <- Sum_uppangala$random$IdentSpecies[1] + Sum_uppangala$random$IdentTree[1] + Sum_uppangala$spec_pars[1]
+Var_tot_Uppangala <- as.numeric(Sum_uppangala$random$IdentSpecies[1]) + as.numeric(Sum_uppangala$random$IdentTree[1]) + as.numeric(Sum_uppangala$spec_pars[1])
 
-Var_tot_BCI <- Sum_BCI$random$IdentSpecies[1] + Sum_BCI$random$IdentTree[1] + Sum_BCI$spec_pars[1]
+Var_tot_BCI <- as.numeric(Sum_BCI$random$IdentSpecies[1]) + as.numeric(Sum_BCI$random$IdentTree[1]) + as.numeric(Sum_BCI$spec_pars[1])
 
 Prop_var_Paracou <- data.frame(
-  amount = c(round(Sum_paracou$random$IdentSpecies[1]/Var_tot_Paracou, digits = 2),
-             round(Sum_paracou$random$IdentTree[1]/Var_tot_Paracou, digits = 2),
-             round(Sum_paracou$spec_pars[1]/Var_tot_Paracou, digits = 2)),
+  amount = c(round(as.numeric(Sum_paracou$random$IdentSpecies[1])/Var_tot_Paracou, digits = 2),
+             round(as.numeric(Sum_paracou$random$IdentTree[1])/Var_tot_Paracou, digits = 2),
+             round(as.numeric(Sum_paracou$spec_pars[1])/Var_tot_Paracou, digits = 2)),
   category = c("Species", "Individual", "Residual"))
 Prop_var_Paracou$category <- factor(Prop_var_Paracou$category,
                                     levels = c("Species", "Individual", "Residual"))
 
 Prop_var_Uppangala <- data.frame(
-  amount=c(round(Sum_uppangala$random$IdentSpecies[1]/Var_tot_Uppangala, digits = 2),
-           round(Sum_uppangala$random$IdentTree[1]/Var_tot_Uppangala, digits = 2),
-           round(Sum_uppangala$spec_pars[1]/Var_tot_Uppangala, digits = 2)),
+  amount=c(round(as.numeric(Sum_uppangala$random$IdentSpecies[1])/Var_tot_Uppangala, digits = 2),
+           round(as.numeric(Sum_uppangala$random$IdentTree[1])/Var_tot_Uppangala, digits = 2),
+           round(as.numeric(Sum_uppangala$spec_pars[1])/Var_tot_Uppangala, digits = 2)),
   category = c("Species", "Individual", "Residual"))
 Prop_var_Uppangala$category <- factor(Prop_var_Uppangala$category,
                                     levels = c("Species", "Individual", "Residual"))
 
 Prop_var_BCI <- data.frame(
-  amount = c(round(Sum_BCI$random$IdentSpecies[1]/Var_tot_BCI, digits = 2),
-             round(Sum_BCI$random$IdentTree[1]/Var_tot_BCI, digits = 2),
-             round(Sum_BCI$spec_pars[1]/Var_tot_BCI, digits = 2)),
+  amount = c(round(as.numeric(Sum_BCI$random$IdentSpecies[1])/Var_tot_BCI, digits = 2),
+             round(as.numeric(Sum_BCI$random$IdentTree[1])/Var_tot_BCI, digits = 2),
+             round(as.numeric(Sum_BCI$spec_pars[1])/Var_tot_BCI, digits = 2)),
   category = c("Species", "Individual", "Residual"))
 Prop_var_BCI$category <- factor(Prop_var_BCI$category,
                                     levels = c("Species", "Individual", "Residual"))
+
+Prop_var_all_sites <- rbind(Prop_var_Paracou, Prop_var_Uppangala, Prop_var_BCI)
+Prop_var_all_sites$Site <- factor(rep(c("Paracou", "Uppangala", "BCI"), each=nrow(Prop_var_Paracou)), levels=c("Paracou", "Uppangala", "BCI"))
+Prop_var_all_sites$amount <- Prop_var_all_sites$amount*100
 
 Plot_prop_var_Paracou <- ggplot2::ggplot(Prop_var_Paracou, ggplot2::aes(x="", y=amount, fill=category)) +
   ggplot2::geom_bar(stat="identity", width=1) +
@@ -608,9 +626,26 @@ ggplot2::ggsave(filename = "Variance_partition_Uppangala.png", plot = Plot_prop_
 
 ggplot2::ggsave(filename = "Variance_partition_BCI.png", plot = Plot_prop_var_BCI, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 5, height = 5)
 
+Plot_prop_var_all <- ggplot2::ggplot(data = Prop_var_all_sites, ggplot2::aes(x=amount, y=Site, fill=category))+
+  ggplot2::geom_col(width=0.3)+ 
+  ggplot2::geom_text(ggplot2::aes(label = amount), position = ggplot2::position_stack(vjust=0.5), vjust=4, size=5)+
+  ggplot2::labs(title = NULL, x = NULL, y = NULL, fill = "Variance components (%)") +
+  ggplot2::scale_fill_viridis_d()+
+  ggplot2::theme_classic()+
+  ggplot2::theme(axis.line = ggplot2::element_blank(),
+          axis.text.x = ggplot2::element_blank(),
+          axis.ticks = ggplot2::element_blank(),
+          legend.position = "bottom",
+          text = ggplot2::element_text(size = 20))+
+  ggplot2::scale_x_reverse()+
+  ggplot2::scale_y_discrete(limits = rev(levels(Prop_var_all_sites$Site)))
+
+ggplot2::ggsave(filename = "Variance_partition.png", plot = Plot_prop_var_all, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 15, height = 6)
+
+
 ```
 
-```{r PlotsVarianceProportion, fig.show="hold", out.width="33%", fig.cap="Variance partitioning of individual growth in three tropical forest sites (see Table above)."}
+```{r PlotsVarianceProportion, eval=FALSE, fig.cap="Variance partitioning of individual growth in three tropical forest sites (see Table above)", fig.show="hold", include=FALSE, out.width="33%"}
 
 knitr::include_graphics(
   c(
@@ -622,12 +657,17 @@ knitr::include_graphics(
 
 ```
 
+```{r PlotVarianceProportionAllSites, fig.cap="Variance partitioning of individual growth in three tropical forest sites (see Table above)."}
 
-Overall, a large part of variability in tree growth was imputable to individual effects in the three sites, even after accounting for the effect of diameter on tree growth, showing a high intraspecific variability in growth in this tropical forests (Figure \@ref(fig:PlotsVarianceProportion)).
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Variance_partition.png")) 
+
+```
+
+Overall, a large part of variability in tree growth was imputable to individual effects in the three sites, even after accounting for the effect of diameter on tree growth, showing a high intraspecific variability in growth in these tropical forests (Figure \@ref(fig:PlotVarianceProportionAllSites)).
 
 # Moran's I analysis
 
-In order to test if individual tree growth was spatially autocorrelated within each site, we performed a Moran’s I test on individual mean growth for each species with more than 5 individuals. For very abundant species (with more than 3000 individuals), we sampled 3000 individuals with a uniform probability. Moran’s I test function was re-written from the ape package’s Moran.I function with a one-tailed test [@paradis_ape_2019] in order to be able to select the pairs of neighbours that are less than 100-m apart and thus assess local spatial autocorrelation.
+In order to test if individual tree growth was spatially autocorrelated within each site, we performed a Moran’s I test on individual mean growth for each species with more than 5 individuals. For very abundant species (with more than 3,000 individuals), we sampled 3,000 individuals with a uniform probability. Moran’s I test function was re-written from the ape package’s Moran.I function with a one-tailed test [@paradis_ape_2019] in order to be able to select the pairs of neighbours that are less than 100-m apart and thus assess local spatial autocorrelation.
 
 
 ```{r MoransTests, eval=FALSE, include=FALSE}
@@ -660,9 +700,11 @@ We then computed the proportion of species with a significantly and  positively 
 ```{r MoransResults}
 Results_moran <- coexIV::results_moran(data1=Moran_I_Paracou, data2=Moran_I_Uppangala, data3 = Moran_I_BCI)
 
-kableExtra::kbl(Results_moran, booktabs = T, caption = "Spatial autocorrelation of the growth of conspecific individuals in three tropical forest sites. Shown are the proportion of species, and of corresponding individuals, in percent, for which individual growth is significantly positively spatially autocorrelated. The spatial autocorrelation of individual growth was tested using Moran’s I index.")%>%
-  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"),
-                full_width = F) %>%
+save(Results_moran, file=here::here("outputs", "tropical_analysis", "Results_moran.RData"))
+
+kableExtra::kbl(Results_moran, booktabs = T, caption = "Spatial autocorrelation of the growth of conspecific individuals in three tropical forest sites. Shown are the proportion of species, and of corresponding individuals, in \\%, for which individual growth was significantly positively spatially autocorrelated. The spatial autocorrelation of individual growth was tested using Moran’s I index.")%>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position"),
+                full_width = FALSE) %>%
   kableExtra::pack_rows("Paracou", start_row = 1, end_row = 2) %>% 
   kableExtra::pack_rows("Uppangala", start_row = 3, end_row = 4)%>%
   kableExtra::pack_rows("BCI", start_row = 5, end_row = 6)
@@ -675,7 +717,7 @@ kableExtra::kbl(Results_moran, booktabs = T, caption = "Spatial autocorrelation 
 ## Test to see if the number of individuals explains the significance ##
 model <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Paracou))
 summary(model)
-# R^2 equivalent for glm :
+# R^2 equivalent for glm:
 #with(summary(model), 1 - deviance/null.deviance)
 model <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Uppangala))
 summary(model)
@@ -742,6 +784,7 @@ load(here::here("outputs", "tropical_analysis", "Var_comp_BCI.RData"))
 
 ```{r ResultsVarianceComparison}
 Results_var_comp <- coexIV::results_var_comp(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
+save(Results_var_comp, file=here::here("outputs", "tropical_analysis", "Results_var_comp.RData"))
 
 Results_var_comp %>%
   dplyr::mutate_all(kableExtra::linebreak) %>%
@@ -757,6 +800,7 @@ Results_var_comp %>%
 
 ```{r ResultsVarianceComparisonSample}
 Results_var_comp_sample <- coexIV::results_var_comp_sample(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
+save(Results_var_comp_sample, file=here::here("outputs", "tropical_analysis", "Results_var_comp_sample.RData"))
 
 Results_var_comp_sample %>%
   dplyr::mutate_all(kableExtra::linebreak) %>%
@@ -773,7 +817,7 @@ Results_var_comp_sample %>%
 
 In all three tropical forest sites however, growth semivariance was locally significantly higher among heterospecifics than among conspecifics in a large proportion of the tested cases (`r round(as.numeric(Results_var_comp[1,2]))`%, `r round(as.numeric(Results_var_comp[3,2]))`% and `r round(as.numeric(Results_var_comp[5,2]))`% of the species, and `r round(as.numeric(Results_var_comp[2,2]))`%, `r round(as.numeric(Results_var_comp[4,2]))`% and `r round(as.numeric(Results_var_comp[6,2]))`% of the individuals in Paracou, Uppangala and BCI respectively; Table \@ref(tab:ResultsVarianceComparison)).
 
-Note that, to control for a potential effect of species abundance on the values of semivariances with heterospecifics, we replicate the analysis by computing the semivariances with heterospecifics by sampling a maximum of ten individuals per species. The results were qualitatively unchanged (Table \@ref(tab:ResultsVarianceComparisonSample)).
+Note that, to control for a potential effect of species abundance on the values of semivariances with heterospecifics, we replicated the analysis by computing the semivariances with heterospecifics by sampling a maximum of ten individuals per species. The results were qualitatively unchanged (Table \@ref(tab:ResultsVarianceComparisonSample)).
 
 
 # Other tests and verifications
@@ -794,19 +838,20 @@ save(Moran_I_Paracou_undisturbed, file=here::here("outputs", "tropical_analysis"
 ```{r ResultsMoranParacouUndisturbed}
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou_undisturbed.RData"))
 
-#Table of results !
+#Table of results
 Results_moran_undisturbed <- coexIV::results_moran_undisturbed(data=Moran_I_Paracou_undisturbed)
 
-kableExtra::kbl(Results_moran_undisturbed, booktabs = T, caption = "Spatial autocorrelation of the growth of conspecific individuals in three tropical forest sites. Shown are the proportion of species, and of corresponding individuals, in \\%, for which individual growth is (i) significantly spatially autocorrelated, (ii) not significantly spatially autocorrelated, or (iii) that have too few individuals to allow a test to be made. The spatial autocorrelation of individual growth was tested using Moran’s I index.")%>%
-  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down", full_width = F))
+save(Results_moran_undisturbed, file=here::here("outputs", "tropical_analysis", "Results_moran_undisturbed.RData"))
+
+kableExtra::kbl(Results_moran_undisturbed, booktabs = T, caption = "Spatial autocorrelation of the growth of conspecific individuals in the undisturbed plots of the Paracou site. Shown are the proportion of species, and of corresponding individuals, in \\%, for which individual growth was significantly spatially autocorrelated, or not significantly spatially autocorrelated. The spatial autocorrelation of individual growth was tested using Moran’s I index.")%>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", full_width = FALSE))
 ```
 
-Considering the undisturbed plots only, the proportion of individuals of species with a significant Moran’s I test was `r round(as.numeric(Results_moran_undisturbed[2,2]))`%, much lower than when including the disturbed plots (`r round(as.numeric(Results_var_comp[2,2]))`%, see Table \@ref(tab:MoransResults); Table \@ref(tab:ResultsMoranParacouUndisturbed)). This corroborates our hypothesis that  the openness of the canopy triggered important spatial structure in disturbed plots due to light gaps, and as in these gaps, trees tend to grow faster, the spatial structure of growth is stronger.
+Considering the undisturbed plots only, the proportion of individuals of species with a significant Moran’s I test was `r round(as.numeric(Results_moran_undisturbed[2,2]))`%, much lower than when including the disturbed plots (`r round(as.numeric(Results_moran[2,2]))`%, see Table \@ref(tab:MoransResults); Table \@ref(tab:ResultsMoranParacouUndisturbed)). This corroborates our hypothesis that  the openness of the canopy triggered important spatial structure in disturbed plots due to light gaps, and as in these gaps, trees tend to grow faster, the spatial structure of growth is stronger.
 
 ## Smaller stems in the BCI site
 
 In order to be able to compare all three datasets together, we removed all stems that had a DBH inferior to 10 cm in the BCI inventories, which include all stems with DBH $\ge$ 1 cm.  We replicated our analysis on the spatial autocorrelation of tree growth in the complete dataset and found that the spatial structure in individual growth was even more significant.
-
 
 # Code implementation
 

@@ -9,8 +9,8 @@ output:
     toc: true
     toc_float: true
     number_sections: true
-bibliography: "`r here::here('References.bib')`"
-csl: "`r here::here('bib_style.csl')`"
+bibliography: "`r here::here('tools_latex', 'References.bib')`"
+csl: "`r here::here('tools_latex', 'bib_style.csl')`"
 header-includes:
   - \usepackage{booktabs}
   - \usepackage{longtable}
@@ -29,6 +29,7 @@ header-includes:
   - \usepackage{float}
   - \floatplacement{figure}{H}
   - \renewcommand{\thefigure}{S\thesection.\arabic{figure}}
+  - \renewcommand{\thetable}{S\thesection.\arabic{table}}
 always_allow_html: true
 ---
 
@@ -36,14 +37,14 @@ always_allow_html: true
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
 
-
 In this analysis we tested whether intraspecific variability (IV) in observed individual tree growth can emerge from the environment only. To this aim, we used a clonal experimental setup. The EUCFLUX common garden is a clonal trial where 14 Eucalyptus genotypes were grown in a replicated, statistically-sound design. One of its main goals is to determine and compare the productivity of each genotype. Our hypothesis was that IV in tree growth mainly results from responses to environmental factors, and not only from intrinsic genetic factors. Therefore, we used the EUCFLUX dataset in order to quantify IV (within genotypes) for growth, i.e. in a dataset where genetically-driven IV is nil. Following our hypothesis, we expected to detect IV in growth within single genotypes.
 
 
 # The dataset
 
-The EUCFLUX experiment is located in Brazil, in the state of São Paulo. It includes 14 genotypes of 5 different species or hybrids, planted at the same date and grown in 10 replicated blocks of 100 trees each, which were monitored during 6 years. Each replicated block is distant by up to 1.5 km in a 200 ha stand showing some small changes in soil properties. The details of the setup can be found in [@le_maire_light_2019]. We used the DBH measured during 6 complete censuses in order to compute mean annual growth in mm/year at five points in time.
-We computed the mean annual growth of each tree in mm/y as the difference between two consecutive censuses divided by the time between the two censuses. In case of mortality of the tree between two censuses, the data was discarded. We computed the neperian logarithm of diameter and growth (with a constant for growth in order to avoid undefined values).
+The EUCFLUX experiment is located in Brazil, in the state of São Paulo. It includes 14 genotypes of five different *Eucalyptus* species or hybrids. Each genotype is planted in plots of 100 trees, at a density of 1666 trees per hectare, and replicated spatially in ten blocks.
+The experimental set-up was designed to minimize the variation in environmental factors among blocks, which were separated by less than 1.5 km within a homogeneous 200-ha stand showing small variation in soil properties. Tree DBH (Diameter at Breast Height) has been measured over five complete censuses, spanning six years, age at which such plantation is generally harvested. We used these measures in order to compute mean annual growth in mm/year at five points in time.
+Mean annual growth of each tree in mm/y was computed as the DBH difference between two consecutive censuses divided by the time between the two censuses. In case of mortality of the tree between two censuses, the data was discarded. We computed the neperian logarithm of diameter and growth (with a constant for growth in order to avoid undefined values).
 
 
 ```{r ChargeTheData, include=FALSE}
@@ -62,7 +63,7 @@ Raw_data <- Raw_data[which(!(Raw_data$Gen%in%c(1,2))),]
 
 Dates <- read.table(here::here("data", "EUCFLUX", "Dates.csv"), header=T, sep=",")
 
-#Date selection : only keep dates with code "1" for DBH in table 2
+#Date selection: only keep dates with code "1" for DBH in table 2
 # in https://doi.org/10.1016/j.foreco.2019.06.040
 # "1" = all blocks; all genotypes; all inside plot trees.
 Dates_measurements <- c("01/06/2011","01/01/2012", "15/01/2013",
@@ -109,13 +110,15 @@ plot1 <- ggplot2::ggplot(Raw_data, ggplot2::aes(x=Growth_yearly))+
   ggplot2::geom_histogram(color="black", fill="white", bins=30)+
   ggplot2::labs(x= "Growth (mm/y)",
                 y = "Frequency",
-                title = "Histogram of growth \n after filtering negative data")
+                title = "Histogram of growth")+
+  ggplot2::theme(plot.title=ggplot2::element_text(size=12.5))
 
 plot2 <- ggplot2::ggplot(Raw_data, ggplot2::aes(x=logG))+
   ggplot2::geom_histogram(color="black", fill="white", bins=30)+
   ggplot2::labs(x= "ln(Growth) in ln(mm/y)",
                 y = "Frequency",
-                title = "Histogram of the data \n used in the following analysis")
+                title = "Histogram of log-transformed growth \n (used in the following analysis)")+
+  ggplot2::theme(plot.title=ggplot2::element_text(size=12.5))
 
 g <- ggplot2::ggplot(Raw_data, ggplot2::aes(x=D_2, y=Growth_yearly, col=Age))+
   ggplot2::geom_point(alpha=0.3)+
@@ -171,8 +174,8 @@ Figure \@ref(fig:Coordinates) shows the disposition of the trees in a single plo
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Raw_data.png")) 
 ```
 
-Figure \@ref(fig:PlotColoursDate) shows the age of the trees has a big influence on the values of growth but also on the relationship between growth and diameter : the slope is smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases.
-Therefore, we computed a competition index $C_{i,t}$ to integrate this effect in the growth model. The competition index is computed for each tree which is not on the edge of a plot. It is the sum of the basal areas (BA) of the 8 direct neighbours divided by the area of the rectangle that comprises all the direct neighbours. It was then log-transformed. Dead neighbours are considered as having a null BA.
+Figure \@ref(fig:PlotColoursDate) shows the age of the trees has a big influence on the values of growth but also on the relationship between growth and diameter: the slope is smaller with time, indicating that for the same diameter, growth is slower through time. This is likely an effect of competition for light and possibly underground resources, since as the trees grow their capacity to capture resources increases.
+Therefore, we computed a competition index $C_{i,t}$ to integrate this effect in the growth model. The competition index was computed for each tree which was not on the edge of a plot. It is the sum of the basal areas (BA) of the 8 direct neighbours (there was no need to divide by the area of the rectangle that comprises all the direct neighbours, since this latter is a constant by construction of the experimental design). It was then log-transformed. Dead neighbours were considered as having a null BA.
 
 
 $C_{i, t} = \sum BA_{neighbours(i, t)}$
@@ -244,7 +247,7 @@ load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 
 In order to partition the variance of individual growth data, we built a model incorporating a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$), and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (block, $b_b$), and genotype ($b_g$).
 
-This model was fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10000 iterations, a warming period of 5000 iterations and a thinning of 5. We obtained 1000 estimates per parameter.
+This model was fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 5. We obtained 1,000 estimates per parameter.
 
 Variables were scaled to help the convergence of the model.
 
@@ -302,7 +305,7 @@ brms_mod <-brms::brm(
 save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData"))
 ```
 
-## Results of the model and variance partitioning
+# Results of the model and variance partitioning
 
 After convergence of the model (checked visually), we examined the proportion of the residual variance (variation of the response variables that is not explained by the covariates , i.e. in the unexplained part of the statistical model) related to each random effect, and this enabled us to perform a residual variance partitioning.
 
@@ -425,22 +428,22 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ran
 ```{r ResultsTable}
 Res_var_partition <- data.frame(
   c("Estimate", "Estimation error"),
-  c(format(Sum_EUCFLUX[["fixed"]][1,1], digits=2, scientific = T),
-    format(Sum_EUCFLUX[["fixed"]][1,2], digits=2, scientific = T)),
-  c(format(Sum_EUCFLUX[["fixed"]][2,1], digits=2, scientific = T),
-    format(Sum_EUCFLUX[["fixed"]][2,2], digits=2, scientific = T)),
-  c(format(Sum_EUCFLUX[["fixed"]][3,1], digits=2, scientific = T),
-    format(Sum_EUCFLUX[["fixed"]][3,2], digits=2, scientific = T)),
-  c(format(Sum_EUCFLUX[["random"]]$Tree[1], digits=2, scientific = T),
-    format(Sum_EUCFLUX[["random"]]$Tree[2], digits=2, scientific = T)),
-  c(format(Sum_EUCFLUX[["random"]]$Block[1], digits=2, scientific = T),
-    format(Sum_EUCFLUX[["random"]]$Block[2], digits=2, scientific = T)),
-  c(format(Sum_EUCFLUX[["random"]]$Gen[1], digits=2, scientific = T),
-    format(Sum_EUCFLUX[["random"]]$Gen[2], digits=2, scientific = T)),
-  c(format(Sum_EUCFLUX[["random"]]$Date[1], digits=2, scientific = T),
-    format(Sum_EUCFLUX[["random"]]$Date[2], digits=2, scientific = T)),
-  c(format(Sum_EUCFLUX$spec_pars[1], digits=2, scientific = T),
-    format(Sum_EUCFLUX$spec_pars[2], digits=2, scientific = T))
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][1,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,2]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][2,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,2]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][3,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,2]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[2]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Block[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[2]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[2]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Date[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[2]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX$spec_pars[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[2]), digits=2, scientific = T))
 )
 
 kableExtra::kbl(
@@ -462,27 +465,29 @@ Res_var_partition <- data.frame(
   amount = round(as.numeric(as.vector(t(Res_var_partition[1,5:ncol(Res_var_partition)])))/sum(as.numeric(as.vector(t(Res_var_partition[1,5:ncol(Res_var_partition)]))))*100, digits=1),
   category=c("Individual", "Block", "Genotype", "Temporal effect", "Residuals"))
 
-g <- ggplot2::ggplot(Res_var_partition, ggplot2::aes(x="", y=amount, fill=category)) +
-  ggplot2::geom_bar(stat="identity", width=0.3) +
-  ggplot2::geom_text(ggplot2::aes(label = amount), position = ggplot2::position_stack(vjust=0.5), vjust=4, size=5) +
-  ggplot2::labs(title = NULL, x = NULL, y = NULL, fill = "Variance components (%)") +
-  ggplot2::theme_classic() +
+g <- ggplot2::ggplot(Res_var_partition, ggplot2::aes(x="", y=amount, fill=category))+
+  ggplot2::geom_bar(stat="identity", width=0.3)+
+  ggplot2::geom_text(ggplot2::aes(label = amount), position = ggplot2::position_stack(vjust=0.5), vjust=4, size=5)+
+  ggplot2::labs(title = NULL, x = NULL, y = NULL, fill = "Variance components (%)")+
+  ggplot2::theme_classic()+
   ggplot2::theme(axis.line = ggplot2::element_blank(),
           axis.text = ggplot2::element_blank(),
           axis.ticks = ggplot2::element_blank(),
           legend.position = "bottom",
-          text = ggplot2::element_text(size = 20)) +
+          text = ggplot2::element_text(size = 20))+
   ggplot2::scale_fill_viridis_d()+
-  ggplot2::coord_flip()
+  ggplot2::coord_flip()+
+  ggplot2::scale_y_reverse()
+
 ggplot2::ggsave(filename = "Variance_partition.png", plot = g, path=here::here("outputs", "clonal_analysis", "figures"), device = "png", width = 15, height = 2)
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Variance_partition.png")) 
 ```
 
 
 The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel a), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
-The temporal effect explained the highest fraction of variance (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
+The temporal effect explained the highest fraction of variance (Table \@ref(tab:ResultsTable), Figure \@ref(fig:PlotColoursDate)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
 
-Importantly, variability between individuals within genotypes (10.8%) is higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
+Importantly, variability between individuals within genotypes (10.8%) was higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
 
 The block had the littlest impact with 2.5% of the variance explained. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
 As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions [@le_maire_light_2019], this dataset is a strongly conservative test case for our hypothesis.
@@ -492,7 +497,7 @@ As the experimental design aimed at minimizing environmental variations and sele
 
 Overall, we found that there is IV within clonal tree plantations (Figure \@ref(fig:SummaryPlot)). This shows that IV can be due only to the environmental factors varying between individuals, proving that the source of IV is not necessarily intrinsic.
 
-```{r SummaryPlot, fig.cap="The EUCFLUX setup and the variance partitioning. Site (A; each square represents a block) and organisation of a block (B; each coloured square represents a genotype) in the EUCFLUX experiment. 16 clones are represented in B, but only 14 were used since the last two are from seed-origin and thus not genetically identical. (C) Variance partitioning of tree growth for a common garden experiment with various Eucalyptus clones"}
+```{r SummaryPlot, fig.cap="The EUCFLUX setup and the variance partitioning. Site (a; each square represents a block) and organisation of a block (b; each coloured square represents a genotype) in the EUCFLUX experiment. 16 clones are represented in B, but only 14 were used since the last two are from seed-origin and thus not genetically identical. (c) Variance partitioning of tree growth for a common garden experiment with various Eucalyptus clones"}
 knitr::include_graphics(here::here("data", "EUCFLUX", "Eucflux_summary.jpg"))
 ```
 
