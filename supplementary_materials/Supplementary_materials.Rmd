@@ -268,11 +268,6 @@ Figures \@ref(fig:TracePosteriors) to \@ref(fig:SpatialRandomEffects) illustrate
 
 Figure \@ref(fig:PlotsRanef) shows mean values and 95% confidence intervals of random effects (except individual random effects which are too many), enabling to graphically look for a tendency.
 
-```{r SummaryPlot, fig.cap="The EUCFLUX setup and the variance partitioning. Site (a; each square represents a block) and organisation of a block (b; each coloured square represents a genotype) in the EUCFLUX experiment. 16 clones are represented in B, but only 14 were used since the last two are from seed-origin and thus not genetically identical. (c) Variance partitioning of tree growth for a common garden experiment with various Eucalyptus clones"}
-knitr::include_graphics(here::here("data", "EUCFLUX", "Eucflux_summary.jpg"))
-```
-
-Figure \@ref(fig:SummaryPlot) presents a graphical summary of the analysis.
 
 # Appendix 3: analysis of tropical forest inventory data
 
