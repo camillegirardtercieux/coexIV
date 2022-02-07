@@ -101,8 +101,8 @@ Raw_data <- Raw_data[which(Raw_data$Growth_yearly>=0),]
 
 Raw_data$Age <- Dates$Age[match(Raw_data$Date, Dates$Date_number)]
 
-#logging G and D in order to have normal data
-#constant to avoid logging null values
+#log-transforming G and D in order to have normal data
+#constant to avoid log-transforming null values
 Raw_data$logG <- log(Raw_data$Growth_yearly+1)
 Raw_data$logD <- log(Raw_data$D_1)
 

@@ -230,7 +230,7 @@ Growth <- data.frame(Species=rep(c(1,2), each=nind*ntime),
 
 Xloglight <- X
 
-#constant to avoid NaNs while logging
+#constant to avoid NaNs while log-transforming
 const_log <- 4
 Xloglight[,2] <- log(Xloglight[,2]+const_log)
     

@@ -172,7 +172,7 @@ Paracou_no_mean <- Paracou_no_mean%>%
 save(Paracou_no_mean, file = here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
-```{r LoadParacouNoMean, include=FALSE}
+```{r LoadParacouNoMean2, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "Paracou_no_mean.RData"))
 ```
 
@@ -331,7 +331,7 @@ prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
 ### Fit
 
 brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTree), 
-               data = Data_stan_BCI,
+               data = Data_stan_Paracou,
                prior= prior_brms,
                iter = 10000 , warmup = 5000, thin = 5,
                chains = 2, cores=2)
@@ -381,7 +381,7 @@ prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
 
 ### Fit
 
-brms_mod <- brms::brm(formula = logG ~ 1 + logD + logD2 + (1|IdentSpecies) + (1|IdentTree), 
+brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTree), 
                data = Data_stan_Uppangala,
                prior= prior_brms,
                iter = 10000 , warmup = 5000, thin = 5,
@@ -671,6 +671,10 @@ In order to test if individual tree growth was spatially autocorrelated within e
 
 
 ```{r MoransTests, eval=FALSE, include=FALSE}
+load(here::here("outputs", "tropical_analysis", "Data_Paracou.RData"))
+load(here::here("outputs", "tropical_analysis", "Data_Uppangala.RData"))
+load(here::here("outputs", "tropical_analysis", "Data_BCI.RData"))
+
 Moran_I_Paracou <- coexIV::moran_analysis(Data_Paracou)
 Moran_I_Uppangala <- coexIV::moran_analysis(Data_Uppangala)
 Data_BCI$Plot <- rep(1, nrow(Data_BCI))
@@ -739,31 +743,36 @@ For each site, the proportion of species with a significantly higher or lower se
 
 
 ```{r ComputeDistances, eval=FALSE, include=FALSE}
+load(here::here("outputs", "tropical_analysis", "Data_Paracou.RData"))
+load(here::here("outputs", "tropical_analysis", "Data_Uppangala.RData"))
+load(here::here("outputs", "tropical_analysis", "Data_BCI.RData"))
+
 nfiles=7
 
 for (plot in sort(unique(Data_Paracou$Plot))) {
   distlist(cbind(Data_Paracou[which(Data_Paracou$Plot==plot),]$X, Data_Paracou[which(Data_Paracou$Plot==plot),]$Y), plot, "Paracou")
   for (file in 0:(nfiles-1)){
-    file.rename(here::here(glue::glue("file{file}_{plot}_P.txt")), here::here("outputs", "tropical_analysis", "Dists_Paracou", glue::glue("file{file}_{plot}_P.txt")))
+   file.rename(here::here("analyses", glue::glue("file{file}_{plot}_P.txt")), here::here("outputs", "tropical_analysis", "Dists_Paracou", glue::glue("file{file}_{plot}_P.txt")))
   }
 }
 
 for (plot in sort(unique(Data_Uppangala$Plot))){
   distlist(cbind(Data_Uppangala[which(Data_Uppangala$Plot==plot),]$X, Data_Uppangala[which(Data_Uppangala$Plot==plot),]$Y), plot, "Uppangala")
   for (file in 0:(nfiles-1)){
-    file.rename(here::here(glue::glue("file{file}_{plot}_U.txt")), here::here("outputs", "tropical_analysis", "Dists_Uppangala", glue::glue("file{file}_{plot}_U.txt")))
+    file.rename(here::here("analyses", glue::glue("file{file}_{plot}_U.txt")), here::here("outputs", "tropical_analysis", "Dists_Uppangala", glue::glue("file{file}_{plot}_U.txt")))
   }
 }
 
 distlist(cbind(Data_BCI$X, Data_BCI$Y), 1, "BCI")
 
 for (file in 0:(nfiles-1)){
-  file.rename(here::here(glue::glue("file{file}_1_B.txt")), here::here("outputs", "tropical_analysis", "Dists_BCI", glue::glue("file{k}_1_B.txt")))
+  file.rename(here::here("analyses", glue::glue("file{file}_1_B.txt")), here::here("outputs", "tropical_analysis", "Dists_BCI", glue::glue("file{file}_1_B.txt")))
 }
 
 ```
 
 ```{r VarianceComparison, eval=FALSE, include=FALSE}
+nfiles=7
 
 Var_comp_Paracou <- coexIV::variance_comp(data=Data_Paracou, nfiles=nfiles, "Paracou")
 save(Var_comp_Paracou, file=here::here("outputs", "tropical_analysis", "Var_comp_Paracou.RData"))
