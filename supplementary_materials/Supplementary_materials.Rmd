@@ -168,7 +168,7 @@ kableExtra::kbl(
 
 We inferred a high IV even in the absence of intrinsic IV (Table \@ref(tab:EstimateTable)). 
 
-```{r PlotIntrinsicIV, fig.cap="Plot of the real values - points - and estimated mean - bold lines - and 95 % confidence interval - thin lines - of $Y$ versus $X_1$. The dashed lines correspond to the 95 % interval due to intrinsic IV."}
+```{r PlotIntrinsicIV, fig.cap="Plot of the real values - points - and estimated mean - bold lines - and 95\\% confidence interval - thin lines - of $Y$ versus $X_1$. The dashed lines correspond to the 95\\% interval due to intrinsic IV."}
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model_genetic_var.png"))
 ```
@@ -259,7 +259,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Trace_block_random_effects.png"))
 ```
 
-```{r PlotsRanef, fig.cap="Mean values and 95% confidence interval of the temporal, genetic and spatial and random effects."}
+```{r PlotsRanef, fig.cap="Mean values and 95\\% confidence interval of the temporal, genetic and spatial and random effects."}
 
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_values.png"))
 ```
@@ -387,7 +387,7 @@ For the BCI site, we obtained a dataset with `r nrow(BCI_no_mean)` growth estima
 
 ## Estimation of IV
 
-We evaluate the convergence of the model using trace and density plots of the posterior estimates.
+We evaluated the convergence of the model using trace and density plots of the posterior estimates.
 
 ### Paracou
 
@@ -430,6 +430,10 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "M
 ```{r MCMCDensityBCI, fig.cap = "Density of the posterior estimates for the BCI site"}
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_density_BCI.png"))
 ```
+
+## Spatial analyses
+
+"Most abundant species" are species with more than 3,000 individuals.
 
 ## Spatial autocorrelation in undisturbed plots in the Paracou site
 
