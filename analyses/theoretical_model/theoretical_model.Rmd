@@ -356,8 +356,8 @@ A <- ggplot2::ggplot(Vars_t0, ggplot2::aes(x, y)) +
             legend.text = ggplot2::element_text(size = 10),
             text = ggplot2::element_text(size=12),
             legend.position="bottom")+
-  ggplot2::xlab("Coordinate X")+
-  ggplot2::ylab("Coordinate Y")
+  ggplot2::xlab("Longitude")+
+  ggplot2::ylab("Latitude")
     
 ggplot2::ggsave(filename = "Map_growth.png", plot=A, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 7, height = 5, dpi = 300)
 

@@ -1,8 +1,8 @@
 # coexIV
 
-Reproductible analyses supporting the idea that intraspecific variability is mainly due to environmental heterogeneity and does not blur species niche differences nor slow down competitive exclusion.
+Reproductible analyses supporting the idea that a large part of intraspecific variability is due to environmental heterogeneity and does not blur species niche differences nor slow down competitive exclusion.
 
-These analyses are associated with an article (*Rethinking the role of intraspecific variability in species coexistence*, Girard-Tercieux *et al.* 2021).
+These analyses are associated with an article (*Rethinking the nature of intraspecific variability and its consequences on species coexistence*, Girard-Tercieux *et al.* 2021).
 The Supplementary Materials are available here:
 [Supplementary_materials.html](https://camillegirardtercieux.github.io/coexIV/Supplementary_materials.html). It can also be downloaded as a PDF from the GitHub repository.
 

@@ -86,11 +86,3 @@ rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.
 
  #Only html
 rmarkdown::render(here::here("analyses", "tropical_analysis","tropical_analysis.Rmd"), output_format = "bookdown::html_document2")
-
-###########################
-### Figures and scripts ###
-###########################
-
-rmarkdown::render(here::here("analyses","body_of_evidence.Rmd"), output_format = "bookdown::html_document2")
-
-rmarkdown::render(here::here("analyses","Script_figure_1.Rmd"), output_format = "bookdown::html_document2")

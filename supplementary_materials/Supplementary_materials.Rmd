@@ -12,7 +12,7 @@ always_allow_html: true
 knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
 ```
 
-# Appendix 1: virtual experiment with two species
+# Appendix 1: simulation experiment with two species
 
 ```{r BasicParameters, include=FALSE}
 
@@ -59,7 +59,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "a
 ```
 
 
-## Partial knowledge model: interpreting the response values with only one explanatory variable.
+## Imperfect knowledge model: interpreting the response values with only one explanatory variable.
 
 We ran the model (see main text, Eq. 2) twice, with the datasets generated with and without intrinsic IV.
 
@@ -448,7 +448,7 @@ kableExtra::kbl(Results_moran_undisturbed, booktabs = T, caption = "Spatial auto
   kableExtra::kable_styling(latex_options = c("striped", "hold_position", full_width = FALSE))
 ```
 
-Considering the undisturbed plots only, the proportion of individuals of species with a significant Moran’s I test was `r round(as.numeric(Results_moran_undisturbed[2,2]))`%, much lower than when including the disturbed plots (`r round(as.numeric(Results_moran[2,2]))`%, see main text, Table 3; Table \@ref(tab:ResultsMoranParacouUndisturbed)). This corroborates our hypothesis that  the openness of the canopy triggered important spatial structure in disturbed plots due to light gaps, and as in these gaps, trees tend to grow faster, the spatial structure of growth is stronger.
+Considering the undisturbed plots only, the proportion of individuals of species with a significant Moran’s I test was `r round(as.numeric(Results_moran_undisturbed[2,2]))`%, much lower than when including the disturbed plots (`r round(as.numeric(Results_moran[2,2]))`%, see main text, Table 3; Table \@ref(tab:ResultsMoranParacouUndisturbed)). This corroborates our hypothesis that the openness of the canopy triggered important spatial structure in disturbed plots due to light gaps, and as in these gaps, trees tend to grow faster, the spatial structure of growth is stronger.
 
 ## Spatial autocorrelation in BCI using smaller stems
 
