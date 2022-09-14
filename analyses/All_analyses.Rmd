@@ -315,7 +315,7 @@ The model included two fixed effects ($\beta_0$ and $\beta_1$), a random species
 
 ### Paracou
 
-```{r ModelParacou, eval=FALSE, include=FALSE}
+```{r ModelParacou, include=FALSE}
 Data_stan_Paracou <- Paracou_no_mean[which((as.character(Paracou_no_mean$Sp))!="Indet_sp"),]
 Data_stan_Paracou <-  coexIV::create_identspecies(Data_stan_Paracou)
 
@@ -327,13 +327,13 @@ Data_stan_Paracou <- Data_stan_Paracou[sample(1:nrow(Data_stan_Paracou),Sample),
 
 print(nrow(Data_stan_Paracou))
 
-options("m.cores"=2)
+options("m.cores"=4)
 
 ### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
-                brms::prior(normal(0, 1), class = "b"),
-                brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+                brms::prior(normal(0, 1), class = "b"))
+#brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
 ### Fit
 
@@ -341,15 +341,15 @@ brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTre
                data = Data_stan_Paracou,
                prior= prior_brms,
                iter = 10000 , warmup = 5000, thin = 5,
-               chains = 2, cores=2)
+               chains = 4, cores=4)
 
 
-save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_Paracou.RData"))
+save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_Paracou_revision.RData"))
 
 ```
 
 ```{r LoadBRMSParacou, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "brms_mod_Paracou.RData"))
+load(here::here("outputs", "tropical_analysis", "brms_mod_Paracou_revision.RData"))
 ```
 
 ```{r MCMCTraceParacou, fig.cap="Trace of the posterior estimates for the Paracou site", message=FALSE, warning=FALSE}
@@ -372,19 +372,20 @@ Sum_paracou <- summary(brms_mod)
 
 ### Uppangala
 
-```{r ModelUppangala, eval=FALSE, include=FALSE}
+```{r ModelUppangala, include=FALSE}
 Uppangala_no_mean <-  coexIV::create_identspecies(Uppangala_no_mean)
 Data_stan_Uppangala <- coexIV::prep_stan(Uppangala_no_mean)
 
 print(nrow(Data_stan_Uppangala))
 
-options("m.cores"=2)
+options("m.cores"=4)
 
 ### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
-                brms::prior(normal(0, 1), class = "b"),
-                brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+                brms::prior(normal(0, 1), class = "b"))
+
+#brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
 ### Fit
 
@@ -392,14 +393,14 @@ brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTre
                data = Data_stan_Uppangala,
                prior= prior_brms,
                iter = 10000 , warmup = 5000, thin = 5,
-               chains = 2, cores=2)
+               chains = 4, cores=4)
 
-save(brms_mod, file=here::here("outputs", "tropical_analysis", "brms_mod_Uppangala.RData"))
+save(brms_mod, file=here::here("outputs", "tropical_analysis", "brms_mod_Uppangala_revision.RData"))
 
 ```
 
 ```{r LoadModelUppangala, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "brms_mod_Uppangala.RData"))
+load(here::here("outputs", "tropical_analysis", "brms_mod_Uppangala_revision.RData"))
 ```
 
 ```{r MCMCTraceUppangala, fig.cap="Trace of the posterior estimates for the Uppangala site", message=FALSE, warning=FALSE}
@@ -421,20 +422,20 @@ Sum_uppangala <- summary(brms_mod)
 
 ### BCI
 
-```{r ModelBCI, eval=FALSE, include=FALSE}
+```{r ModelBCI, include=FALSE}
 BCI_no_mean <-  coexIV::create_identspecies(BCI_no_mean)
 
 Data_stan_BCI <- coexIV::prep_stan(BCI_no_mean)
 
 print(nrow(Data_stan_BCI))
 
-options("m.cores"=2)
+options("m.cores"=4)
 
 ### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
-                brms::prior(normal(0, 1), class = "b"),
-                brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+                brms::prior(normal(0, 1), class = "b"))
+#brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
 ### Fit
 
@@ -442,15 +443,15 @@ brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTre
                data = Data_stan_BCI,
                prior= prior_brms,
                iter = 10000 , warmup = 5000, thin = 5,
-               chains = 2, cores=2)
+               chains = 4, cores=4)
 
 
-save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData"))
+save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData_revision"))
 
 ```
 
 ```{r LoadModelBCI, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData"))
+load(here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData_revision"))
 ```
 
 ```{r MCMCTraceBCI, fig.cap="Trace of the posterior estimates for the BCI site", message=FALSE, warning=FALSE}
@@ -693,7 +694,7 @@ save(Moran_I_Uppangala, file=here::here("outputs", "tropical_analysis", "Moran_I
 save(Moran_I_BCI, file=here::here("outputs", "tropical_analysis", "Moran_I_BCI.RData"))
 ```
 
-```{r LoadMoran, include=FALSE}
+```{r LoadMoran, eval=FALSE, include=FALSE}
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou.RData"))
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Uppangala.RData"))
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_BCI.RData"))
@@ -709,7 +710,7 @@ which(Moran_I_BCI$Moran.I<0&Moran_I_BCI$signif==1)
 
 We then computed the proportion of species with a significantly and  positively spatial autocorrelated growth (with a 0.05 alpha risk) and the proportion of species with non significant spatial autocorrelation, as well as the corresponding proportion of individuals. The proportions are computed relative to the species on which the test was performed.
 
-```{r MoransResults}
+```{r MoransResults, eval=FALSE, include=FALSE}
 Results_moran <- coexIV::results_moran(data1=Moran_I_Paracou, data2=Moran_I_Uppangala, data3 = Moran_I_BCI)
 
 save(Results_moran, file=here::here("outputs", "tropical_analysis", "Results_moran.RData"))
@@ -725,7 +726,7 @@ kableExtra::kbl(Results_moran, booktabs = T, caption = "Spatial autocorrelation 
 
 `r round(as.numeric(Results_moran[1,]$Significant))`%, `r round(as.numeric(Results_moran[3,]$Significant))`%, and `r round(as.numeric(Results_moran[5,]$Significant))`% of the species showed a positive and significant spatial autocorrelation in tree growth, in Paracou, Uppangala, and BCI respectively. (Table \@ref(tab:MoransResults)).
 
-```{r ModelsSignificanceMoran, message=FALSE, warning=FALSE, include=FALSE}
+```{r ModelsSignificanceMoran, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 ## Test to see if the number of individuals explains the significance ##
 model <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Paracou))
 summary(model)
@@ -793,14 +794,14 @@ Var_comp_BCI <- coexIV::variance_comp(data=Data_BCI, nfiles=nfiles, "BCI")
 save(Var_comp_BCI, file=here::here("outputs", "tropical_analysis", "Var_comp_BCI.RData"))
 ```
 
-```{r LoadVarianceComparison, include=FALSE}
+```{r LoadVarianceComparison, eval=FALSE, include=FALSE}
 load(here::here("outputs", "tropical_analysis", "Var_comp_Paracou.RData"))
 load(here::here("outputs", "tropical_analysis", "Var_comp_Uppangala.RData"))
 load(here::here("outputs", "tropical_analysis", "Var_comp_BCI.RData"))
 ```
 
 
-```{r ResultsVarianceComparison}
+```{r ResultsVarianceComparison, eval=FALSE, include=FALSE}
 Results_var_comp <- coexIV::results_var_comp(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
 save(Results_var_comp, file=here::here("outputs", "tropical_analysis", "Results_var_comp.RData"))
 
@@ -816,7 +817,7 @@ Results_var_comp %>%
 
 ```
 
-```{r ResultsVarianceComparisonSample}
+```{r ResultsVarianceComparisonSample, eval=FALSE, include=FALSE}
 Results_var_comp_sample <- coexIV::results_var_comp_sample(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
 save(Results_var_comp_sample, file=here::here("outputs", "tropical_analysis", "Results_var_comp_sample.RData"))
 
@@ -844,7 +845,7 @@ Note that, to control for a potential effect of species abundance on the values 
 
 One of our main hypotheses was that since many environmental variables are spatially structured and that tree growth is largely influenced by environmental variables, tree growth should be spatially structured. Our analysis using Moran’s I test showed that tree growth was indeed spatially structured at our study sites. The Paracou dataset offers the opportunity to test this hypothesis further. Indeed, some plots were disturbed in the early eighties, creating artificial gaps, whereas others were not disturbed. As the creation of gaps results in a strong spatial structure of the light available under the canopy, we hypothesized that growth should be less structured in plots that were not disturbed.
 
-```{r ParacouUndisturbed, include=FALSE}
+```{r ParacouUndisturbed, eval=FALSE, include=FALSE}
 Data_Paracou_undisturbed <- Data_Paracou[which(Data_Paracou$Plot%in%c(1, 6, 11)),]
 ```
 
@@ -853,7 +854,7 @@ Moran_I_Paracou_undisturbed <- coexIV::moran_analysis(Data_Paracou_undisturbed)
 save(Moran_I_Paracou_undisturbed, file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou_undisturbed.RData"))
 ```
 
-```{r ResultsMoranParacouUndisturbed}
+```{r ResultsMoranParacouUndisturbed, eval=FALSE, include=FALSE}
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou_undisturbed.RData"))
 
 #Table of results
@@ -1114,8 +1115,8 @@ Hyperpriors
 $V_i \sim \mathcal{IG}(shape = 10^{-3}, rate = 10^{-3}), iid$
 
 
-```{r Model, eval=FALSE, include=FALSE}
-options("m.cores"=2)
+```{r Model, include=FALSE}
+options("m.cores"=4)
 
 Data_compet$logD <- scale(Data_compet$logD)
 Data_compet$logG <- scale(Data_compet$logG)
@@ -1124,8 +1125,8 @@ Data_compet$logC <- scale(Data_compet$logC)
 ### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
-                brms::prior(normal(0, 1), class = "b"),
-                brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+                brms::prior(normal(0, 1), class = "b"))
+#brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
 ### Fit
 
@@ -1135,11 +1136,11 @@ brms_mod <-brms::brm(
   #family = gaussian(), #already default, prevents from sampling... 
   prior= prior_brms,
   iter = 10000 , warmup = 5000, thin = 5,
-  chains = 2, cores=2,
-  control=list(adapt_delta=0.99, max_treedepth=15))
+  chains = 4, cores=4)
+  #control=list(adapt_delta=0.99, max_treedepth=15))
   #backend = "cmdstanr")
 
-save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData"))
+save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod_revision.RData"))
 ```
 
 ## Results of the model and variance partitioning
@@ -1147,7 +1148,7 @@ save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData")
 After convergence of the model (checked visually), we examined the proportion of the residual variance (variation of the response variables that is not explained by the covariates , i.e. in the unexplained part of the statistical model) related to each random effect, and this enabled us to perform a residual variance partitioning.
 
 ```{r LoadBRMS, include=FALSE}
-load(here::here("outputs", "clonal_analysis", "brms_mod.RData"))
+load(here::here("outputs", "clonal_analysis", "brms_mod_revision.RData"))
 ```
 
 ```{r TracePosteriors, fig.cap="Trace of the posteriors of the inferred parameters", message=FALSE, warning=FALSE}
@@ -1378,7 +1379,7 @@ nobs <- nsp*nind*ntime#number of observations
 #In the current code, 5 variables have a positive effect on growth and 4 a negative effect.
   
 param1 = c(0.25, 0.15, abs(runif(5, -0.05, 0.05)), -abs(runif(4, -0.05, 0.05)))
-param2 = c(0.2, 0.10, abs(runif(5, -0.05, 0.05)), -abs(runif(4, -0.05, 0.05)))
+param2 = c(0.2, 0.1, abs(runif(5, -0.05, 0.05)), -abs(runif(4, -0.05, 0.05)))
   
 par_sp <- cbind(param1, param2)
 
@@ -1416,27 +1417,22 @@ Each variable was simulated by using the gstat R package [@pebesma_multivariable
   
   #Spatial models
   mods <- list()
-  mods[[1]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[2]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[3]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[4]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[5]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[6]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[7]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[8]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[9]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[10]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50,nugget=0), nmax=20)
+
+  for(k in 1:10){
+    mods[[k]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
+  }
   
 ```
 
 ```{r EnvironmentalVariables, eval=FALSE, include=FALSE}
-#this chunk takes time and can be skipped (files will be loaded)
+#this chunk takes time and can be skipped if already ran once (files will be loaded)
 
 #Z predictions
     Variables <- list()
     Vars_t0 <- data.frame(matrix(nrow = dim1*dim2, ncol = 12))
     Vars_t0[,1:2] <- xy
     for (k in 1:10) {
+      set.seed(1234+k)
       Variables[[k]] <- predict(mods[[k]], newdata=xy, nsim=1)
       Vars_t0[,k+2] <- Variables[[k]][,3]
       sp::gridded(Variables[[k]]) = ~x+y
@@ -1465,12 +1461,12 @@ This led to two repeated measurements of $Y$ for each individual of each species
 #The variables have to vary in order to avoid identifiability problems + avoid a null residual variance
 Vars_t1 <- Vars_t0
 changing_variables <- sample(2:10, 5)
-Vars_t1[,3] <- Vars_t1[,3] + abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[1]] <- Vars_t1[,2+changing_variables[1]] + abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[2]] <- Vars_t1[,2+changing_variables[2]] + abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[3]] <- Vars_t1[,2+changing_variables[3]] - abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[4]] <- Vars_t1[,2+changing_variables[4]] - abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1, mean=0, sd=0.1)
+Vars_t1[,3] <- Vars_t1[,3] + abs(rnorm(1, mean=0, sd=0.5))
+Vars_t1[,2+changing_variables[1]] <- Vars_t1[,2+changing_variables[1]] + abs(rnorm(1, mean=0, sd=0.5))
+Vars_t1[,2+changing_variables[2]] <- Vars_t1[,2+changing_variables[2]] + abs(rnorm(1, mean=0, sd=0.5))
+Vars_t1[,2+changing_variables[3]] <- Vars_t1[,2+changing_variables[3]] - abs(rnorm(1, mean=0, sd=0.5))
+Vars_t1[,2+changing_variables[4]] <- Vars_t1[,2+changing_variables[4]] - abs(rnorm(1, mean=0, sd=0.5))
+Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1, mean=0, sd=0.5)
 
 ```
 
@@ -1478,6 +1474,7 @@ Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1
  #Sample the coordinates of the individuals in the matrices of variables for each species
 Coord <- data.frame(matrix(nrow=2, ncol=nind*nsp))
 for (k in 1:ncol(Coord)) {
+  set.seed(1234+k)
   Coord[,k] <- sample(1:dim1, 2, rep = TRUE)
 }
 #Making sure there is no duplicate in the coordinates couples (one individual only on a couple of coordinates)
@@ -1711,12 +1708,12 @@ Second level priors:
 
 $V_j \sim \mathcal{IG}(10^-3, 10^-3)$, $j = [1, 2]$, iid
 
-$V_{bj} \sim \mathcal{IG}_2(10^-3, 10^-3)$, $j = [1, 2]$, iid
+$V_{bj} \sim \mathcal{Student's T}(3, 0, 2.5)$, $j = [1, 2]$, iid
 
 This model includes a random individual effect on the intercept ($b_{0i}$) to account for  the variability among individuals within species.
 We ran this model twice, with the datasets generated with and without intrinsic IV. These models were fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,0000 iterations, a warming period of 50,000 iterations and a thinning of 50. We obtained 1,000 estimates per parameter.
 
-```{r brmsModels, eval=FALSE, include=FALSE}
+```{r brmsModels, include=FALSE}
 #Statistical model with only one variable X
 
 Data_brms_sp_1 <- data.frame(Y = Growth[which(Growth$Species==1),]$logGrowth_sp, X1 = Growth[which(Growth$Species==1),]$logLight, tree = Growth[which(Growth$Species==1),]$Ind)
@@ -1732,45 +1729,46 @@ Data_brms_sp_2_IV <- data.frame(Y = Growth[which(Growth$Species==2),]$logGrowth,
   #dplyr::mutate(Y=scale(Y), X1=scale(X1))
 
 
-options("m.cores"=2)
+options("m.cores"=4)
     
 ### Priors
     
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
-                brms::prior(normal(0, 1), class = "b"),
-                brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+                brms::prior(normal(0, 1), class = "b"))
+
+#brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
     
 ### Models
     
 brms_mod_sp_1 <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
                       data = Data_brms_sp_1,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_1, file = here::here("outputs", "theoretical_model", "brms_mod_sp_1.RData"))
 
 brms_mod_sp_2 <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
                       data = Data_brms_sp_2,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_2, file = here::here("outputs", "theoretical_model", "brms_mod_sp_2.RData"))
 
-brms_mod_sp_1_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
+brms_mod_sp_1_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_1_IV,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_1_IV, file = here::here("outputs", "theoretical_model", "brms_mod_sp_1_IV.RData"))
 
-brms_mod_sp_2_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
+brms_mod_sp_2_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_2_IV,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_2_IV, file = here::here("outputs", "theoretical_model", "brms_mod_sp_2_IV.RData"))
 
@@ -1924,26 +1922,26 @@ We used the model parameters to plot the relationship between $Y$ and $X_1$ acco
     npred <- 100
     logLight_seq <- seq(min(Growth$logLight), max(Growth$logLight), length.out=npred)
 
-    Sd_b_sp1 <- mean(c(MCMC_brms_sp_1[[1]][,3], MCMC_brms_sp_1[[2]][,3]))
-    Sd_b_sp1_IV <- mean(c(MCMC_brms_sp_1_IV[[1]][,3], MCMC_brms_sp_1_IV[[2]][,3]))
-    Sd_b_sp2 <- mean(c(MCMC_brms_sp_2[[1]][,3], MCMC_brms_sp_2[[2]][,3]))
-    Sd_b_sp2_IV <- mean(c(MCMC_brms_sp_2_IV[[1]][,3], MCMC_brms_sp_2_IV[[2]][,3]))
+    Sd_b_sp1 <- mean(c(MCMC_brms_sp_1[[1]][,3], MCMC_brms_sp_1[[2]][,3], MCMC_brms_sp_1[[3]][,3], MCMC_brms_sp_1[[4]][,3]))
+    Sd_b_sp1_IV <- mean(c(MCMC_brms_sp_1_IV[[1]][,3], MCMC_brms_sp_1_IV[[2]][,3], MCMC_brms_sp_1_IV[[3]][,3], MCMC_brms_sp_1_IV[[4]][,3]))
+    Sd_b_sp2 <- mean(c(MCMC_brms_sp_2[[1]][,3], MCMC_brms_sp_2[[2]][,3], MCMC_brms_sp_2[[3]][,3], MCMC_brms_sp_2[[4]][,3]))
+    Sd_b_sp2_IV <- mean(c(MCMC_brms_sp_2_IV[[1]][,3], MCMC_brms_sp_2_IV[[2]][,3], MCMC_brms_sp_2_IV[[3]][,3], MCMC_brms_sp_2_IV[[4]][,3]))
     
     #Without intrinsic variation#
-    Param_sp1 <- data.frame(beta1_sp1=numeric(2000), beta2_sp1=numeric(2000), ind=numeric(2000))
-    Param_sp1[,1] <- c(MCMC_brms_sp_1[[1]][,1], MCMC_brms_sp_1[[2]][,1])
-    Param_sp1[,2] <- c(MCMC_brms_sp_1[[1]][,2], MCMC_brms_sp_1[[2]][,2])
-    Param_sp1[,3] <- rnorm(2000, 0, Sd_b_sp1)
-    Log_growth_pred_sp1 <- matrix(nrow=2000, ncol=npred)
+    Param_sp1 <- data.frame(beta1_sp1=numeric(4000), beta2_sp1=numeric(4000), ind=numeric(4000))
+    Param_sp1[,1] <- c(MCMC_brms_sp_1[[1]][,1], MCMC_brms_sp_1[[2]][,1], MCMC_brms_sp_1[[3]][,1], MCMC_brms_sp_1[[4]][,1])
+    Param_sp1[,2] <- c(MCMC_brms_sp_1[[1]][,2], MCMC_brms_sp_1[[2]][,2], MCMC_brms_sp_1[[3]][,2], MCMC_brms_sp_1[[4]][,2])
+    Param_sp1[,3] <- rnorm(4000, 0, Sd_b_sp1)
+    Log_growth_pred_sp1 <- matrix(nrow=4000, ncol=npred)
     for (n in 1:npred) {
       Log_growth_pred_sp1[,n] <- Param_sp1$beta1_sp1 + Param_sp1$beta2_sp1*logLight_seq[n] + Param_sp1$ind
     }
     
-    Param_sp2 <- data.frame(beta1_sp2=numeric(2000), beta2_sp2=numeric(2000), ind=numeric(2000))
-    Param_sp2[,1] <- c(MCMC_brms_sp_2[[1]][,1], MCMC_brms_sp_2[[2]][,1])
-    Param_sp2[,2] <- c(MCMC_brms_sp_2[[1]][,2], MCMC_brms_sp_2[[2]][,2])
-    Param_sp2[,3] <- rnorm(2000, 0, Sd_b_sp2)
-    Log_growth_pred_sp2 <- matrix(nrow=2000, ncol=npred)
+    Param_sp2 <- data.frame(beta1_sp2=numeric(4000), beta2_sp2=numeric(4000), ind=numeric(4000))
+    Param_sp2[,1] <- c(MCMC_brms_sp_2[[1]][,1], MCMC_brms_sp_2[[2]][,1], MCMC_brms_sp_2[[3]][,1], MCMC_brms_sp_2[[4]][,1])
+    Param_sp2[,2] <- c(MCMC_brms_sp_2[[1]][,2], MCMC_brms_sp_2[[2]][,2], MCMC_brms_sp_2[[3]][,2], MCMC_brms_sp_2[[4]][,2])
+    Param_sp2[,3] <- rnorm(4000, 0, Sd_b_sp2)
+    Log_growth_pred_sp2 <- matrix(nrow=4000, ncol=npred)
     for (n in 1:npred) {
       Log_growth_pred_sp2[,n] <- Param_sp2$beta1_sp2 + Param_sp2$beta2_sp2*logLight_seq[n] + Param_sp2$ind
     }
@@ -1994,24 +1992,24 @@ ggplot2::ggsave(filename = "Partial_knowledge_model.png", plot=B, path=here::her
 #With intrinsic variation#
     
     #Growth for species 1
-    Param_sp1_IV <- data.frame(beta1_sp1_IV=numeric(2000), beta2_sp1_IV=numeric(2000), ind=numeric(2000))
-    Param_sp1_IV[,1] <- c(MCMC_brms_sp_1_IV[[1]][,1], MCMC_brms_sp_1_IV[[2]][,1])
-    Param_sp1_IV[,2] <- c(MCMC_brms_sp_1_IV[[1]][,2], MCMC_brms_sp_1_IV[[2]][,2])
-    Param_sp1_IV[,3] <- rnorm(2000, 0, Sd_b_sp1_IV)
+    Param_sp1_IV <- data.frame(beta1_sp1_IV=numeric(4000), beta2_sp1_IV=numeric(4000), ind=numeric(4000))
+    Param_sp1_IV[,1] <- c(MCMC_brms_sp_1_IV[[1]][,1], MCMC_brms_sp_1_IV[[2]][,1], MCMC_brms_sp_1_IV[[3]][,1], MCMC_brms_sp_1_IV[[4]][,1])
+    Param_sp1_IV[,2] <- c(MCMC_brms_sp_1_IV[[1]][,2], MCMC_brms_sp_1_IV[[2]][,2], MCMC_brms_sp_1_IV[[3]][,2], MCMC_brms_sp_1_IV[[4]][,2])
+    Param_sp1_IV[,3] <- rnorm(4000, 0, Sd_b_sp1_IV)
     
-    Log_growth_pred_sp1_IV <- matrix(nrow=2000, ncol=npred)
+    Log_growth_pred_sp1_IV <- matrix(nrow=4000, ncol=npred)
     
     for (n in 1:npred) {
       Log_growth_pred_sp1_IV[,n] <- Param_sp1_IV$beta1_sp1_IV + Param_sp1_IV$beta2_sp1_IV*logLight_seq[n] + Param_sp1_IV$ind
     }
     
     #Growth for species 2
-    Param_sp2_IV <- data.frame(beta1_sp2_IV=numeric(2000), beta2_sp2_IV=numeric(2000), ind=numeric(2000))
-    Param_sp2_IV[,1] <- c(MCMC_brms_sp_2_IV[[1]][,1], MCMC_brms_sp_2_IV[[2]][,1])
-    Param_sp2_IV[,2] <- c(MCMC_brms_sp_2_IV[[1]][,2], MCMC_brms_sp_2_IV[[2]][,2])
-    Param_sp2_IV[,3] <- rnorm(2000, 0, Sd_b_sp2_IV)
+    Param_sp2_IV <- data.frame(beta1_sp2_IV=numeric(4000), beta2_sp2_IV=numeric(4000), ind=numeric(4000))
+    Param_sp2_IV[,1] <- c(MCMC_brms_sp_2_IV[[1]][,1], MCMC_brms_sp_2_IV[[2]][,1], MCMC_brms_sp_2_IV[[3]][,1], MCMC_brms_sp_2_IV[[4]][,1])
+    Param_sp2_IV[,2] <- c(MCMC_brms_sp_2_IV[[1]][,2], MCMC_brms_sp_2_IV[[2]][,2], MCMC_brms_sp_2_IV[[3]][,2], MCMC_brms_sp_2_IV[[4]][,2])
+    Param_sp2_IV[,3] <- rnorm(4000, 0, Sd_b_sp2_IV)
     
-    Log_growth_pred_sp2_IV <- matrix(nrow=2000, ncol=npred)
+    Log_growth_pred_sp2_IV <- matrix(nrow=4000, ncol=npred)
     
     for (n in 1:npred) {
       Log_growth_pred_sp2_IV[,n] <- Param_sp2_IV$beta1_sp2_IV + Param_sp2_IV$beta2_sp2_IV*logLight_seq[n] + Param_sp2_IV$ind
