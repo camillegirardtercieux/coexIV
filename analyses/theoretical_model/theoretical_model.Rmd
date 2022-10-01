@@ -74,7 +74,7 @@ nobs <- nsp*nind*ntime#number of observations
 #In the current code, 5 variables have a positive effect on growth and 4 a negative effect.
   
 param1 = c(0.25, 0.15, abs(runif(5, -0.05, 0.05)), -abs(runif(4, -0.05, 0.05)))
-param2 = c(0.2, 0.10, abs(runif(5, -0.05, 0.05)), -abs(runif(4, -0.05, 0.05)))
+param2 = c(0.2, 0.1, abs(runif(5, -0.05, 0.05)), -abs(runif(4, -0.05, 0.05)))
   
 par_sp <- cbind(param1, param2)
 
@@ -104,7 +104,7 @@ To account for intrinsic variability in our generated data, we added an IV in sp
 To represent the spatialised environment, we build a 2D matrix of dimension `r dim1` $\times$ `r dim2` for each environmental variable at a time $t_0$, by randomly generating them with spatial autocorrelation. We here considered that all environmental variables were independent.
 Each variable was simulated by using the gstat R package [@pebesma_multivariable_2004 ; @graler_spatio-temporal_2016], enabling to create autocorrelated random fields. A spherical semivariogram model was used for each of the ten environmental variables, with a mean of 0 for each explanatory variable (beta = 0), a sill of 1 (psill = 1) for each and a range of 50 (range = 50).
 
-```{r SpatialModels, include=FALSE}
+```{r SpatialModels, eval=FALSE, include=FALSE}
 #Matrixes of variables
   #Structure (coordinates)
   xy <- expand.grid(1:dim1, 1:dim2)
@@ -112,27 +112,22 @@ Each variable was simulated by using the gstat R package [@pebesma_multivariable
   
   #Spatial models
   mods <- list()
-  mods[[1]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[2]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[3]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[4]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[5]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[6]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[7]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[8]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[9]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
-  mods[[10]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50,nugget=0), nmax=20)
+
+  for(k in 1:10){
+    mods[[k]] <- gstat::gstat(formula=z~1, locations=~x+y, dummy=T, beta=0, model=gstat::vgm(psill=1,model="Sph",range=50, nugget=0), nmax=20)
+  }
   
 ```
 
 ```{r EnvironmentalVariables, eval=FALSE, include=FALSE}
-#this chunk takes time and can be skipped (files will be loaded)
+#this chunk takes time and can be skipped if already ran once (files will be loaded)
 
 #Z predictions
     Variables <- list()
     Vars_t0 <- data.frame(matrix(nrow = dim1*dim2, ncol = 12))
     Vars_t0[,1:2] <- xy
     for (k in 1:10) {
+      set.seed(1234+k)
       Variables[[k]] <- predict(mods[[k]], newdata=xy, nsim=1)
       Vars_t0[,k+2] <- Variables[[k]][,3]
       sp::gridded(Variables[[k]]) = ~x+y
@@ -161,12 +156,12 @@ This led to two repeated measurements of $Y$ for each individual of each species
 #The variables have to vary in order to avoid identifiability problems + avoid a null residual variance
 Vars_t1 <- Vars_t0
 changing_variables <- sample(2:10, 5)
-Vars_t1[,3] <- Vars_t1[,3] + abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[1]] <- Vars_t1[,2+changing_variables[1]] + abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[2]] <- Vars_t1[,2+changing_variables[2]] + abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[3]] <- Vars_t1[,2+changing_variables[3]] - abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[4]] <- Vars_t1[,2+changing_variables[4]] - abs(rnorm(1, mean=0, sd=0.1))
-Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1, mean=0, sd=0.1)
+Vars_t1[,3] <- Vars_t1[,3] + abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[1]] <- Vars_t1[,2+changing_variables[1]] + abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[2]] <- Vars_t1[,2+changing_variables[2]] + abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[3]] <- Vars_t1[,2+changing_variables[3]] - abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[4]] <- Vars_t1[,2+changing_variables[4]] - abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1, mean=0, sd=1)
 
 ```
 
@@ -174,6 +169,7 @@ Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1
  #Sample the coordinates of the individuals in the matrices of variables for each species
 Coord <- data.frame(matrix(nrow=2, ncol=nind*nsp))
 for (k in 1:ncol(Coord)) {
+  set.seed(1234+k)
   Coord[,k] <- sample(1:dim1, 2, rep = TRUE)
 }
 #Making sure there is no duplicate in the coordinates couples (one individual only on a couple of coordinates)
@@ -219,7 +215,7 @@ X <- cbind(rep(1, nobs), VarExp)
 
 ```
 
-```{r Growth, include=FALSE}
+```{r Growth}
 # Growth of each individual
 
 Growth <- data.frame(Species=rep(c(1,2), each=nind*ntime),
@@ -405,12 +401,10 @@ $b_{0i} \sim \mathcal{N}(0, V_{bj})$, $i = [1, 500]$, $j = [1, 2]$, iid
 
 Second level priors:
 
-$V_j \sim \mathcal{IG}(10^-3, 10^-3)$, $j = [1, 2]$, iid
-
-$V_{bj} \sim \mathcal{IG}_2(10^-3, 10^-3)$, $j = [1, 2]$, iid
+$V_{bj} \sim t(3, 0, 2.5)$, $j = [1, 2]$, iid
 
 This model includes a random individual effect on the intercept ($b_{0i}$) to account for  the variability among individuals within species.
-We ran this model twice, with the datasets generated with and without intrinsic IV. These models were fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,0000 iterations, a warming period of 50,000 iterations and a thinning of 50. We obtained 1,000 estimates per parameter.
+We ran this model twice, with the datasets generated with and without intrinsic IV. These models were fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 1/5, and 4 MCMC chains with different initial values. We obtained 1,000 estimates per parameter per MCMC chain.
 
 ```{r brmsModels, eval=FALSE, include=FALSE}
 #Statistical model with only one variable X
@@ -428,45 +422,46 @@ Data_brms_sp_2_IV <- data.frame(Y = Growth[which(Growth$Species==2),]$logGrowth,
   #dplyr::mutate(Y=scale(Y), X1=scale(X1))
 
 
-options("m.cores"=2)
+options("m.cores"=4)
     
 ### Priors
     
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
-                brms::prior(normal(0, 1), class = "b"),
-                brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+                brms::prior(normal(0, 1), class = "b"))
+
+#brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
     
 ### Models
     
 brms_mod_sp_1 <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
                       data = Data_brms_sp_1,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_1, file = here::here("outputs", "theoretical_model", "brms_mod_sp_1.RData"))
 
 brms_mod_sp_2 <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
                       data = Data_brms_sp_2,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_2, file = here::here("outputs", "theoretical_model", "brms_mod_sp_2.RData"))
 
-brms_mod_sp_1_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
+brms_mod_sp_1_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_1_IV,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_1_IV, file = here::here("outputs", "theoretical_model", "brms_mod_sp_1_IV.RData"))
 
-brms_mod_sp_2_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree), 
+brms_mod_sp_2_IV <- brms::brm(formula = Y ~  1 + X1 + (1|tree),
                       data = Data_brms_sp_2_IV,
                       prior= prior_brms,
-                      iter = 100000 , warmup = 50000, thin = 50,
-                      chains = 2, cores=2)
+                      iter = 10000, warmup = 5000, thin = 5,
+                      chains = 4, cores=4)
 
 save(brms_mod_sp_2_IV, file = here::here("outputs", "theoretical_model", "brms_mod_sp_2_IV.RData"))
 
@@ -611,6 +606,132 @@ kableExtra::kbl(
   kableExtra::kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
 ```
 
+
+```{r brmsSummaryComplete}
+Res_mods <- 
+  data.frame(
+    rep(c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"), 4),
+    c(
+      format(as.numeric(Sum_sp1$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$spec_pars[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,7]), digits = 2, scientific = T)
+      )
+    )
+kableExtra::kbl(
+  Res_mods,
+  booktabs = T,
+  escape = F,
+  col.names = c(" ", "$\\beta_0$", "$\\beta_1$", "$V_b$", "$V$"),
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::pack_rows("Species 1 (no random IV)", start_row = 1, end_row = 6) %>% 
+  kableExtra::pack_rows("Species 2 (no random IV)", start_row = 7, end_row = 12)%>%
+  kableExtra::pack_rows("Species 1 (with random IV)", start_row = 13, end_row = 18) %>% 
+  kableExtra::pack_rows("Species 2 (with random IV)", start_row = 19, end_row = 24)%>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
+```
+
+
+
 We inferred a high IV even in the absence of intrinsic IV (Table \@ref(tab:brmsSummary)). Therefore, observed IV does not necessarily reveal intrinsic (mainly genetic) IV, but can also reveal hidden dimensions of the environment.
 We used the model parameters to plot the relationship between $Y$ and $X_1$ accounting for intraspecific variability.
 
@@ -620,26 +741,26 @@ We used the model parameters to plot the relationship between $Y$ and $X_1$ acco
     npred <- 100
     logLight_seq <- seq(min(Growth$logLight), max(Growth$logLight), length.out=npred)
 
-    Sd_b_sp1 <- mean(c(MCMC_brms_sp_1[[1]][,3], MCMC_brms_sp_1[[2]][,3]))
-    Sd_b_sp1_IV <- mean(c(MCMC_brms_sp_1_IV[[1]][,3], MCMC_brms_sp_1_IV[[2]][,3]))
-    Sd_b_sp2 <- mean(c(MCMC_brms_sp_2[[1]][,3], MCMC_brms_sp_2[[2]][,3]))
-    Sd_b_sp2_IV <- mean(c(MCMC_brms_sp_2_IV[[1]][,3], MCMC_brms_sp_2_IV[[2]][,3]))
+    Sd_b_sp1 <- mean(c(MCMC_brms_sp_1[[1]][,3], MCMC_brms_sp_1[[2]][,3], MCMC_brms_sp_1[[3]][,3], MCMC_brms_sp_1[[4]][,3]))
+    Sd_b_sp1_IV <- mean(c(MCMC_brms_sp_1_IV[[1]][,3], MCMC_brms_sp_1_IV[[2]][,3], MCMC_brms_sp_1_IV[[3]][,3], MCMC_brms_sp_1_IV[[4]][,3]))
+    Sd_b_sp2 <- mean(c(MCMC_brms_sp_2[[1]][,3], MCMC_brms_sp_2[[2]][,3], MCMC_brms_sp_2[[3]][,3], MCMC_brms_sp_2[[4]][,3]))
+    Sd_b_sp2_IV <- mean(c(MCMC_brms_sp_2_IV[[1]][,3], MCMC_brms_sp_2_IV[[2]][,3], MCMC_brms_sp_2_IV[[3]][,3], MCMC_brms_sp_2_IV[[4]][,3]))
     
     #Without intrinsic variation#
-    Param_sp1 <- data.frame(beta1_sp1=numeric(2000), beta2_sp1=numeric(2000), ind=numeric(2000))
-    Param_sp1[,1] <- c(MCMC_brms_sp_1[[1]][,1], MCMC_brms_sp_1[[2]][,1])
-    Param_sp1[,2] <- c(MCMC_brms_sp_1[[1]][,2], MCMC_brms_sp_1[[2]][,2])
-    Param_sp1[,3] <- rnorm(2000, 0, Sd_b_sp1)
-    Log_growth_pred_sp1 <- matrix(nrow=2000, ncol=npred)
+    Param_sp1 <- data.frame(beta1_sp1=numeric(4000), beta2_sp1=numeric(4000), ind=numeric(4000))
+    Param_sp1[,1] <- c(MCMC_brms_sp_1[[1]][,1], MCMC_brms_sp_1[[2]][,1], MCMC_brms_sp_1[[3]][,1], MCMC_brms_sp_1[[4]][,1])
+    Param_sp1[,2] <- c(MCMC_brms_sp_1[[1]][,2], MCMC_brms_sp_1[[2]][,2], MCMC_brms_sp_1[[3]][,2], MCMC_brms_sp_1[[4]][,2])
+    Param_sp1[,3] <- rnorm(4000, 0, Sd_b_sp1)
+    Log_growth_pred_sp1 <- matrix(nrow=4000, ncol=npred)
     for (n in 1:npred) {
       Log_growth_pred_sp1[,n] <- Param_sp1$beta1_sp1 + Param_sp1$beta2_sp1*logLight_seq[n] + Param_sp1$ind
     }
     
-    Param_sp2 <- data.frame(beta1_sp2=numeric(2000), beta2_sp2=numeric(2000), ind=numeric(2000))
-    Param_sp2[,1] <- c(MCMC_brms_sp_2[[1]][,1], MCMC_brms_sp_2[[2]][,1])
-    Param_sp2[,2] <- c(MCMC_brms_sp_2[[1]][,2], MCMC_brms_sp_2[[2]][,2])
-    Param_sp2[,3] <- rnorm(2000, 0, Sd_b_sp2)
-    Log_growth_pred_sp2 <- matrix(nrow=2000, ncol=npred)
+    Param_sp2 <- data.frame(beta1_sp2=numeric(4000), beta2_sp2=numeric(4000), ind=numeric(4000))
+    Param_sp2[,1] <- c(MCMC_brms_sp_2[[1]][,1], MCMC_brms_sp_2[[2]][,1], MCMC_brms_sp_2[[3]][,1], MCMC_brms_sp_2[[4]][,1])
+    Param_sp2[,2] <- c(MCMC_brms_sp_2[[1]][,2], MCMC_brms_sp_2[[2]][,2], MCMC_brms_sp_2[[3]][,2], MCMC_brms_sp_2[[4]][,2])
+    Param_sp2[,3] <- rnorm(4000, 0, Sd_b_sp2)
+    Log_growth_pred_sp2 <- matrix(nrow=4000, ncol=npred)
     for (n in 1:npred) {
       Log_growth_pred_sp2[,n] <- Param_sp2$beta1_sp2 + Param_sp2$beta2_sp2*logLight_seq[n] + Param_sp2$ind
     }
@@ -690,24 +811,24 @@ ggplot2::ggsave(filename = "Partial_knowledge_model.png", plot=B, path=here::her
 #With intrinsic variation#
     
     #Growth for species 1
-    Param_sp1_IV <- data.frame(beta1_sp1_IV=numeric(2000), beta2_sp1_IV=numeric(2000), ind=numeric(2000))
-    Param_sp1_IV[,1] <- c(MCMC_brms_sp_1_IV[[1]][,1], MCMC_brms_sp_1_IV[[2]][,1])
-    Param_sp1_IV[,2] <- c(MCMC_brms_sp_1_IV[[1]][,2], MCMC_brms_sp_1_IV[[2]][,2])
-    Param_sp1_IV[,3] <- rnorm(2000, 0, Sd_b_sp1_IV)
+    Param_sp1_IV <- data.frame(beta1_sp1_IV=numeric(4000), beta2_sp1_IV=numeric(4000), ind=numeric(4000))
+    Param_sp1_IV[,1] <- c(MCMC_brms_sp_1_IV[[1]][,1], MCMC_brms_sp_1_IV[[2]][,1], MCMC_brms_sp_1_IV[[3]][,1], MCMC_brms_sp_1_IV[[4]][,1])
+    Param_sp1_IV[,2] <- c(MCMC_brms_sp_1_IV[[1]][,2], MCMC_brms_sp_1_IV[[2]][,2], MCMC_brms_sp_1_IV[[3]][,2], MCMC_brms_sp_1_IV[[4]][,2])
+    Param_sp1_IV[,3] <- rnorm(4000, 0, Sd_b_sp1_IV)
     
-    Log_growth_pred_sp1_IV <- matrix(nrow=2000, ncol=npred)
+    Log_growth_pred_sp1_IV <- matrix(nrow=4000, ncol=npred)
     
     for (n in 1:npred) {
       Log_growth_pred_sp1_IV[,n] <- Param_sp1_IV$beta1_sp1_IV + Param_sp1_IV$beta2_sp1_IV*logLight_seq[n] + Param_sp1_IV$ind
     }
     
     #Growth for species 2
-    Param_sp2_IV <- data.frame(beta1_sp2_IV=numeric(2000), beta2_sp2_IV=numeric(2000), ind=numeric(2000))
-    Param_sp2_IV[,1] <- c(MCMC_brms_sp_2_IV[[1]][,1], MCMC_brms_sp_2_IV[[2]][,1])
-    Param_sp2_IV[,2] <- c(MCMC_brms_sp_2_IV[[1]][,2], MCMC_brms_sp_2_IV[[2]][,2])
-    Param_sp2_IV[,3] <- rnorm(2000, 0, Sd_b_sp2_IV)
+    Param_sp2_IV <- data.frame(beta1_sp2_IV=numeric(4000), beta2_sp2_IV=numeric(4000), ind=numeric(4000))
+    Param_sp2_IV[,1] <- c(MCMC_brms_sp_2_IV[[1]][,1], MCMC_brms_sp_2_IV[[2]][,1], MCMC_brms_sp_2_IV[[3]][,1], MCMC_brms_sp_2_IV[[4]][,1])
+    Param_sp2_IV[,2] <- c(MCMC_brms_sp_2_IV[[1]][,2], MCMC_brms_sp_2_IV[[2]][,2], MCMC_brms_sp_2_IV[[3]][,2], MCMC_brms_sp_2_IV[[4]][,2])
+    Param_sp2_IV[,3] <- rnorm(4000, 0, Sd_b_sp2_IV)
     
-    Log_growth_pred_sp2_IV <- matrix(nrow=2000, ncol=npred)
+    Log_growth_pred_sp2_IV <- matrix(nrow=4000, ncol=npred)
     
     for (n in 1:npred) {
       Log_growth_pred_sp2_IV[,n] <- Param_sp2_IV$beta1_sp2_IV + Param_sp2_IV$beta2_sp2_IV*logLight_seq[n] + Param_sp2_IV$ind
@@ -762,13 +883,13 @@ ggplot2::ggsave(filename = "Partial_knowledge_model_genetic_var.png", plot = g, 
 ```
 
 
-```{r PlotIntrinsicIV, fig.cap="Plot of the real values - points - and estimated mean - bold lines - and 95 % confidence interval - thin lines - of $Y$ versus $X_1$. The dashed lines correspond to the 95 % interval due to intrinsic IV."}
+```{r PlotIntrinsicIV, fig.cap="Plot of the real values - points - and estimated mean - bold lines - and 95% confidence interval - thin lines - of $Y$ versus $X_1$. The dashed lines correspond to the 95% interval due to intrinsic IV."}
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model_genetic_var.png"))
 ```
 
 
-```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (a) Positions of a sample of $I$=600 individuals from $J$=2 species in a landscape defined by a square grid of $C x C$ cells (C=500). The background color indicates the value of the environmental variable $X_1$ (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (b) Response as a function of the observed environmental variable $X_1$ for the two species. Points represent the data {$Y_{ijt}$, $X_{1,ijt}$}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account $V_{bj}$). The envelopes thus represent the intraspecific variability which is due to the $N-1$ unobserved environmental variables."}
+```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (a) Positions of a sample of $I$=600 individuals from $J$=2 species in a landscape defined by a square grid of $C \times C$ cells (C=500). The background color indicates the value of the environmental variable $X_1$ (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (b) Response as a function of the observed environmental variable $X_1$ for the two species. Points represent the data {$Y_{ijt}$, $X_{1,ijt}$}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account $V_{bj}$). The envelopes thus represent the intraspecific variability which is due to the $N-1$ unobserved environmental variables."}
 
 g <- ggpubr::ggarrange(A, B, ncol = 2, labels = c("a", "b"))
 ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white", dpi = 300)
@@ -907,8 +1028,7 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "S
 ```
 
 
-As the semivariance between individuals of both species was higher than the semivariance between conspecifics (Figure \@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics. Considering this response variable as a proxy of the species performance, we argue that this would imply that intraspecific competition is greater than interspecific competition), which is the main condition for stable coexistence.
-Therefore, **stable** coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
+As the semivariance between individuals of both species was higher than the semivariance between conspecifics (Figure \@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics.
 
 
 # Code implementation

@@ -9,7 +9,7 @@ csl: "`r here::here('tools_latex', 'bib_style.csl')`"
 always_allow_html: true
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, fig.pos='H')
+knitr::opts_chunk$set(echo=FALSE, fig.pos='H', warning=FALSE, message=FALSE)
 ```
 
 # Appendix 1: simulation experiment with two species
@@ -105,7 +105,8 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "T
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Dens_model_IV_Sp2.png"))
 ```
 
-```{r EstimateTable, warning=FALSE}
+
+```{r SummaryTheoretical}
 
 load(here::here("outputs", "theoretical_model", "brms_mod_sp_1.RData"))
 load(here::here("outputs", "theoretical_model", "brms_mod_sp_2.RData"))
@@ -117,56 +118,130 @@ Sum_sp2 <- summary(brms_mod_sp_2)
 Sum_sp1_IV <- summary(brms_mod_sp_1_IV)
 Sum_sp2_IV <- summary(brms_mod_sp_2_IV)
 
-kableExtra::kbl(
+Res_mods <- 
   data.frame(
-    rep(c("Estimate", "Estimation error"), 4),
-    c(format(as.numeric(Sum_sp1$fixed[1,1]), digits = 2, scientific = T),
+    rep(c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"), 4),
+    c(
+      format(as.numeric(Sum_sp1$fixed[1,1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2$fixed[1,1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1_IV$fixed[1,1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1_IV$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2_IV$fixed[1,1]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp2_IV$fixed[1,2]), digits = 2, scientific = T)),
-    c(format(as.numeric(Sum_sp1$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$fixed[2,1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2$fixed[2,1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1_IV$fixed[2,1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1_IV$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2_IV$fixed[2,1]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp2_IV$fixed[2,2]), digits = 2, scientific = T)),
-    c(format(as.numeric(Sum_sp1$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$random$tree[1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2$random$tree[1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1_IV$random$tree[1]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp1_IV$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[7]), digits = 2, scientific = T),
       format(as.numeric(Sum_sp2_IV$random$tree[1]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp2_IV$random$tree[2]), digits = 2, scientific = T)),
-    c(format(as.numeric(Sum_sp1$spec_pars[1]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp1$spec_pars[2]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp2$spec_pars[1]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp2$spec_pars[2]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp1_IV$spec_pars[1]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp1_IV$spec_pars[2]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp2_IV$spec_pars[1]), digits = 2, scientific = T),
-      format(as.numeric(Sum_sp2_IV$spec_pars[2]), digits = 2, scientific = T))
-    ),
-  booktabs = T,
-  col.names = c(" ", "$\\beta_0$", "$\\beta_1$", "$V_b$", "$V$"),
-  escape = F,
-  caption = "Mean posteriors and their estimation error"
-  ) %>%
-  kableExtra::pack_rows("Species 1 (no random IV)", start_row = 1, end_row = 2) %>% 
-  kableExtra::pack_rows("Species 2 (no random IV)", start_row = 3, end_row = 4)%>%
-  kableExtra::pack_rows("Species 1 (with random IV)", start_row = 5, end_row = 6) %>% 
-  kableExtra::pack_rows("Species 2 (with random IV)", start_row = 7, end_row = 8)%>%
-  kableExtra::kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
+      format(as.numeric(Sum_sp2_IV$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$spec_pars[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,7]), digits = 2, scientific = T)
+      )
+    )
 
+kableExtra::kbl(
+  Res_mods,
+  booktabs = T,
+  escape = F,
+  col.names = c(" ", "$\\beta_0$", "$\\beta_1$", "$V_b$", "$V$"),
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::pack_rows("Species 1 (no random IV)", start_row = 1, end_row = 6) %>% 
+  kableExtra::pack_rows("Species 2 (no random IV)", start_row = 7, end_row = 12)%>%
+  kableExtra::pack_rows("Species 1 (with random IV)", start_row = 13, end_row = 18) %>% 
+  kableExtra::pack_rows("Species 2 (with random IV)", start_row = 19, end_row = 24)%>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
 ```
 
-We inferred a high IV even in the absence of intrinsic IV (Table \@ref(tab:EstimateTable)). 
+Models converged and we inferred a high IV even in the absence of intrinsic IV (Table \@ref(tab:SummaryTheoretical)).
 
 ```{r PlotIntrinsicIV, fig.cap="Plot of the real values - points - and estimated mean - bold lines - and 95\\% confidence interval - thin lines - of $Y$ versus $X_1$. The dashed lines correspond to the 95\\% interval due to intrinsic IV."}
 
@@ -264,9 +339,76 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Ranef_values.png"))
 ```
 
-Figures \@ref(fig:TracePosteriors) to \@ref(fig:SpatialRandomEffects) illustrate the convergence of the model.
+Figures \@ref(fig:TracePosteriors) to \@ref(fig:SpatialRandomEffects) illustrate the convergence of the model. Figure \@ref(fig:PlotsRanef) shows mean values and 95% confidence intervals of random effects (except individual random effects which are too many), enabling to graphically look for a tendency. Table \@ref(tab:SummaryEucalyptus) displays details on model convergence and reliability.
 
-Figure \@ref(fig:PlotsRanef) shows mean values and 95% confidence intervals of random effects (except individual random effects which are too many), enabling to graphically look for a tendency.
+```{r SummaryEucalyptus}
+
+load(here::here("outputs", "clonal_analysis", "brms_mod_EUCFLUX_revision.RData"))
+
+Sum_EUCFLUX <- summary(brms_mod)
+
+Summary_Complete_Eucalyptus <- data.frame(
+  c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][1,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[1,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][2,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[2,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][3,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[3,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[3,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Block[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Block[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Block[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Date[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Date[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Date[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX$spec_pars[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$spec_pars[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$spec_pars[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[7]), digits=2, scientific = T))
+)
+
+kableExtra::kbl(
+  Summary_Complete_Eucalyptus,
+  booktabs = T,
+  col.names = c(" ","Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Competition ($\\beta_2$)","Individual variance ($V_i$)", "Block variance ($V_b$)", "Genetic variance ($V_g$)", "Temporal variance ($V_t$)", "Residuals variance ($V$)"),
+  escape=F,
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
+  kableExtra::column_spec(1:9, width = "1.5cm")
+```
 
 
 # Appendix 3: analysis of tropical forest inventory data
@@ -391,10 +533,6 @@ We evaluated the convergence of the model using trace and density plots of the p
 
 ### Paracou
 
-```{r LoadBRMSParacou, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "brms_mod_Paracou.RData"))
-```
-
 ```{r MCMCTraceParacou, fig.cap="Trace of the posterior estimates for the Paracou site", message=FALSE, warning=FALSE}
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_Paracou.png"))
 ```
@@ -404,10 +542,6 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "M
 ```
 
 ### Uppangala
-
-```{r LoadModelUppangala, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "brms_mod_Uppangala.RData"))
-```
 
 ```{r MCMCTraceUppangala, fig.cap="Trace of the posterior estimates for the Uppangala site", message=FALSE, warning=FALSE}
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_Uppangala.png"))
@@ -419,10 +553,6 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "M
 
 ### BCI
 
-```{r LoadModelBCI, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData"))
-```
-
 ```{r MCMCTraceBCI, fig.cap="Trace of the posterior estimates for the BCI site", message=FALSE, warning=FALSE}
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_trace_BCI.png"))
 ```
@@ -431,9 +561,153 @@ knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "M
 knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "MCMC_density_BCI.png"))
 ```
 
+```{r SummaryTropical}
+
+load(here::here("outputs", "tropical_analysis", "brms_mod_Paracou_revision.RData"))
+Sum_paracou <- summary(brms_mod)
+
+load(here::here("outputs", "tropical_analysis", "brms_mod_Uppangala_revision.RData"))
+Sum_uppangala <- summary(brms_mod)
+
+load(here::here("outputs", "tropical_analysis", "brms_mod_BCI_revision.RData"))
+Sum_BCI <- summary(brms_mod)
+
+Res_mods <- 
+  data.frame(
+    Amount = rep(c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"), 3),
+    Intercept = c(
+      format(as.numeric(Sum_paracou$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,7]), digits = 2, scientific = T)
+      ),
+    Diameter = c(
+      format(as.numeric(Sum_paracou$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,7]), digits = 2, scientific = T)
+      ),
+    Vbj = c(
+      format(as.numeric(Sum_paracou$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$random$IdentSpecies[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$random$IdentSpecies[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$random$IdentSpecies[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$random$IdentSpecies[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$random$IdentSpecies[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$random$IdentSpecies[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[7]), digits = 2, scientific = T)
+      ),
+    Vbi = c(
+      format(as.numeric(Sum_paracou$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentTree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$random$IdentTree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$random$IdentTree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$random$IdentTree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentTree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentTree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$random$IdentTree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$random$IdentTree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$random$IdentTree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$random$IdentTree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$random$IdentTree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$random$IdentTree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[7]), digits = 2, scientific = T)
+      ),
+    V=c(
+      format(as.numeric(Sum_paracou$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$spec_pars[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,7]), digits = 2, scientific = T)
+      )
+    )
+
+kableExtra::kbl(
+  Res_mods,
+  booktabs = T,
+  escape = F,
+  col.names = c(" ", "Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Species variance ($V_{bj}$)", "Individual variance ($V_{bi}$)", "Residual variance ($V$)"),
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
+  kableExtra::pack_rows("Paracou", start_row = 1, end_row = 6) %>% 
+  kableExtra::pack_rows("Uppangala", start_row = 7, end_row = 12)%>%
+  kableExtra::pack_rows("BCI", start_row = 13, end_row = 18)
+```
+
 ## Spatial analyses
 
 "Most abundant species" are species with more than 3,000 individuals.
+
+The relatively low proportion of species which do not have a significant Moran's I test or do not significantly exhibit a higher inter- than intraspecific variation locally can be explained by the low abundances of rare species which represent the majority of species.
+
+```{r include=FALSE}
+load(here::here("outputs", "tropical_analysis", "Signif_abund_Moran.RData"))
+load(here::here("outputs", "tropical_analysis", "Signif_abund_Var_comp.RData"))
+```
+
+
+```{r SignifAbund, fig.cap=paste0("Histograms of the abundances of species which present a significant (dark blue) or insignificant (light blue) Moran’s I test (upper panels) and semivariance comparison test (bottom panels). The dotted lines represent the mean abundance across species with significant (plain) and insignificant (dashed) test in each case. Using a simple generalized linear model with a logit link function, we also showed that the abundance of species is a significant predictor of test significance in both cases (McFadden’s R-squared value = ", format(Res_signif_Moran[1,1], digits=2), " for Moran’s I and ", format(Res_signif_Var_comp[1,1], digits=2), " for semivariance comparison for Paracou, ", format(Res_signif_Moran[2,1], digits=2), " and ", format(Res_signif_Var_comp[2,1], digits=2), " for Uppangala, ", format(Res_signif_Moran[3,1], digits=2), " and ", format(Res_signif_Var_comp[3,1], digits=2), " for BCI; p-value of the effect of abundance on significance = ", format(Res_signif_Moran[1,2], digits=2), " and ", format(Res_signif_Var_comp[1,2], digits=2), " for Paracou, ", format(Res_signif_Moran[2,2], digits=2), " and ", format(Res_signif_Var_comp[2,2], digits=2), " for Uppangala, ", format(Res_signif_Moran[3,2], digits=2), "and ", format(Res_signif_Var_comp[3,2], digits=2), " for BCI).")}
+
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Plot_signif_abund.png"))
+
+```
+
 
 ## Spatial autocorrelation in undisturbed plots in the Paracou site
 

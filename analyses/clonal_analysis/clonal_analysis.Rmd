@@ -102,7 +102,7 @@ Raw_data <- Raw_data[which(Raw_data$Growth_yearly>=0),]
 Raw_data$Age <- Dates$Age[match(Raw_data$Date, Dates$Date_number)]
 
 #log-transforming G and D in order to have normal data
-#constant to avoid log-transforming null values
+#constant to avoid log-tranforming null values
 Raw_data$logG <- log(Raw_data$Growth_yearly+1)
 Raw_data$logD <- log(Raw_data$D_1)
 
@@ -247,9 +247,9 @@ load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 
 In order to partition the variance of individual growth data, we built a model incorporating a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$), and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (block, $b_b$), and genotype ($b_g$).
 
-This model was fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 5. We obtained 1,000 estimates per parameter.
+This model was fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 1/5, and 4 MCMC chains with different initial values. We obtained 1,000 estimates per parameter per MCMC chain.
 
-Variables were scaled to help the convergence of the model.
+Variables were scaled before inference.
 
 
 $ln(G_{it}+1) = (\beta_0 + b_i + b_b + b_g + b_t) + \beta_1 \times ln(D_{it}) + \beta_2 \times ln(C_{it}) + \epsilon_{it}$
@@ -274,11 +274,11 @@ $\epsilon_{it} \sim  \mathcal{N}(mean=0, var=V), iid$
 
 Hyperpriors
 
-$V_i \sim \mathcal{IG}(shape = 10^{-3}, rate = 10^{-3}), iid$
+$V_i \sim t(3, 0, 2.5), iid$
 
 
 ```{r Model, eval=FALSE, include=FALSE}
-options("m.cores"=2)
+options("m.cores"=4)
 
 Data_compet$logD <- scale(Data_compet$logD)
 Data_compet$logG <- scale(Data_compet$logG)
@@ -287,8 +287,8 @@ Data_compet$logC <- scale(Data_compet$logC)
 ### Priors
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
-                brms::prior(normal(0, 1), class = "b"),
-                brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+                brms::prior(normal(0, 1), class = "b"))
+#,brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
 ### Fit
 
@@ -298,19 +298,19 @@ brms_mod <-brms::brm(
   #family = gaussian(), #already default, prevents from sampling... 
   prior= prior_brms,
   iter = 10000 , warmup = 5000, thin = 5,
-  chains = 2, cores=2,
+  chains = 4, cores=4,
   control=list(adapt_delta=0.99, max_treedepth=15))
   #backend = "cmdstanr")
 
-save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod.RData"))
+save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod_EUCFLUX_revision.RData"))
 ```
 
 # Results of the model and variance partitioning
 
-After convergence of the model (checked visually), we examined the proportion of the residual variance (variation of the response variables that is not explained by the covariates , i.e. in the unexplained part of the statistical model) related to each random effect, and this enabled us to perform a residual variance partitioning.
+After convergence of the model, we examined the proportion of the residual variance (variation of the response variables that is not explained by the covariates , i.e. in the unexplained part of the statistical model) related to each random effect, and this enabled us to perform a residual variance partitioning.
 
 ```{r LoadBRMS, include=FALSE}
-load(here::here("outputs", "clonal_analysis", "brms_mod.RData"))
+load(here::here("outputs", "clonal_analysis", "brms_mod_EUCFLUX_revision.RData"))
 ```
 
 ```{r TracePosteriors, fig.cap="Trace of the posteriors of the inferred parameters", message=FALSE, warning=FALSE}
@@ -336,7 +336,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Den
 
 #Temporal random effects
 Ranef_date <- as.data.frame(brms::ranef(brms_mod, summary = F)$Date)
-Ranef_date$Chain <- c(rep(1, 1000), rep(2, 1000))
+Ranef_date$Chain <- rep(c(1,2,3,4), each=1000)
 
 g <- bayesplot::mcmc_trace(Ranef_date)
 
@@ -349,7 +349,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 
 #Genotype random effects
 Ranef_gen <- as.data.frame(brms::ranef(brms_mod, summary = F)$Gen)
-Ranef_gen$Chain <- c(rep(1, 1000), rep(2, 1000))
+Ranef_gen$Chain <- rep(c(1,2,3,4), each=1000)
 
 g <- bayesplot::mcmc_trace(Ranef_gen)
 
@@ -361,7 +361,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 ```{r SpatialRandomEffects, fig.cap="Trace of the spatial (block) random effects."}
 #Spatial random effects
 Ranef_block <- as.data.frame(brms::ranef(brms_mod, summary = F)$Block)
-Ranef_block$Chain <- c(rep(1, 1000), rep(2, 1000))
+Ranef_block$Chain <- rep(c(1,2,3,4), each=1000)
 
 g <- bayesplot::mcmc_trace(Ranef_block)
 
@@ -456,6 +456,70 @@ kableExtra::kbl(
   kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
   kableExtra::column_spec(1:9, width = "1.5cm")
 ```
+```{r SummaryCompleteEucalyptus}
+Summary_Complete_Eucalyptus <- data.frame(
+  c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][1,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[1,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][2,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[2,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][3,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[3,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[3,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Block[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Block[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Block[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Date[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Date[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Date[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX$spec_pars[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$spec_pars[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$spec_pars[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[7]), digits=2, scientific = T))
+)
+
+kableExtra::kbl(
+  Summary_Complete_Eucalyptus,
+  booktabs = T,
+  col.names = c(" ","Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Competition ($\\beta_2$)","Individual variance ($V_i$)", "Block variance ($V_b$)", "Genetic variance ($V_g$)", "Temporal variance ($V_t$)", "Residuals variance ($V$)"),
+  escape=F,
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
+  kableExtra::column_spec(1:9, width = "1.5cm")
+```
+
 
 We found that the two most important contributors to variance were the date and individual identity. High estimation error for the intercept and the temporal random effect must be noted.
 The proportion of variance represented by each random effect and the residual variance were computed to visualise the variance partition.
@@ -487,9 +551,9 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Var
 The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel a), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
 The temporal effect explained the highest fraction of variance (Table \@ref(tab:ResultsTable), Figure \@ref(fig:PlotColoursDate)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
 
-Importantly, variability between individuals within genotypes (10.8%) was higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
+Importantly, variability between individuals within genotypes was higher than between genotypes. This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
 
-The block had the littlest impact with 2.5% of the variance explained. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
+The block had the littlest impact. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
 As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions [@le_maire_light_2019], this dataset is a strongly conservative test case for our hypothesis.
 
 
@@ -498,9 +562,8 @@ As the experimental design aimed at minimizing environmental variations and sele
 Overall, we found that there is IV within clonal tree plantations (Figure \@ref(fig:SummaryPlot)). This shows that IV can be due only to the environmental factors varying between individuals, proving that the source of IV is not necessarily intrinsic.
 
 ```{r SummaryPlot, fig.cap="The EUCFLUX setup and the variance partitioning. Site (a; each square represents a block) and organisation of a block (b; each coloured square represents a genotype) in the EUCFLUX experiment. 16 clones are represented in B, but only 14 were used since the last two are from seed-origin and thus not genetically identical. (c) Variance partitioning of tree growth for a common garden experiment with various Eucalyptus clones"}
-knitr::include_graphics(here::here("data", "EUCFLUX", "Eucflux_summary.jpg"))
+knitr::include_graphics(here::here("data", "EUCFLUX", "Eucflux_summary_student.jpg"))
 ```
-
 
 # Code implementation
 

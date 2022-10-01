@@ -6,6 +6,9 @@
 rm(list = ls())
 gc()
 
+# ----- restart R session
+.rs.restartR()
+
 # ----- install/update packages
 devtools::install_deps()
 

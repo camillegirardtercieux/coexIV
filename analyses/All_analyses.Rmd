@@ -1,5 +1,5 @@
 ---
-title: "A body of evidence on the nature of IV and its consequences on individual and species differences"
+title: "Multiple insights on the nature of IV and its consequences on individual and species differences"
 output:
   bookdown::html_document2:
     toc: true
@@ -285,7 +285,7 @@ knitr::include_graphics(
 
 ## Estimation of IV
 
-To quantify the relative importance of intraspecific and interspecific variability for each site, we used Stan to run a Bayesian hierarchical model, with a species random effect and an individual random effect on the intercept. In order to compare to classic growth models, and estimate an intraspecific variability within diameter classes, we also added an intercept and a diameter fixed effect. We used the brms package [@burkner_brms_2017 ; @burkner_advanced_2018] to implement the model. We scaled the data to improve convergence time.
+To quantify the relative importance of intraspecific and interspecific variability for each site, we built a model including a species random effect and an individual random effect on the intercept. In order to compare to classic growth models, and estimate an intraspecific variability within diameter classes, we also added an intercept and a diameter fixed effect.
 
 
 $ln(G_{ijt} + 2) = [\beta_0 + b_{0j} + d_{0i}] + \beta_1 \times ln(D_{ijt}) + \epsilon_{ijt},$ 
@@ -296,32 +296,36 @@ $\beta_0 \sim \mathcal{N}(mean=0, var = 1), iid$
 
 $\beta_1 \sim \mathcal{N}(mean=0, var = 1), iid$
 
-$b_{0j} \sim \mathcal{N}(mean=0, var=V_b), iid$
+$b_{0j} \sim \mathcal{N}(mean=0, var=V_bj), iid$
 
-$d_{0j} \sim \mathcal{N}(mean=0, var=V_d), iid$
+$d_{0j} \sim \mathcal{N}(mean=0, var=V_bi), iid$
 
 $\epsilon_{ijt} \sim  \mathcal{N}(mean=0, var=V), iid$
 
 Hyperpriors
 
-$V_b \sim \mathcal{IG}(shape = 10^{-3}, rate = 10^{-3}), iid$
+$V_{bj} \sim t(3, 0, 2.5), iid$
 
-$V_d \sim \mathcal{IG}(shape = 10^{-3}, rate = 10^{-3}), iid$
+$V_{bi} \sim t(3, 0, 2.5), iid$
 
-$V \sim \mathcal{IG}(shape = 10^{-3}, rate = 10^{-3}), iid$
+$V \sim t(3, 0, 2.5), iid$
 
 Where $i$ is the individual and $j$ the species.
-The model included two fixed effects ($\beta_0$ and $\beta_1$), a random species effect $b_{0j}$ on the intercept and a random individual effect $d_{0i}$ on the intercept. $V_d$ is the intraspecific variance and $V_b$ is the interspecific variance.
+The model included two fixed effects ($\beta_0$ and $\beta_1$), a random species effect $b_{0j}$ on the intercept and a random individual effect $d_{0i}$ on the intercept. $V_bi$ is the intraspecific variance and $V_bj$ is the interspecific variance.
+
+The following models were fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 1/5, and 4 MCMC chains with different initial values. We obtained 1,000 estimates per parameter per MCMC chain.
+
+The data was scaled before inference.
 
 ### Paracou
 
-```{r ModelParacou, include=FALSE}
+```{r ModelParacou, eval=FALSE, include=FALSE}
 Data_stan_Paracou <- Paracou_no_mean[which((as.character(Paracou_no_mean$Sp))!="Indet_sp"),]
 Data_stan_Paracou <-  coexIV::create_identspecies(Data_stan_Paracou)
 
 Data_stan_Paracou <- coexIV::prep_stan(Data_stan_Paracou)
 
-Sample <- 100000
+#Sample <- 100000
 
 Data_stan_Paracou <- Data_stan_Paracou[sample(1:nrow(Data_stan_Paracou),Sample),]
 
@@ -372,7 +376,7 @@ Sum_paracou <- summary(brms_mod)
 
 ### Uppangala
 
-```{r ModelUppangala, include=FALSE}
+```{r ModelUppangala, eval=FALSE, include=FALSE}
 Uppangala_no_mean <-  coexIV::create_identspecies(Uppangala_no_mean)
 Data_stan_Uppangala <- coexIV::prep_stan(Uppangala_no_mean)
 
@@ -422,7 +426,7 @@ Sum_uppangala <- summary(brms_mod)
 
 ### BCI
 
-```{r ModelBCI, include=FALSE}
+```{r ModelBCI, eval=FALSE, include=FALSE}
 BCI_no_mean <-  coexIV::create_identspecies(BCI_no_mean)
 
 Data_stan_BCI <- coexIV::prep_stan(BCI_no_mean)
@@ -446,12 +450,12 @@ brms_mod <- brms::brm(formula = logG ~ 1 + logD + (1|IdentSpecies) + (1|IdentTre
                chains = 4, cores=4)
 
 
-save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData_revision"))
+save(brms_mod, file = here::here("outputs", "tropical_analysis", "brms_mod_BCI_revision.RData"))
 
 ```
 
 ```{r LoadModelBCI, include=FALSE}
-load(here::here("outputs", "tropical_analysis", "brms_mod_BCI.RData_revision"))
+load(here::here("outputs", "tropical_analysis", "brms_mod_BCI_revision.RData"))
 ```
 
 ```{r MCMCTraceBCI, fig.cap="Trace of the posterior estimates for the BCI site", message=FALSE, warning=FALSE}
@@ -492,7 +496,7 @@ Res_mods <-
       format(as.numeric(Sum_BCI$fixed[2,1]), digits = 2, scientific = T),
       format(as.numeric(Sum_BCI$fixed[2,2]), digits = 2, scientific = T)
       ),
-    Vb = c(
+    Vbj = c(
       format(as.numeric(Sum_paracou$random$IdentSpecies[1]), digits = 2, scientific = T),
       format(as.numeric(Sum_paracou$random$IdentSpecies[2]), digits = 2, scientific = T),
       format(as.numeric(Sum_uppangala$random$IdentSpecies[1]), digits = 2, scientific = T),
@@ -500,7 +504,7 @@ Res_mods <-
       format(as.numeric(Sum_BCI$random$IdentSpecies[1]), digits = 2, scientific = T),
       format(as.numeric(Sum_BCI$random$IdentSpecies[2]), digits = 2, scientific = T)
       ),
-    Vd = c(
+    Vbi = c(
       format(as.numeric(Sum_paracou$random$IdentTree[1]), digits = 2, scientific = T),
       format(as.numeric(Sum_paracou$random$IdentTree[2]), digits = 2, scientific = T),
       format(as.numeric(Sum_uppangala$random$IdentTree[1]), digits = 2, scientific = T),
@@ -521,7 +525,7 @@ kableExtra::kbl(
   Res_mods,
   booktabs = T,
   escape = F,
-  col.names = c(" ", "Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Species variance ($V_b$)", "Individual variance ($V_d$)", "Residual variance ($V$)"),
+  col.names = c(" ", "Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Species variance ($V_bj$)", "Individual variance ($V_bi$)", "Residual variance ($V$)"),
   caption = "Variance partitioning of individual growth in three tropical forest sites. Shown are the mean posterior estimates and their estimated error from the growth model fitted for each site"
   ) %>%
   kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
@@ -529,6 +533,125 @@ kableExtra::kbl(
   kableExtra::pack_rows("Uppangala", start_row = 3, end_row = 4)%>%
   kableExtra::pack_rows("BCI", start_row = 5, end_row = 6)
 ```
+
+```{r SummaryModelsComplete}
+Res_mods <- 
+  data.frame(
+    Amount = rep(c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"), 3),
+    Intercept = c(
+      format(as.numeric(Sum_paracou$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[1,7]), digits = 2, scientific = T)
+      ),
+    Diameter = c(
+      format(as.numeric(Sum_paracou$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$fixed[2,7]), digits = 2, scientific = T)
+      ),
+    Vbj = c(
+      format(as.numeric(Sum_paracou$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$random$IdentSpecies[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$random$IdentSpecies[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentSpecies[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$random$IdentSpecies[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$random$IdentSpecies[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentSpecies[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$random$IdentSpecies[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$random$IdentSpecies[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentSpecies[7]), digits = 2, scientific = T)
+      ),
+    Vbi = c(
+      format(as.numeric(Sum_paracou$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentTree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$random$IdentTree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$random$IdentTree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$random$IdentTree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentTree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$random$IdentTree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$random$IdentTree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$random$IdentTree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$random$IdentTree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$random$IdentTree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$random$IdentTree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$random$IdentTree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$random$IdentTree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$random$IdentTree[7]), digits = 2, scientific = T)
+      ),
+    V=c(
+      format(as.numeric(Sum_paracou$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_paracou$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_paracou$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_paracou$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_paracou$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_uppangala$spec_pars[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_uppangala$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_uppangala$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_uppangala$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_BCI$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_BCI$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_BCI$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_BCI$spec_pars[,7]), digits = 2, scientific = T)
+      )
+    )
+kableExtra::kbl(
+  Res_mods,
+  booktabs = T,
+  escape = F,
+  col.names = c(" ", "Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Species variance ($V_{bj}$)", "Individual variance ($V_{bi}$)", "Residual variance ($V$)"),
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
+  kableExtra::pack_rows("Paracou", start_row = 1, end_row = 6) %>% 
+  kableExtra::pack_rows("Uppangala", start_row = 7, end_row = 12)%>%
+  kableExtra::pack_rows("BCI", start_row = 13, end_row = 18)
+```
+
 
 ```{r ComputeVarianceProportions}
 Var_tot_Paracou <- as.numeric(Sum_paracou$random$IdentSpecies[1]) + as.numeric(Sum_paracou$random$IdentTree[1]) + as.numeric(Sum_paracou$spec_pars[1])
@@ -683,7 +806,6 @@ load(here::here("outputs", "tropical_analysis", "Data_Paracou.RData"))
 load(here::here("outputs", "tropical_analysis", "Data_Uppangala.RData"))
 load(here::here("outputs", "tropical_analysis", "Data_BCI.RData"))
 
-
 Moran_I_Paracou <- coexIV::moran_analysis(Data_Paracou)
 Moran_I_Uppangala <- coexIV::moran_analysis(Data_Uppangala)
 Data_BCI$Plot <- rep(1, nrow(Data_BCI))
@@ -694,7 +816,7 @@ save(Moran_I_Uppangala, file=here::here("outputs", "tropical_analysis", "Moran_I
 save(Moran_I_BCI, file=here::here("outputs", "tropical_analysis", "Moran_I_BCI.RData"))
 ```
 
-```{r LoadMoran, eval=FALSE, include=FALSE}
+```{r LoadMoran, include=FALSE}
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou.RData"))
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Uppangala.RData"))
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_BCI.RData"))
@@ -708,9 +830,9 @@ which(Moran_I_BCI$Moran.I<0&Moran_I_BCI$signif==1)
 ```
 
 
-We then computed the proportion of species with a significantly and  positively spatial autocorrelated growth (with a 0.05 alpha risk) and the proportion of species with non significant spatial autocorrelation, as well as the corresponding proportion of individuals. The proportions are computed relative to the species on which the test was performed.
+We then computed the proportion of species with a significantly and positively spatially autocorrelated growth (with a 0.05 alpha risk) and the proportion of species with non significant spatial autocorrelation, as well as the corresponding proportion of individuals. The proportions are computed relative to the species on which the test was performed.
 
-```{r MoransResults, eval=FALSE, include=FALSE}
+```{r MoransResults}
 Results_moran <- coexIV::results_moran(data1=Moran_I_Paracou, data2=Moran_I_Uppangala, data3 = Moran_I_BCI)
 
 save(Results_moran, file=here::here("outputs", "tropical_analysis", "Results_moran.RData"))
@@ -726,18 +848,75 @@ kableExtra::kbl(Results_moran, booktabs = T, caption = "Spatial autocorrelation 
 
 `r round(as.numeric(Results_moran[1,]$Significant))`%, `r round(as.numeric(Results_moran[3,]$Significant))`%, and `r round(as.numeric(Results_moran[5,]$Significant))`% of the species showed a positive and significant spatial autocorrelation in tree growth, in Paracou, Uppangala, and BCI respectively. (Table \@ref(tab:MoransResults)).
 
-```{r ModelsSignificanceMoran, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r ModelsSignificanceMoran, message=FALSE, warning=FALSE, include=FALSE}
 ## Test to see if the number of individuals explains the significance ##
-model <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Paracou))
-summary(model)
-# R^2 equivalent for glm:
-#with(summary(model), 1 - deviance/null.deviance)
-model <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Uppangala))
-summary(model)
-#with(summary(model), 1 - deviance/null.deviance)
-model <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_BCI))
-summary(model)
-#with(summary(model), 1 - deviance/null.deviance)
+
+load(here::here("outputs", "tropical_analysis", "Moran_I_Paracou.RData"))
+load(here::here("outputs", "tropical_analysis", "Moran_I_Uppangala.RData"))
+load(here::here("outputs", "tropical_analysis", "Moran_I_BCI.RData"))
+
+Res_signif_Moran <- data.frame(R_2 = numeric(3),
+                               P_val = numeric(3))
+rownames(Res_signif_Moran) <- c("Paracou", "Uppangala", "BCI")
+
+model_signif_Moran_Paracou <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Paracou))
+
+model_signif_Moran_Uppangala <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_Uppangala))
+
+model_signif_Moran_BCI <- glm(factor(signif) ~ nb_ind,family=binomial(link='logit'),data=na.omit(Moran_I_BCI))
+
+#McFadden’s R-squared value
+Res_signif_Moran[1,1] <- with(summary(model_signif_Moran_Paracou), 1 - deviance/null.deviance)
+Res_signif_Moran[2,1] <- with(summary(model_signif_Moran_Uppangala), 1 - deviance/null.deviance)
+Res_signif_Moran[3,1] <- with(summary(model_signif_Moran_BCI), 1 - deviance/null.deviance)
+
+#P-value of the number of individuals
+Res_signif_Moran[1,2] <- summary(model_signif_Moran_Paracou)$coef[2,4]
+Res_signif_Moran[2,2] <- summary(model_signif_Moran_Uppangala)$coef[2,4]
+Res_signif_Moran[3,2] <- summary(model_signif_Moran_BCI)$coef[2,4]
+
+save(Res_signif_Moran, file=here::here("outputs", "tropical_analysis", "Signif_abund_Moran.RData"))
+
+Moran_I_Paracou$signif <- as.factor(Moran_I_Paracou$signif)
+Moran_I_Uppangala$signif <- as.factor(Moran_I_Uppangala$signif)
+Moran_I_BCI$signif <- as.factor(Moran_I_BCI$signif)
+
+mu <- plyr::ddply(Moran_I_Paracou[which(Moran_I_Paracou$signif!="NaN"),], "signif", plyr::summarise, grp.mean=mean(nb_ind))
+A <- ggplot2::ggplot(Moran_I_Paracou[which(Moran_I_Paracou$signif!="NaN"),],
+                     ggplot2::aes(x=nb_ind, color=signif, fill=signif))+
+  ggplot2::geom_histogram(position="identity", alpha=0.5)+
+  ggplot2::labs(title="Paracou", x="Number of individuals", y="Frequency")+
+  ggplot2::geom_vline(data=mu, ggplot2::aes(xintercept=grp.mean, linetype=signif),
+             color="black")+
+  ggplot2::scale_color_brewer(palette="Paired")+
+  ggplot2::scale_fill_brewer(palette="Paired")+
+  ggplot2::theme(text=ggplot2::element_text(size=20))
+
+mu <- plyr::ddply(Moran_I_Uppangala[which(Moran_I_Uppangala$signif!="NaN"),], "signif", plyr::summarise, grp.mean=mean(nb_ind))
+B <- ggplot2::ggplot(Moran_I_Uppangala[which(Moran_I_Uppangala$signif!="NaN"),],
+                     ggplot2::aes(x=nb_ind, color=signif, fill=signif))+
+  ggplot2::geom_histogram(position="identity", alpha=0.5)+
+  ggplot2::labs(title="Uppangala", x=ggplot2::element_blank(), y=ggplot2::element_blank())+
+  ggplot2::geom_vline(data=mu, ggplot2::aes(xintercept=grp.mean, linetype=signif),
+             color="black")+
+  ggplot2::scale_color_brewer(palette="Paired")+
+  ggplot2::scale_fill_brewer(palette="Paired")+
+  ggplot2::theme(text=ggplot2::element_text(size=20))
+
+mu <- plyr::ddply(Moran_I_BCI[which(Moran_I_BCI$signif!="NaN"),], "signif", plyr::summarise, grp.mean=mean(nb_ind))
+C <- ggplot2::ggplot(Moran_I_BCI[which(Moran_I_BCI$signif!="NaN"),],
+                     ggplot2::aes(x=nb_ind, color=signif, fill=signif))+
+  ggplot2::geom_histogram(position="identity", alpha=0.5)+
+  ggplot2::labs(title="BCI", x=ggplot2::element_blank(), y=ggplot2::element_blank())+
+  ggplot2::geom_vline(data=mu, ggplot2::aes(xintercept=grp.mean, linetype=signif),
+             color="black")+
+  ggplot2::scale_color_brewer(palette="Paired")+
+  ggplot2::scale_fill_brewer(palette="Paired")+
+  ggplot2::theme(text=ggplot2::element_text(size=20))
+
+Plot_Moran_signif_abund <- ggpubr::ggarrange(A, B, C, nrow = 1, ncol = 3, common.legend = TRUE, legend="bottom")
+ggplot2::ggsave(filename = "Moran_signif_abund.png", plot = Plot_Moran_signif_abund, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 15, height = 6, bg="white")
+
 ```
 
 
@@ -794,14 +973,14 @@ Var_comp_BCI <- coexIV::variance_comp(data=Data_BCI, nfiles=nfiles, "BCI")
 save(Var_comp_BCI, file=here::here("outputs", "tropical_analysis", "Var_comp_BCI.RData"))
 ```
 
-```{r LoadVarianceComparison, eval=FALSE, include=FALSE}
+```{r LoadVarianceComparison}
 load(here::here("outputs", "tropical_analysis", "Var_comp_Paracou.RData"))
 load(here::here("outputs", "tropical_analysis", "Var_comp_Uppangala.RData"))
 load(here::here("outputs", "tropical_analysis", "Var_comp_BCI.RData"))
 ```
 
 
-```{r ResultsVarianceComparison, eval=FALSE, include=FALSE}
+```{r ResultsVarianceComparison}
 Results_var_comp <- coexIV::results_var_comp(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
 save(Results_var_comp, file=here::here("outputs", "tropical_analysis", "Results_var_comp.RData"))
 
@@ -817,7 +996,7 @@ Results_var_comp %>%
 
 ```
 
-```{r ResultsVarianceComparisonSample, eval=FALSE, include=FALSE}
+```{r ResultsVarianceComparisonSample}
 Results_var_comp_sample <- coexIV::results_var_comp_sample(data1=Var_comp_Paracou, data2=Var_comp_Uppangala, data3=Var_comp_BCI, site1="Paracou", site2="Uppangala", site3="BCI")
 save(Results_var_comp_sample, file=here::here("outputs", "tropical_analysis", "Results_var_comp_sample.RData"))
 
@@ -830,6 +1009,80 @@ Results_var_comp_sample %>%
   kableExtra::pack_rows("Uppangala", start_row = 3, end_row = 4)%>%
   kableExtra::pack_rows("BCI", start_row = 5, end_row = 6)%>%
   kableExtra::column_spec(2:4, width="3cm")
+
+```
+
+
+```{r SignificanceAbundanceVarComp, message=FALSE, warning=FALSE, fig.cap=paste0("Histograms of the abundances of species which present a significant (dark blue) or insignificant (light blue) Moran’s I test (upper panels) and semivariance comparison test (bottom panels). The dotted lines represent the mean abundance across species with significant (plain) and insignificant (dashed) test in each case. Using a simple generalized linear model with a logit link function, we also showed that the abundance of species is a significant predictor of test significance in both cases (McFadden’s R-squared value = ", format(Res_signif_Moran[1,1], digits=2), " for Moran’s I and ", format(Res_signif_Var_comp[1,1], digits=2), " for semivariance comparison for Paracou, ", format(Res_signif_Moran[2,1], digits=2), " and ", format(Res_signif_Var_comp[2,1], digits=2), " for Uppangala, ", format(Res_signif_Moran[3,1], digits=2), " and ", format(Res_signif_Var_comp[3,1], digits=2), " for BCI; p-value of the effect of abundance on significance = ", format(Res_signif_Moran[1,2], digits=2), " and ", format(Res_signif_Var_comp[1,2], digits=2), " for Paracou, ", format(Res_signif_Moran[2,2], digits=2), " and ", format(Res_signif_Var_comp[2,2], digits=2), " for Uppangala, ", format(Res_signif_Moran[3,2], digits=2), "and ", format(Res_signif_Var_comp[3,2], digits=2), " for BCI).")}
+Var_comp_Paracou$Signif <- as.factor(Var_comp_Paracou$Signif)
+Var_comp_Uppangala$Signif <- as.factor(Var_comp_Uppangala$Signif)
+Var_comp_BCI$Signif <- as.factor(Var_comp_BCI$Signif)
+
+## Test to see if the number of individuals explains the significance ##
+
+Res_signif_Var_comp <- data.frame(R_2 = numeric(3),
+                                  P_val = numeric(3))
+rownames(Res_signif_Var_comp) <- c("Paracou", "Uppangala", "BCI")
+
+model_signif_Var_comp_Paracou <- glm(factor(Signif) ~ Nb_ind,family=binomial(link='logit'),data=na.omit(Var_comp_Paracou))
+
+model_signif_Var_comp_Uppangala <- glm(factor(Signif) ~ Nb_ind,family=binomial(link='logit'),data=na.omit(Var_comp_Uppangala))
+
+model_signif_Var_comp_BCI <- glm(factor(Signif) ~ Nb_ind,family=binomial(link='logit'),data=na.omit(Var_comp_BCI))
+
+#McFadden’s R-squared value
+Res_signif_Var_comp[1,1] <- with(summary(model_signif_Var_comp_Paracou), 1 - deviance/null.deviance)
+Res_signif_Var_comp[2,1] <- with(summary(model_signif_Var_comp_Uppangala), 1 - deviance/null.deviance)
+Res_signif_Var_comp[3,1] <- with(summary(model_signif_Var_comp_BCI), 1 - deviance/null.deviance)
+
+#P-value of the number of individuals
+Res_signif_Var_comp[1,2] <- summary(model_signif_Var_comp_Paracou)$coef[2,4]
+Res_signif_Var_comp[2,2] <- summary(model_signif_Var_comp_Uppangala)$coef[2,4]
+Res_signif_Var_comp[3,2] <- summary(model_signif_Var_comp_BCI)$coef[2,4]
+
+save(Res_signif_Var_comp, file=here::here("outputs", "tropical_analysis", "Signif_abund_Var_comp.RData"))
+
+mu <- plyr::ddply(Var_comp_Paracou[which(Var_comp_Paracou$Signif!="NA"),], "Signif", plyr::summarise, grp.mean=mean(Nb_ind))
+A <- ggplot2::ggplot(Var_comp_Paracou[which(Var_comp_Paracou$Signif!="NA"),],
+                     ggplot2::aes(x=Nb_ind, color=Signif, fill=Signif))+
+  ggplot2::geom_histogram(position="identity", alpha=0.5)+
+  ggplot2::labs(title="Paracou", x="Number of individuals", y="Frequency")+
+  ggplot2::geom_vline(data=mu, ggplot2::aes(xintercept=grp.mean, linetype=Signif),
+             colour="black")+
+  ggplot2::scale_color_brewer(palette="Paired")+
+  ggplot2::scale_fill_brewer(palette="Paired")+
+  ggplot2::theme(text=ggplot2::element_text(size=20))
+
+mu <- plyr::ddply(Var_comp_Uppangala[which(Var_comp_Uppangala$Signif!="NA"),], "Signif", plyr::summarise, grp.mean=mean(Nb_ind))
+B <- ggplot2::ggplot(Var_comp_Uppangala[which(Var_comp_Uppangala$Signif!="NA"),],
+                     ggplot2::aes(x=Nb_ind, color=Signif, fill=Signif))+
+  ggplot2::geom_histogram(position="identity", alpha=0.5)+
+  ggplot2::labs(title="Uppangala", x=ggplot2::element_blank(), y=ggplot2::element_blank())+
+  ggplot2::geom_vline(data=mu, ggplot2::aes(xintercept=grp.mean, linetype=Signif),
+             colour="black")+
+  ggplot2::scale_color_brewer(palette="Paired")+
+  ggplot2::scale_fill_brewer(palette="Paired")+
+  ggplot2::theme(text=ggplot2::element_text(size=20))
+
+mu <- plyr::ddply(Var_comp_BCI[which(Var_comp_BCI$Signif!="NA"),], "Signif", plyr::summarise, grp.mean=mean(Nb_ind))
+C <- ggplot2::ggplot(Var_comp_BCI[which(Var_comp_BCI$Signif!="NA"),],
+                     ggplot2::aes(x=Nb_ind, color=Signif, fill=Signif))+
+  ggplot2::geom_histogram(position="identity", alpha=0.5)+
+  ggplot2::labs(title="BCI", x=ggplot2::element_blank(), y=ggplot2::element_blank())+
+  ggplot2::geom_vline(data=mu, ggplot2::aes(xintercept=grp.mean, linetype=Signif),
+             color="black")+
+  ggplot2::scale_color_brewer(palette="Paired")+
+  ggplot2::scale_fill_brewer(palette="Paired")+
+  ggplot2::theme(text=ggplot2::element_text(size=20))
+
+
+Plot_Var_comp_signif_abund <- ggpubr::ggarrange(A, B, C, nrow = 1, ncol = 3, common.legend = TRUE, legend="bottom")
+ggplot2::ggsave(filename = "Var_comp_signif_abund.png", plot = Plot_Var_comp_signif_abund, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 15, height = 6, bg="white")
+knitr::include_graphics(here::here("outputs", "tropical_analysis", "figures", "Var_comp_signif_abund.png"))
+
+Plot_signif_abund <- ggpubr::ggarrange(Plot_Moran_signif_abund, Plot_Var_comp_signif_abund, nrow=2, ncol=1, labels=c("A", "B"))
+ggplot2::ggsave(filename = "Plot_signif_abund.png", plot = Plot_signif_abund, path=here::here("outputs", "tropical_analysis", "figures"), device = "png", width = 15, height = 10, bg="white")
+
 
 ```
 
@@ -854,7 +1107,7 @@ Moran_I_Paracou_undisturbed <- coexIV::moran_analysis(Data_Paracou_undisturbed)
 save(Moran_I_Paracou_undisturbed, file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou_undisturbed.RData"))
 ```
 
-```{r ResultsMoranParacouUndisturbed, eval=FALSE, include=FALSE}
+```{r ResultsMoranParacouUndisturbed}
 load(file=here::here("outputs", "tropical_analysis", "Moran_I_Paracou_undisturbed.RData"))
 
 #Table of results
@@ -1085,9 +1338,9 @@ load(here::here("outputs", "clonal_analysis", "Data_compet.RData"))
 
 In order to partition the variance of individual growth data, we built a model incorporating a fixed effect on the intercept ($\beta_0$), on the slope of diameter D ($\beta_1$), and on the competition index C ($\beta_2$) and several random effects, namely temporal (date of census, $b_t$), individual (tree identifier, $b_i$), spatial (block, $b_b$), and genotype ($b_g$).
 
-This model was fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 5. We obtained 1,000 estimates per parameter.
+This model was fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 1/5, and 4 MCMC chains with different initial values. We obtained 1,000 estimates per parameter per MCMC chain.
 
-Variables were scaled to help the convergence of the model.
+Variables were scaled before inference.
 
 
 $ln(G_{it}+1) = (\beta_0 + b_i + b_b + b_g + b_t) + \beta_1 \times ln(D_{it}) + \beta_2 \times ln(C_{it}) + \epsilon_{it}$
@@ -1112,10 +1365,10 @@ $\epsilon_{it} \sim  \mathcal{N}(mean=0, var=V), iid$
 
 Hyperpriors
 
-$V_i \sim \mathcal{IG}(shape = 10^{-3}, rate = 10^{-3}), iid$
+$V_i \sim t(3, 0, 2.5), iid$
 
 
-```{r Model, include=FALSE}
+```{r Model, eval=FALSE, include=FALSE}
 options("m.cores"=4)
 
 Data_compet$logD <- scale(Data_compet$logD)
@@ -1126,7 +1379,7 @@ Data_compet$logC <- scale(Data_compet$logC)
 
 prior_brms <- c(brms::prior(normal(0, 1), class = "Intercept"),
                 brms::prior(normal(0, 1), class = "b"))
-#brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
+#,brms::prior(inv_gamma(10^-3, 10^-3), class = "sd"))
 
 ### Fit
 
@@ -1136,19 +1389,19 @@ brms_mod <-brms::brm(
   #family = gaussian(), #already default, prevents from sampling... 
   prior= prior_brms,
   iter = 10000 , warmup = 5000, thin = 5,
-  chains = 4, cores=4)
-  #control=list(adapt_delta=0.99, max_treedepth=15))
+  chains = 4, cores=4,
+  control=list(adapt_delta=0.99, max_treedepth=15))
   #backend = "cmdstanr")
 
-save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod_revision.RData"))
+save(brms_mod, file = here::here("outputs", "clonal_analysis", "brms_mod_EUCFLUX_revision.RData"))
 ```
 
 ## Results of the model and variance partitioning
 
-After convergence of the model (checked visually), we examined the proportion of the residual variance (variation of the response variables that is not explained by the covariates , i.e. in the unexplained part of the statistical model) related to each random effect, and this enabled us to perform a residual variance partitioning.
+After convergence of the model, we examined the proportion of the residual variance (variation of the response variables that is not explained by the covariates , i.e. in the unexplained part of the statistical model) related to each random effect, and this enabled us to perform a residual variance partitioning.
 
 ```{r LoadBRMS, include=FALSE}
-load(here::here("outputs", "clonal_analysis", "brms_mod_revision.RData"))
+load(here::here("outputs", "clonal_analysis", "brms_mod_EUCFLUX_revision.RData"))
 ```
 
 ```{r TracePosteriors, fig.cap="Trace of the posteriors of the inferred parameters", message=FALSE, warning=FALSE}
@@ -1174,7 +1427,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Den
 
 #Temporal random effects
 Ranef_date <- as.data.frame(brms::ranef(brms_mod, summary = F)$Date)
-Ranef_date$Chain <- c(rep(1, 1000), rep(2, 1000))
+Ranef_date$Chain <- rep(c(1,2,3,4), each=1000)
 
 g <- bayesplot::mcmc_trace(Ranef_date)
 
@@ -1187,7 +1440,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 
 #Genotype random effects
 Ranef_gen <- as.data.frame(brms::ranef(brms_mod, summary = F)$Gen)
-Ranef_gen$Chain <- c(rep(1, 1000), rep(2, 1000))
+Ranef_gen$Chain <- rep(c(1,2,3,4), each=1000)
 
 g <- bayesplot::mcmc_trace(Ranef_gen)
 
@@ -1199,7 +1452,7 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Tra
 ```{r SpatialRandomEffects, fig.cap="Trace of the spatial (block) random effects."}
 #Spatial random effects
 Ranef_block <- as.data.frame(brms::ranef(brms_mod, summary = F)$Block)
-Ranef_block$Chain <- c(rep(1, 1000), rep(2, 1000))
+Ranef_block$Chain <- rep(c(1,2,3,4), each=1000)
 
 g <- bayesplot::mcmc_trace(Ranef_block)
 
@@ -1294,6 +1547,70 @@ kableExtra::kbl(
   kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
   kableExtra::column_spec(1:9, width = "1.5cm")
 ```
+```{r SummaryCompleteEucalyptus}
+Summary_Complete_Eucalyptus <- data.frame(
+  c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][1,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[1,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][1,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][2,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[2,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][2,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["fixed"]][3,1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$fixed[3,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$fixed[3,4]), digits = 2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["fixed"]][3,7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Tree[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Block[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Block[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Block[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Block[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Gen[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX[["random"]]$Date[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX[["random"]]$Date[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX[["random"]]$Date[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX[["random"]]$Date[7]), digits=2, scientific = T)),
+  c(format(as.numeric(Sum_EUCFLUX$spec_pars[1]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[2]), digits=2, scientific = T),
+    paste(format(as.numeric(Sum_EUCFLUX$spec_pars[3]), digits=2, scientific = T), "-", format(as.numeric(Sum_EUCFLUX$spec_pars[4]), digits=2, scientific = T)),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[5]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[6]), digits=2, scientific = T),
+    format(as.numeric(Sum_EUCFLUX$spec_pars[7]), digits=2, scientific = T))
+)
+
+kableExtra::kbl(
+  Summary_Complete_Eucalyptus,
+  booktabs = T,
+  col.names = c(" ","Intercept ($\\beta_0$)", "Diameter ($\\beta_1$)", "Competition ($\\beta_2$)","Individual variance ($V_i$)", "Block variance ($V_b$)", "Genetic variance ($V_g$)", "Temporal variance ($V_t$)", "Residuals variance ($V$)"),
+  escape=F,
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position", "scale_down"), full_width = F)%>%
+  kableExtra::column_spec(1:9, width = "1.5cm")
+```
+
 
 We found that the two most important contributors to variance were the date and individual identity. High estimation error for the intercept and the temporal random effect must be noted.
 The proportion of variance represented by each random effect and the residual variance were computed to visualise the variance partition.
@@ -1325,9 +1642,9 @@ knitr::include_graphics(here::here("outputs", "clonal_analysis", "figures", "Var
 The model showed that individual tree growth was a function of tree size and competition with neighbouring trees, and that variance around this model was mostly due to a temporal effect as well as an individual effect (Table \@ref(tab:ResultsTable), Figure \@ref(fig:Coordinates)). The effect of the genotype was quite small, and the effect of the block was even smaller. The temporal random effects declined with time(Figure \@ref(fig:PlotsRanef), panel a), showing that the effect of the date on growth is negative (the older the trees become, the less they can grow). We attribute this tendency to competition. Therefore, the competition index C did not fully capture the effect of competition on growth. Another explanation is that the diameter slope was not able to fully capture the decrease of tree growth with size, maybe due to geometrical effects of distributing growth around increasing diameter or physiological constraints linked to height.
 The temporal effect explained the highest fraction of variance (Table \@ref(tab:ResultsTable), Figure \@ref(fig:PlotColoursDate)). This could be due to the negative effect of competition for light, water, and/or nutrients on growth, which increases with the growth of the trees planted at high densities, and to physiological changes occurring with age.
 
-Importantly, variability between individuals within genotypes (10.8%) was higher than between genotypes (6.1%). This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
+Importantly, variability between individuals within genotypes was higher than between genotypes. This shows that there is an observed individual variability within genotypes even if trees are clones. Estimated individual variability within genotypes can only be caused by exogenous factors in this particular case. Individual effects can be due to the micro-environment where each tree thrives in, but also to some individual history, such as seedling manipulation and plantation.
 
-The block had the littlest impact with 2.5% of the variance explained. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
+The block had the littlest impact. This is probably due to the fact that environmental conditions between blocks are quite homogeneous.
 As the experimental design aimed at minimizing environmental variations and selected productive genotypes able to accommodate several environmental conditions [@le_maire_light_2019], this dataset is a strongly conservative test case for our hypothesis.
 
 
@@ -1336,7 +1653,7 @@ As the experimental design aimed at minimizing environmental variations and sele
 Overall, we found that there is IV within clonal tree plantations (Figure \@ref(fig:SummaryPlot)). This shows that IV can be due only to the environmental factors varying between individuals, proving that the source of IV is not necessarily intrinsic.
 
 ```{r SummaryPlot, fig.cap="The EUCFLUX setup and the variance partitioning. Site (a; each square represents a block) and organisation of a block (b; each coloured square represents a genotype) in the EUCFLUX experiment. 16 clones are represented in B, but only 14 were used since the last two are from seed-origin and thus not genetically identical. (c) Variance partitioning of tree growth for a common garden experiment with various Eucalyptus clones"}
-knitr::include_graphics(here::here("data", "EUCFLUX", "Eucflux_summary.jpg"))
+knitr::include_graphics(here::here("data", "EUCFLUX", "Eucflux_summary_student.jpg"))
 ```
 
 
@@ -1409,7 +1726,7 @@ To account for intrinsic variability in our generated data, we added an IV in sp
 To represent the spatialised environment, we build a 2D matrix of dimension `r dim1` $\times$ `r dim2` for each environmental variable at a time $t_0$, by randomly generating them with spatial autocorrelation. We here considered that all environmental variables were independent.
 Each variable was simulated by using the gstat R package [@pebesma_multivariable_2004 ; @graler_spatio-temporal_2016], enabling to create autocorrelated random fields. A spherical semivariogram model was used for each of the ten environmental variables, with a mean of 0 for each explanatory variable (beta = 0), a sill of 1 (psill = 1) for each and a range of 50 (range = 50).
 
-```{r SpatialModels, include=FALSE}
+```{r SpatialModels, eval=FALSE, include=FALSE}
 #Matrixes of variables
   #Structure (coordinates)
   xy <- expand.grid(1:dim1, 1:dim2)
@@ -1461,12 +1778,12 @@ This led to two repeated measurements of $Y$ for each individual of each species
 #The variables have to vary in order to avoid identifiability problems + avoid a null residual variance
 Vars_t1 <- Vars_t0
 changing_variables <- sample(2:10, 5)
-Vars_t1[,3] <- Vars_t1[,3] + abs(rnorm(1, mean=0, sd=0.5))
-Vars_t1[,2+changing_variables[1]] <- Vars_t1[,2+changing_variables[1]] + abs(rnorm(1, mean=0, sd=0.5))
-Vars_t1[,2+changing_variables[2]] <- Vars_t1[,2+changing_variables[2]] + abs(rnorm(1, mean=0, sd=0.5))
-Vars_t1[,2+changing_variables[3]] <- Vars_t1[,2+changing_variables[3]] - abs(rnorm(1, mean=0, sd=0.5))
-Vars_t1[,2+changing_variables[4]] <- Vars_t1[,2+changing_variables[4]] - abs(rnorm(1, mean=0, sd=0.5))
-Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1, mean=0, sd=0.5)
+Vars_t1[,3] <- Vars_t1[,3] + abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[1]] <- Vars_t1[,2+changing_variables[1]] + abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[2]] <- Vars_t1[,2+changing_variables[2]] + abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[3]] <- Vars_t1[,2+changing_variables[3]] - abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[4]] <- Vars_t1[,2+changing_variables[4]] - abs(rnorm(1, mean=0, sd=1))
+Vars_t1[,2+changing_variables[5]] <- Vars_t1[,2+changing_variables[5]] + rnorm(1, mean=0, sd=1)
 
 ```
 
@@ -1520,7 +1837,7 @@ X <- cbind(rep(1, nobs), VarExp)
 
 ```
 
-```{r Growth, include=FALSE}
+```{r Growth}
 # Growth of each individual
 
 Growth <- data.frame(Species=rep(c(1,2), each=nind*ntime),
@@ -1706,14 +2023,12 @@ $b_{0i} \sim \mathcal{N}(0, V_{bj})$, $i = [1, 500]$, $j = [1, 2]$, iid
 
 Second level priors:
 
-$V_j \sim \mathcal{IG}(10^-3, 10^-3)$, $j = [1, 2]$, iid
-
-$V_{bj} \sim \mathcal{Student's T}(3, 0, 2.5)$, $j = [1, 2]$, iid
+$V_{bj} \sim t(3, 0, 2.5)$, $j = [1, 2]$, iid
 
 This model includes a random individual effect on the intercept ($b_{0i}$) to account for  the variability among individuals within species.
-We ran this model twice, with the datasets generated with and without intrinsic IV. These models were fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,0000 iterations, a warming period of 50,000 iterations and a thinning of 50. We obtained 1,000 estimates per parameter.
+We ran this model twice, with the datasets generated with and without intrinsic IV. These models were fitted in a hierarchical Bayesian framework using the brms package [@burkner_brms_2017 ; @burkner_advanced_2018 ] with 10,000 iterations, a warming period of 5,000 iterations and a thinning of 1/5, and 4 MCMC chains with different initial values. We obtained 1,000 estimates per parameter per MCMC chain.
 
-```{r brmsModels, include=FALSE}
+```{r brmsModels, eval=FALSE, include=FALSE}
 #Statistical model with only one variable X
 
 Data_brms_sp_1 <- data.frame(Y = Growth[which(Growth$Species==1),]$logGrowth_sp, X1 = Growth[which(Growth$Species==1),]$logLight, tree = Growth[which(Growth$Species==1),]$Ind)
@@ -1913,6 +2228,132 @@ kableExtra::kbl(
   kableExtra::kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
 ```
 
+
+```{r brmsSummaryComplete}
+Res_mods <- 
+  data.frame(
+    rep(c("Estimate", "Estimation error", "95\\% interval", "R-hat", "Bulk ESS", "Tail ESS"), 4),
+    c(
+      format(as.numeric(Sum_sp1$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[1,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[1,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$fixed[1,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$fixed[1,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[1,7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$fixed[2,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$fixed[2,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$fixed[2,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$fixed[2,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$fixed[2,7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$random$tree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$random$tree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$random$tree[7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$random$tree[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$random$tree[4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$random$tree[5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$random$tree[7]), digits = 2, scientific = T)
+      ),
+    c(
+      format(as.numeric(Sum_sp1$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2$spec_pars[3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp1_IV$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp1_IV$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp1_IV$spec_pars[,7]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,1]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,2]), digits = 2, scientific = T),
+      paste(format(as.numeric(Sum_sp2_IV$spec_pars[,3]), digits = 2, scientific = T), "-", format(as.numeric(Sum_sp2_IV$spec_pars[,4]), digits = 2, scientific = T)),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,5]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,6]), digits = 2, scientific = T),
+      format(as.numeric(Sum_sp2_IV$spec_pars[,7]), digits = 2, scientific = T)
+      )
+    )
+kableExtra::kbl(
+  Res_mods,
+  booktabs = T,
+  escape = F,
+  col.names = c(" ", "$\\beta_0$", "$\\beta_1$", "$V_b$", "$V$"),
+  caption = "Summary of the model's outputs"
+  ) %>%
+  kableExtra::pack_rows("Species 1 (no random IV)", start_row = 1, end_row = 6) %>% 
+  kableExtra::pack_rows("Species 2 (no random IV)", start_row = 7, end_row = 12)%>%
+  kableExtra::pack_rows("Species 1 (with random IV)", start_row = 13, end_row = 18) %>% 
+  kableExtra::pack_rows("Species 2 (with random IV)", start_row = 19, end_row = 24)%>%
+  kableExtra::kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
+```
+
+
+
 We inferred a high IV even in the absence of intrinsic IV (Table \@ref(tab:brmsSummary)). Therefore, observed IV does not necessarily reveal intrinsic (mainly genetic) IV, but can also reveal hidden dimensions of the environment.
 We used the model parameters to plot the relationship between $Y$ and $X_1$ accounting for intraspecific variability.
 
@@ -2064,13 +2505,13 @@ ggplot2::ggsave(filename = "Partial_knowledge_model_genetic_var.png", plot = g, 
 ```
 
 
-```{r PlotIntrinsicIV, fig.cap="Plot of the real values - points - and estimated mean - bold lines - and 95 % confidence interval - thin lines - of $Y$ versus $X_1$. The dashed lines correspond to the 95 % interval due to intrinsic IV."}
+```{r PlotIntrinsicIV, fig.cap="Plot of the real values - points - and estimated mean - bold lines - and 95% confidence interval - thin lines - of $Y$ versus $X_1$. The dashed lines correspond to the 95% interval due to intrinsic IV."}
 
 knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "Partial_knowledge_model_genetic_var.png"))
 ```
 
 
-```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (a) Positions of a sample of $I$=600 individuals from $J$=2 species in a landscape defined by a square grid of $C x C$ cells (C=500). The background color indicates the value of the environmental variable $X_1$ (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (b) Response as a function of the observed environmental variable $X_1$ for the two species. Points represent the data {$Y_{ijt}$, $X_{1,ijt}$}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account $V_{bj}$). The envelopes thus represent the intraspecific variability which is due to the $N-1$ unobserved environmental variables."}
+```{r TwoPanelsFigure, fig.cap="Response to an environmental variable and inferred intraspecific variability. (a) Positions of a sample of $I$=600 individuals from $J$=2 species in a landscape defined by a square grid of $C \times C$ cells (C=500). The background color indicates the value of the environmental variable $X_1$ (e.g., light) on each cell at date t. The response (e.g., growth) of each individual, which depends on the environment within each cell (Eq. I), is also indicated by a color scale. (b) Response as a function of the observed environmental variable $X_1$ for the two species. Points represent the data {$Y_{ijt}$, $X_{1,ijt}$}. Thick lines represent the predictive posterior means for the two species. The envelopes delimited by two thin lines represent the 95% credible intervals of the predictive posterior marginalized over individuals (taking into account $V_{bj}$). The envelopes thus represent the intraspecific variability which is due to the $N-1$ unobserved environmental variables."}
 
 g <- ggpubr::ggarrange(A, B, ncol = 2, labels = c("a", "b"))
 ggplot2::ggsave(filename = "landscape_relationship.png",plot=g, path=here::here("outputs", "theoretical_model", "figures"), device = "png", width = 10, height = 5, bg="white", dpi = 300)
@@ -2209,16 +2650,15 @@ knitr::include_graphics(here::here("outputs", "theoretical_model", "figures", "S
 ```
 
 
-As the semivariance between individuals of both species was higher than the semivariance between conspecifics (Figure \@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics. Considering this response variable as a proxy of the species performance, we argue that this would imply that intraspecific competition is greater than interspecific competition), which is the main condition for stable coexistence.
-Therefore, **stable** coexistence is possible even with high intraspecific variability, especially when this variability is not intrinsic but due to environmental heterogeneity that is structured in space.
+As the semivariance between individuals of both species was higher than the semivariance between conspecifics (Figure \@ref(fig:SemivariogramFigure)), the individual response variable was more similar between conspecifics than heterospecifics.
 
 
-# Code used to generate Figure 1 in the main text: _Reinterpreting observed intraspecific variability (IV): from niche widening to niche projection into a high-dimensional environment_.
+# Code used to generate Figure 3 in the main text: _Reinterpreting observed intraspecific variability (IV): from niche widening to niche projection into a high-dimensional environment_.
 
 We obtain this figure by first generating a multivariate normal distribution.
 We then fix one of the two variables and obtain the mean and the standard deviation due to the second variable at this value.
 
-```{r CodeFig1, echo=TRUE}
+```{r CodeFigConcept, echo=TRUE, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(mvtnorm)
 library(dplyr)
@@ -2522,13 +2962,13 @@ plot_B <- ggplot2::ggplot(data=pA, ggplot2::aes(x=X1, y=X2, z=Perf)) +
                  axis.title.y = element_text(vjust=4))+
   ggplot2::labs(x="X1", y = "X2")
 
-Fig_1 <- ggpubr::ggarrange(plot_A, plot_B, plot_C, plot_D,
+Fig_concept <- ggpubr::ggarrange(plot_A, plot_B, plot_C, plot_D,
                            labels=c("a", "b", "c", "d"),
                            widths = c(1,1.3),
                            hjust=c(-4, -4, -4, -4),
                            vjust=c(2, 2, 2, 2))
-ggplot2::ggsave(file=here::here("outputs", "Fig_1.png"),
-                Fig_1,
+ggplot2::ggsave(file=here::here("outputs", "Fig_concept.png"),
+                Fig_concept,
                 width= 16.6,
                 height=16.6/1.5,
                 units='cm', 
@@ -2537,8 +2977,8 @@ ggplot2::ggsave(file=here::here("outputs", "Fig_1.png"),
 
 ```
 
-```{r Fig1}
-knitr::include_graphics(here::here("outputs", "Fig_1.png"))
+```{r FigConcept}
+knitr::include_graphics(here::here("outputs", "Fig_concept.png"))
 ```
 
 # Code implementation
