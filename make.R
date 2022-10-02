@@ -37,17 +37,17 @@ rmarkdown::render(here::here("analyses","All_analyses.Rmd"), output_format = "bo
 
 
 ##############################
-### Supplementary material ###
+### Supporting information ###
 ##############################
 
 #  PDF
 pdf_format <- bookdown::pdf_book(toc = TRUE, toc_float = TRUE, number_sections = TRUE, includes=list(in_header=here::here("tools_latex", "header.tex"), before_body=here::here("tools_latex","doc_prefix.tex")))
-rmarkdown::render(here::here("supplementary_materials","Supplementary_materials.Rmd"), output_format = pdf_format)
+rmarkdown::render(here::here("supporting_information","Supporting_information.Rmd"), output_format = pdf_format)
 
 # html
-rmarkdown::render(here::here("supplementary_materials","Supplementary_materials.Rmd"), output_format = "bookdown::html_document2")
+rmarkdown::render(here::here("supporting_information","Supporting_information.Rmd"), output_format = "bookdown::html_document2")
 # Upload new version on the GitHub site:
-file.copy(here::here("supplementary_materials", "Supplementary_materials.html"), here::here("docs", "Supplementary_materials.html"), overwrite = TRUE)
+file.copy(here::here("supporting_information", "Supporting_information.html"), here::here("docs", "Supporting_information.html"), overwrite = TRUE)
 
 
 #################################

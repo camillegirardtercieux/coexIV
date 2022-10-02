@@ -1,0 +1,1179 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021) (preloaded format=pdflatex 2021.11.9)  2 OCT 2022 11:23
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**Supporting_information.tex
+(./Supporting_information.tex
+LaTeX2e <2021-06-01> patch level 1
+L3 programming layer <2021-10-18> (/home/girard-tercieux/.TinyTeX/texmf-dist/te
+x/latex/base/article.cls
+Document Class: article 2021/02/12 v1.4n Standard LaTeX document class
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count182
+\c@section=\count183
+\c@subsection=\count184
+\c@subsubsection=\count185
+\c@paragraph=\count186
+\c@subparagraph=\count187
+\c@figure=\count188
+\c@table=\count189
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2021/04/20 v2.17j AMS math features
+\@mathmargin=\skip49
+For additional information on amsmath, use the `?' option.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks16
+\ex@=\dimen139
+)) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen140
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count190
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count191
+\leftroot@=\count192
+LaTeX Info: Redefining \overline on input line 399.
+\classnum@=\count193
+\DOTSCASE@=\count194
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box50
+\strutbox@=\box51
+\big@size=\dimen141
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count195
+\c@MaxMatrixCols=\count196
+\dotsspace@=\muskip16
+\c@parentequation=\count197
+\dspbrk@lvl=\count198
+\tag@help=\toks17
+\row@=\count199
+\column@=\count266
+\maxfields@=\count267
+\andhelp@=\toks18
+\eqnshift@=\dimen142
+\alignsep@=\dimen143
+\tagshift@=\dimen144
+\tagwidth@=\dimen145
+\totwidth@=\dimen146
+\lineht@=\dimen147
+\@envbody=\toks19
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks20
+LaTeX Info: Redefining \[ on input line 2923.
+LaTeX Info: Redefining \] on input line 2924.
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/lmm/m/it on input line 23.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/lmsy/m/n on input line 24.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 25.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 26.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/lmm/b/it on input line 27.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/lmsy/b/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 31.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 32.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/lmr/m/it on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 36.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
+2.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
+File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2021/02/14 v1.3d Input encoding file
+\inpenc@prehook=\toks21
+\inpenc@posthook=\toks22
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 227.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1352.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1356.
+Package xcolor Info: Model `RGB' extended on input line 1368.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1370.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1372.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1373.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1374.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1375.
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2021-06-07 v7.00m Hypertext links for LaTeX
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.st
+y
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks23
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.st
+y
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekey
+s.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.st
+y
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/letltxmacro/letltxmacro.st
+y
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
+)
+\@linkdim=\dimen148
+\Hy@linkcounter=\count268
+\Hy@pagecounter=\count269
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2021-06-07 v7.00m Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref-langpatc
+hes.def
+File: hyperref-langpatches.def 2021-06-07 v7.00m Hyperref: patches for babel la
+nguages
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/etexcmds/etexcmds.sty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)
+\Hy@SavedSpaceFactor=\count270
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
+File: puenc.def 2021-06-07 v7.00m Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Option `unicode' set `true' on input line 4073.
+Package hyperref Info: Hyper figures OFF on input line 4192.
+Package hyperref Info: Link nesting OFF on input line 4197.
+Package hyperref Info: Hyper index ON on input line 4200.
+Package hyperref Info: Plain pages OFF on input line 4207.
+Package hyperref Info: Backreferencing OFF on input line 4212.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4445.
+\c@Hy@tempcnt=\count271
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4804.
+\XeTeXLinkMargin=\dimen149
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.st
+y
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count272
+\Field@Width=\dimen150
+\Fld@charsize=\dimen151
+Package hyperref Info: Hyper figures OFF on input line 6076.
+Package hyperref Info: Link nesting OFF on input line 6081.
+Package hyperref Info: Hyper index ON on input line 6084.
+Package hyperref Info: backreferencing OFF on input line 6091.
+Package hyperref Info: Link coloring OFF on input line 6096.
+Package hyperref Info: Link coloring with OCG OFF on input line 6101.
+Package hyperref Info: PDF/A mode OFF on input line 6106.
+LaTeX Info: Redefining \ref on input line 6146.
+LaTeX Info: Redefining \pageref on input line 6150.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty
+Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
+package with kernel methods
+)
+\Hy@abspage=\count273
+\c@Item=\count274
+\c@Hfootnote=\count275
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2021-06-07 v7.00m Hyperref driver for pdfTeX
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atvery packag
+e
+with kernel methods
+)
+\Fld@listcount=\count276
+\c@bookmark@seq@number=\count277
+
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilech
+eck.sty
+Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
+
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecoun
+ter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+86.
+)
+\Hy@SectionHShift=\skip52
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+)
+\Gm@cnth=\count278
+\Gm@cntv=\count279
+\c@Gm@tempcnt=\count280
+\Gm@bindingoffset=\dimen152
+\Gm@wd@mp=\dimen153
+\Gm@odd@mp=\dimen154
+\Gm@even@mp=\dimen155
+\Gm@layoutwidth=\dimen156
+\Gm@layoutheight=\dimen157
+\Gm@layouthoffset=\dimen158
+\Gm@layoutvoffset=\dimen159
+\Gm@dimlist=\toks24
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2021-05-07 v4.16 Multi-page Table package (DPC)
+\LTleft=\skip53
+\LTright=\skip54
+\LTpre=\skip55
+\LTpost=\skip56
+\LTchunksize=\count281
+\LTcapwidth=\dimen160
+\LT@head=\box52
+\LT@firsthead=\box53
+\LT@foot=\box54
+\LT@lastfoot=\box55
+\LT@gbox=\box56
+\LT@cols=\count282
+\LT@rows=\count283
+\c@LT@tables=\count284
+\c@LT@chunks=\count285
+\LT@p@ftn=\toks25
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen161
+\lightrulewidth=\dimen162
+\cmidrulewidth=\dimen163
+\belowrulesep=\dimen164
+\belowbottomsep=\dimen165
+\aboverulesep=\dimen166
+\abovetopsep=\dimen167
+\cmidrulesep=\dimen168
+\cmidrulekern=\dimen169
+\defaultaddspace=\dimen170
+\@cmidla=\count286
+\@cmidlb=\count287
+\@aboverulesep=\dimen171
+\@belowrulesep=\dimen172
+\@thisruleclass=\count288
+\@lastruleclass=\count289
+\@thisrulewidth=\dimen173
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/tools/array.sty
+Package: array 2021/04/20 v2.5e Tabular extension package (FMi)
+\col@sep=\dimen174
+\ar@mcellbox=\box57
+\extrarowheight=\dimen175
+\NC@list=\toks26
+\extratabsurround=\skip57
+\backup@length=\skip58
+\ar@cellbox=\box58
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count290
+\calc@Bcount=\count291
+\calc@Adimen=\dimen176
+\calc@Bdimen=\dimen177
+\calc@Askip=\skip59
+\calc@Bskip=\skip60
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count292
+\calc@Cskip=\skip61
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count293
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/mdwtools/footnote.sty
+Package: footnote 1997/01/28 1.13 Save footnotes around boxes
+\fn@notes=\box59
+\fn@width=\dimen178
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2020/12/05 v1.2c Enhanced LaTeX Graphics (DPC,SPQR)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cf
+g
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+)
+\Gin@req@height=\dimen179
+\Gin@req@width=\dimen180
+)
+\cslhangindent=\skip62
+\csllabelwidth=\skip63
+\cslentryspacingunit=\skip64
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
+\multirow@colwidth=\skip65
+\multirow@cntb=\count294
+\multirow@dima=\skip66
+\bigstrutjot=\dimen181
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen182
+\WF@size=\dimen183
+\c@WF@wrappedlines=\count295
+\WF@box=\box60
+\WF@everypar=\toks27
+Package: wrapfig 2003/01/31  v 3.6
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count296
+\float@exts=\toks28
+\float@box=\box61
+\@float@everytoks=\toks29
+\@floatcapt=\box62
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
+\everycr=\toks30
+\minrowclearance=\skip67
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/pdflscape/pdflscape.sty
+Package: pdflscape 2019/12/05 v0.12 Display of landscape pages in PDF (HO)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/graphics/lscape.sty
+Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
+)
+Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/tabu/tabu.sty
+Package: tabu 2019/01/11 v2.9 - flexible LaTeX tabulars (FC+tabu-fixed)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/varwidth/varwidth.sty
+Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
+\@vwid@box=\box63
+\sift@deathcycles=\count297
+\@vwid@loff=\dimen184
+\@vwid@roff=\dimen185
+)
+\c@taburow=\count298
+\tabu@nbcols=\count299
+\tabu@cnt=\count300
+\tabu@Xcol=\count301
+\tabu@alloc=\count302
+\tabu@nested=\count303
+\tabu@target=\dimen186
+\tabu@spreadtarget=\dimen187
+\tabu@naturalX=\dimen188
+\tabucolX=\dimen189
+\tabu@Xsum=\dimen190
+\extrarowdepth=\dimen191
+\abovetabulinesep=\dimen192
+\belowtabulinesep=\dimen193
+\tabustrutrule=\dimen194
+\tabu@thebody=\toks31
+\tabu@footnotes=\toks32
+\tabu@box=\box64
+\tabu@arstrutbox=\box65
+\tabu@hleads=\box66
+\tabu@vleads=\box67
+\tabu@cellskip=\skip68
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/threeparttable/threepartta
+ble.sty
+Package: threeparttable 2003/06/13  v 3.0
+\@tempboxb=\box68
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/threeparttablex/threepartt
+ablex.sty
+Package: threeparttablex 2013/07/23 v0.3 by daleif
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/environ/environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/trimspaces/trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+))
+\TPTL@width=\skip69
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/ulem/ulem.sty
+\UL@box=\box69
+\UL@hyphenbox=\box70
+\UL@skip=\skip70
+\UL@hook=\toks33
+\UL@height=\dimen195
+\UL@pe=\count304
+\UL@pixel=\dimen196
+\ULC@box=\box71
+Package: ulem 2019/11/18
+\ULdepth=\dimen197
+) (/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/makecell/makecell.sty
+Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
+\rotheadsize=\dimen198
+\c@nlinenum=\count305
+\TeXr@lab=\toks34
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex
+.def
+File: l3backend-pdftex.def 2021-10-18 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count306
+\l__pdf_internal_box=\box72
+) (./Supporting_information.aux)
+\openout1 = `Supporting_information.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base
+.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.c
+fg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+Package hyperref Info: Link coloring OFF on input line 120.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitles
+tring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+)
+\c@section@level=\count307
+)
+LaTeX Info: Redefining \ref on input line 120.
+LaTeX Info: Redefining \pageref on input line 120.
+LaTeX Info: Redefining \nameref on input line 120.
+(./Supporting_information.out) (./Supporting_information.out)
+\@outlinefile=\write3
+\openout3 = `Supporting_information.out'.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=650.43001pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
+37.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
+File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
+37.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
+137.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
+File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
+137.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
+File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 137.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 137.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 137.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 137
+.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 137
+.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 144.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 144.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 144.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 151.
+[1
+
+{/home/girard-tercieux/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] 
+(./Supporting_information.toc)
+\tf@toc=\write4
+\openout4 = `Supporting_information.toc'.
+
+[2]
+<../outputs/theoretical_model/figures/arranged_histograms_theoretical.png, id=1
+16, 505.89pt x 361.35pt>
+File: ../outputs/theoretical_model/figures/arranged_histograms_theoretical.png 
+Graphic file (type png)
+<use ../outputs/theoretical_model/figures/arranged_histograms_theoretical.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/arranged_histogra
+ms_theoretical.png  used on input line 195.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+<../outputs/theoretical_model/figures/arranged_plots_theoretical.png, id=117, 5
+05.89pt x 361.35pt>
+File: ../outputs/theoretical_model/figures/arranged_plots_theoretical.png Graph
+ic file (type png)
+<use ../outputs/theoretical_model/figures/arranged_plots_theoretical.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/arranged_plots_th
+eoretical.png  used on input line 201.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[3pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.204 
+       <../outputs/theoretical_model/figures/arranged_histograms_theoretical.pn
+g>]
+<../outputs/theoretical_model/figures/Trace_model_Sp1.png, id=128, 505.89pt x 3
+61.35pt>
+File: ../outputs/theoretical_model/figures/Trace_model_Sp1.png Graphic file (ty
+pe png)
+<use ../outputs/theoretical_model/figures/Trace_model_Sp1.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Trace_model_Sp1.p
+ng  used on input line 214.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[4pdfTeX warning (ext4): destination with the same identifier (name{figure.1.2}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.217 
+       <../outputs/theoretical_model/figures/arranged_plots_theoretical.png>]
+<../outputs/theoretical_model/figures/Density_model_Sp1.png, id=136, 505.89pt x
+ 361.35pt>
+File: ../outputs/theoretical_model/figures/Density_model_Sp1.png Graphic file (
+type png)
+<use ../outputs/theoretical_model/figures/Density_model_Sp1.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Density_model_Sp1
+.png  used on input line 220.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[5pdfTeX warning (ext4): destination with the same identifier (name{figure.1.3}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.223 
+       <../outputs/theoretical_model/figures/Trace_model_Sp1.png>]
+<../outputs/theoretical_model/figures/Trace_model_Sp2.png, id=143, 505.89pt x 3
+61.35pt>
+File: ../outputs/theoretical_model/figures/Trace_model_Sp2.png Graphic file (ty
+pe png)
+<use ../outputs/theoretical_model/figures/Trace_model_Sp2.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Trace_model_Sp2.p
+ng  used on input line 226.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[6pdfTeX warning (ext4): destination with the same identifier (name{figure.1.4}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.229 
+       <../outputs/theoretical_model/figures/Density_model_Sp1.png>]
+<../outputs/theoretical_model/figures/Dens_model_Sp2.png, id=150, 505.89pt x 36
+1.35pt>
+File: ../outputs/theoretical_model/figures/Dens_model_Sp2.png Graphic file (typ
+e png)
+<use ../outputs/theoretical_model/figures/Dens_model_Sp2.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Dens_model_Sp2.pn
+g  used on input line 232.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[7pdfTeX warning (ext4): destination with the same identifier (name{figure.1.5}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.235 
+       <../outputs/theoretical_model/figures/Trace_model_Sp2.png>]
+<../outputs/theoretical_model/figures/Trace_model_IV_Sp1.png, id=158, 505.89pt 
+x 361.35pt>
+File: ../outputs/theoretical_model/figures/Trace_model_IV_Sp1.png Graphic file 
+(type png)
+<use ../outputs/theoretical_model/figures/Trace_model_IV_Sp1.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Trace_model_IV_Sp
+1.png  used on input line 238.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[8pdfTeX warning (ext4): destination with the same identifier (name{figure.1.6}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.241 
+       <../outputs/theoretical_model/figures/Dens_model_Sp2.png>]
+<../outputs/theoretical_model/figures/Dens_model_IV_Sp1.png, id=165, 505.89pt x
+ 361.35pt>
+File: ../outputs/theoretical_model/figures/Dens_model_IV_Sp1.png Graphic file (
+type png)
+<use ../outputs/theoretical_model/figures/Dens_model_IV_Sp1.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Dens_model_IV_Sp1
+.png  used on input line 244.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[9pdfTeX warning (ext4): destination with the same identifier (name{figure.1.7}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.247 
+       <../outputs/theoretical_model/figures/Trace_model_IV_Sp1.png>]
+<../outputs/theoretical_model/figures/Trace_model_IV_Sp2.png, id=172, 505.89pt 
+x 361.35pt>
+File: ../outputs/theoretical_model/figures/Trace_model_IV_Sp2.png Graphic file 
+(type png)
+<use ../outputs/theoretical_model/figures/Trace_model_IV_Sp2.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Trace_model_IV_Sp
+2.png  used on input line 250.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[10pdfTeX warning (ext4): destination with the same identifier (name{figure.1.8
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.253 
+       <../outputs/theoretical_model/figures/Dens_model_IV_Sp1.png>]
+<../outputs/theoretical_model/figures/Dens_model_IV_Sp2.png, id=180, 505.89pt x
+ 361.35pt>
+File: ../outputs/theoretical_model/figures/Dens_model_IV_Sp2.png Graphic file (
+type png)
+<use ../outputs/theoretical_model/figures/Dens_model_IV_Sp2.png>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Dens_model_IV_Sp2
+.png  used on input line 256.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[11pdfTeX warning (ext4): destination with the same identifier (name{figure.1.9
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.259 
+       <../outputs/theoretical_model/figures/Trace_model_IV_Sp2.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<../outputs/theoretical_model/figures/Partial_knowledge_model_genetic_var.png, 
+id=188, 505.89pt x 361.35pt>
+File: ../outputs/theoretical_model/figures/Partial_knowledge_model_genetic_var.
+png Graphic file (type png)
+<use ../outputs/theoretical_model/figures/Partial_knowledge_model_genetic_var.p
+ng>
+Package pdftex.def Info: ../outputs/theoretical_model/figures/Partial_knowledge
+_model_genetic_var.png  used on input line 308.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[12pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1
+0}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.311 
+       <../outputs/theoretical_model/figures/Dens_model_IV_Sp2.png>]
+Overfull \vbox (146.291pt too high) has occurred while \output is active []
+
+[13pdfTeX warning (ext4): destination with the same identifier (name{table.1.1}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.311 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.
+1.11}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.311 
+       <../outputs/theoretical_model/figures/Partial_knowledge_model_genetic_va
+r.png (PNG copy)>]
+<../outputs/clonal_analysis/figures/Histograms_Raw_Data.png, id=204, 505.89pt x
+ 361.35pt>
+File: ../outputs/clonal_analysis/figures/Histograms_Raw_Data.png Graphic file (
+type png)
+<use ../outputs/clonal_analysis/figures/Histograms_Raw_Data.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Histograms_Raw_Data
+.png  used on input line 352.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[14pdfTeX warning (ext4): destination with the same identifier (name{table.1.2}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.355 
+      ]
+<../outputs/clonal_analysis/figures/Plot_design.png, id=215, 505.89pt x 361.35p
+t>
+File: ../outputs/clonal_analysis/figures/Plot_design.png Graphic file (type png
+)
+<use ../outputs/clonal_analysis/figures/Plot_design.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Plot_design.png  us
+ed on input line 360.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[15pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.363 
+       <../outputs/clonal_analysis/figures/Histograms_Raw_Data.png>]
+<../outputs/clonal_analysis/figures/Raw_data.png, id=223, 505.89pt x 361.35pt>
+File: ../outputs/clonal_analysis/figures/Raw_data.png Graphic file (type png)
+<use ../outputs/clonal_analysis/figures/Raw_data.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Raw_data.png  used 
+on input line 368.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[16pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.371 
+       <../outputs/clonal_analysis/figures/Plot_design.png>]
+<../outputs/clonal_analysis/figures/Trace_model.png, id=231, 505.89pt x 361.35p
+t>
+File: ../outputs/clonal_analysis/figures/Trace_model.png Graphic file (type png
+)
+<use ../outputs/clonal_analysis/figures/Trace_model.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Trace_model.png  us
+ed on input line 382.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[17pdfTeX warning (ext4): destination with the same identifier (name{figure.2.3
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.385 
+       <../outputs/clonal_analysis/figures/Raw_data.png (PNG copy)>]
+<../outputs/clonal_analysis/figures/Density_posteriors.png, id=239, 505.89pt x 
+361.35pt>
+File: ../outputs/clonal_analysis/figures/Density_posteriors.png Graphic file (t
+ype png)
+<use ../outputs/clonal_analysis/figures/Density_posteriors.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Density_posteriors.
+png  used on input line 388.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[18pdfTeX warning (ext4): destination with the same identifier (name{figure.2.4
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.391 
+       <../outputs/clonal_analysis/figures/Trace_model.png>]
+<../outputs/clonal_analysis/figures/Trace_temporal_random_effects.png, id=246, 
+505.89pt x 361.35pt>
+File: ../outputs/clonal_analysis/figures/Trace_temporal_random_effects.png Grap
+hic file (type png)
+<use ../outputs/clonal_analysis/figures/Trace_temporal_random_effects.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Trace_temporal_rand
+om_effects.png  used on input line 394.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[19pdfTeX warning (ext4): destination with the same identifier (name{figure.2.5
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.397 
+       <../outputs/clonal_analysis/figures/Density_posteriors.png>]
+<../outputs/clonal_analysis/figures/Trace_genotype_random_effects.png, id=254, 
+505.89pt x 361.35pt>
+File: ../outputs/clonal_analysis/figures/Trace_genotype_random_effects.png Grap
+hic file (type png)
+<use ../outputs/clonal_analysis/figures/Trace_genotype_random_effects.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Trace_genotype_rand
+om_effects.png  used on input line 400.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[20pdfTeX warning (ext4): destination with the same identifier (name{figure.2.6
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.403 
+       <../outputs/clonal_analysis/figures/Trace_temporal_random_effects.png>]
+<../outputs/clonal_analysis/figures/Trace_block_random_effects.png, id=261, 505
+.89pt x 361.35pt>
+File: ../outputs/clonal_analysis/figures/Trace_block_random_effects.png Graphic
+ file (type png)
+<use ../outputs/clonal_analysis/figures/Trace_block_random_effects.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Trace_block_random_
+effects.png  used on input line 406.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[21pdfTeX warning (ext4): destination with the same identifier (name{figure.2.7
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.409 
+       <../outputs/clonal_analysis/figures/Trace_genotype_random_effects.png>]
+<../outputs/clonal_analysis/figures/Ranef_values.png, id=268, 505.89pt x 722.7p
+t>
+File: ../outputs/clonal_analysis/figures/Ranef_values.png Graphic file (type pn
+g)
+<use ../outputs/clonal_analysis/figures/Ranef_values.png>
+Package pdftex.def Info: ../outputs/clonal_analysis/figures/Ranef_values.png  u
+sed on input line 412.
+(pdftex.def)             Requested size: 455.3045pt x 650.43501pt.
+[22pdfTeX warning (ext4): destination with the same identifier (name{figure.2.8
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.415 
+       <../outputs/clonal_analysis/figures/Trace_block_random_effects.png>]
+Overfull \vbox (34.005pt too high) has occurred while \output is active []
+
+[23pdfTeX warning (ext4): destination with the same identifier (name{figure.2.9
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.415 
+       <../outputs/clonal_analysis/figures/Ranef_values.png>]
+Overfull \hbox (12.04268pt too wide) in paragraph at lines 435--435
+[]|\T1/lmr/m/n/10 Competition 
+ []
+
+
+Overfull \hbox (1.7651pt too wide) in paragraph at lines 435--435
+[]|\T1/lmr/m/n/10 Individual 
+ []
+
+
+Overfull \hbox (5.29288pt too wide) in paragraph at lines 435--435
+[]|\T1/lmr/m/n/10 Estimation 
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 4
+47.
+(/home/girard-tercieux/.TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+<../outputs/tropical_analysis/figures/Paracou_site.png, id=287, 505.89pt x 361.
+35pt>
+File: ../outputs/tropical_analysis/figures/Paracou_site.png Graphic file (type 
+png)
+<use ../outputs/tropical_analysis/figures/Paracou_site.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/Paracou_site.png 
+ used on input line 457.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[24pdfTeX warning (ext4): destination with the same identifier (name{table.2.1}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.460 
+      ]
+<../outputs/tropical_analysis/figures/Uppangala_site.png, id=300, 505.89pt x 36
+1.35pt>
+File: ../outputs/tropical_analysis/figures/Uppangala_site.png Graphic file (typ
+e png)
+<use ../outputs/tropical_analysis/figures/Uppangala_site.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/Uppangala_site.pn
+g  used on input line 475.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[25pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.478 
+       <../outputs/tropical_analysis/figures/Paracou_site.png>]
+<../outputs/tropical_analysis/figures/BCI_site.png, id=311, 505.89pt x 361.35pt
+>
+File: ../outputs/tropical_analysis/figures/BCI_site.png Graphic file (type png)
+
+<use ../outputs/tropical_analysis/figures/BCI_site.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/BCI_site.png  use
+d on input line 491.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[26pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.494 
+       <../outputs/tropical_analysis/figures/Uppangala_site.png>]
+<../outputs/tropical_analysis/figures/Paracou_abundance_determined.png, id=321,
+ 505.89pt x 361.35pt>
+File: ../outputs/tropical_analysis/figures/Paracou_abundance_determined.png Gra
+phic file (type png)
+<use ../outputs/tropical_analysis/figures/Paracou_abundance_determined.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/Paracou_abundance
+_determined.png  used on input line 496.
+(pdftex.def)             Requested size: 234.88132pt x 167.77238pt.
+<../outputs/tropical_analysis/figures/Uppangala_abundance.png, id=322, 505.89pt
+ x 361.35pt>
+File: ../outputs/tropical_analysis/figures/Uppangala_abundance.png Graphic file
+ (type png)
+<use ../outputs/tropical_analysis/figures/Uppangala_abundance.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/Uppangala_abundan
+ce.png  used on input line 496.
+(pdftex.def)             Requested size: 234.88132pt x 167.77238pt.
+<../outputs/tropical_analysis/figures/BCI_abundance.png, id=323, 505.89pt x 361
+.35pt>
+File: ../outputs/tropical_analysis/figures/BCI_abundance.png Graphic file (type
+ png)
+<use ../outputs/tropical_analysis/figures/BCI_abundance.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/BCI_abundance.png
+  used on input line 496.
+(pdftex.def)             Requested size: 234.88132pt x 167.77238pt.
+
+Overfull \hbox (2.22983pt too wide) in paragraph at lines 496--496
+[][] []
+ []
+
+[27pdfTeX warning (ext4): destination with the same identifier (name{figure.3.3
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.498 
+       <../outputs/tropical_analysis/figures/BCI_site.png>]
+<../outputs/tropical_analysis/figures/MCMC_trace_Paracou.png, id=329, 505.89pt 
+x 361.35pt>
+File: ../outputs/tropical_analysis/figures/MCMC_trace_Paracou.png Graphic file 
+(type png)
+<use ../outputs/tropical_analysis/figures/MCMC_trace_Paracou.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/MCMC_trace_Paraco
+u.png  used on input line 518.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[28pdfTeX warning (ext4): destination with the same identifier (name{figure.3.4
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.521 
+       <../outputs/tropical_analysis/figures/Paracou_abundance_determined.png> 
+<../outputs/tropical_analysis/figures/Uppangala_abundance.png> <../outputs/trop
+ical_analysis/figures/BCI_abundance.png>]
+<../outputs/tropical_analysis/figures/MCMC_density_Paracou.png, id=341, 505.89p
+t x 361.35pt>
+File: ../outputs/tropical_analysis/figures/MCMC_density_Paracou.png Graphic fil
+e (type png)
+<use ../outputs/tropical_analysis/figures/MCMC_density_Paracou.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/MCMC_density_Para
+cou.png  used on input line 524.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[29pdfTeX warning (ext4): destination with the same identifier (name{figure.3.5
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.527 
+       <../outputs/tropical_analysis/figures/MCMC_trace_Paracou.png>]
+<../outputs/tropical_analysis/figures/MCMC_trace_Uppangala.png, id=349, 505.89p
+t x 361.35pt>
+File: ../outputs/tropical_analysis/figures/MCMC_trace_Uppangala.png Graphic fil
+e (type png)
+<use ../outputs/tropical_analysis/figures/MCMC_trace_Uppangala.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/MCMC_trace_Uppang
+ala.png  used on input line 533.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[30pdfTeX warning (ext4): destination with the same identifier (name{figure.3.6
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.536 
+       <../outputs/tropical_analysis/figures/MCMC_density_Paracou.png>]
+<../outputs/tropical_analysis/figures/MCMC_density_Uppangala.png, id=356, 505.8
+9pt x 361.35pt>
+File: ../outputs/tropical_analysis/figures/MCMC_density_Uppangala.png Graphic f
+ile (type png)
+<use ../outputs/tropical_analysis/figures/MCMC_density_Uppangala.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/MCMC_density_Uppa
+ngala.png  used on input line 539.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[31pdfTeX warning (ext4): destination with the same identifier (name{figure.3.7
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.542 
+       <../outputs/tropical_analysis/figures/MCMC_trace_Uppangala.png>]
+<../outputs/tropical_analysis/figures/MCMC_trace_BCI.png, id=366, 505.89pt x 36
+1.35pt>
+File: ../outputs/tropical_analysis/figures/MCMC_trace_BCI.png Graphic file (typ
+e png)
+<use ../outputs/tropical_analysis/figures/MCMC_trace_BCI.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/MCMC_trace_BCI.pn
+g  used on input line 548.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[32pdfTeX warning (ext4): destination with the same identifier (name{figure.3.8
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.551 
+       <../outputs/tropical_analysis/figures/MCMC_density_Uppangala.png>]
+<../outputs/tropical_analysis/figures/MCMC_density_BCI.png, id=373, 505.89pt x 
+361.35pt>
+File: ../outputs/tropical_analysis/figures/MCMC_density_BCI.png Graphic file (t
+ype png)
+<use ../outputs/tropical_analysis/figures/MCMC_density_BCI.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/MCMC_density_BCI.
+png  used on input line 554.
+(pdftex.def)             Requested size: 469.76265pt x 335.54477pt.
+[33pdfTeX warning (ext4): destination with the same identifier (name{figure.3.9
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.557 
+       <../outputs/tropical_analysis/figures/MCMC_trace_BCI.png>] [34pdfTeX war
+ning (ext4): destination with the same identifier (name{figure.3.10}) has been 
+already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.600 T
+       he relatively low proportion of species which do not have a significa...
+pdfTeX warning (ext4): destination with the same identifier (name{table.3.1}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.600 T
+       he relatively low proportion of species which do not have a significa...
+ <../outputs/tropical_analysis/figures/MCMC_density_BCI.png>]
+<../outputs/tropical_analysis/figures/Plot_signif_abund.png, id=390, 1084.05pt 
+x 722.7pt>
+File: ../outputs/tropical_analysis/figures/Plot_signif_abund.png Graphic file (
+type png)
+<use ../outputs/tropical_analysis/figures/Plot_signif_abund.png>
+Package pdftex.def Info: ../outputs/tropical_analysis/figures/Plot_signif_abund
+.png  used on input line 604.
+(pdftex.def)             Requested size: 469.75496pt x 313.16995pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[35pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1
+1}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.628 
+       <../outputs/tropical_analysis/figures/Plot_signif_abund.png (PNG copy)>]
+[36pdfTeX warning (ext4): destination with the same identifier (name{table.3.2}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.673 \leavevmode
+                 \vadjust pre{\hypertarget{ref-condit_complete_2019}{}}%pdfTeX 
+warning (ext4): destination with the same identifier (name{table.3.3}) has been
+ already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.673 \leavevmode
+                 \vadjust pre{\hypertarget{ref-condit_complete_2019}{}}%] [37] 
+(./Supporting_information.aux)
+Package rerunfilecheck Info: File `Supporting_information.out' has not changed.
+
+(rerunfilecheck)             Checksum: 0538C7EF93D61AD971821E96E887AEE5;5084.
+ ) 
+Here is how much of TeX's memory you used:
+ 12491 strings out of 480539
+ 193406 string characters out of 5901816
+ 512081 words of memory out of 5000000
+ 29720 multiletter control sequences out of 15000+600000
+ 460460 words of font info for 74 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 60i,13n,66p,1411b,357s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/home/girard-tercieux/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/hom
+e/girard-tercieux/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/home/gira
+rd-tercieux/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/home/girard-
+tercieux/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/home/girard-tercieu
+x/.TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/home/girard-tercieux/.
+TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</home/girard-tercieux/.Tin
+yTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></home/girard-tercieux/.TinyTe
+X/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></home/girard-tercieux/.TinyTeX/t
+exmf-dist/fonts/type1/public/lm/lmex10.pfb></home/girard-tercieux/.TinyTeX/texm
+f-dist/fonts/type1/public/lm/lmmi10.pfb></home/girard-tercieux/.TinyTeX/texmf-d
+ist/fonts/type1/public/lm/lmmi7.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/
+fonts/type1/public/lm/lmmi8.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/font
+s/type1/public/lm/lmr10.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/fonts/ty
+pe1/public/lm/lmr12.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/fonts/type1/
+public/lm/lmr17.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/fonts/type1/publ
+ic/lm/lmr5.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/fonts/type1/public/lm
+/lmr7.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8
+.pfb></home/girard-tercieux/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb>
+</home/girard-tercieux/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></h
+ome/girard-tercieux/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
+Output written on Supporting_information.pdf (37 pages, 13593649 bytes).
+PDF statistics:
+ 552 PDF objects out of 1000 (max. 8388607)
+ 412 compressed objects within 5 object streams
+ 133 named destinations out of 1000 (max. 500000)
+ 302 words of extra memory for PDF output out of 10000 (max. 10000000)
+
